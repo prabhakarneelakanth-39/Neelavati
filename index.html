@@ -1,679 +1,761 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<title>AI_Readiness_Checklist</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAVE Training Suite · Module 1 Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:ital,wght@0,300;0,400;0,600;0,700;0,800;1,300&family=Share+Tech+Mono&display=swap" rel="stylesheet">
 <style>
-    body {
-        font-family: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
-        margin: 0;
-        background: radial-gradient(circle at top left, #ffe6f0 0, #f0f8ff 35%, #e6fffa 70%, #fff9e6 100%);
-        color: #222;
-    }
+  :root {
+    --bg:        #0b0f1a;
+    --surface:   #141928;
+    --surface2:  #1c2438;
+    --border:    #2a3350;
+    --accent:    #f0a500;
+    --accent2:   #00c9a7;
+    --accent3:   #e05c2e;
+    --blue:      #3b82f6;
+    --purple:    #8b5cf6;
+    --text:      #e2e8f0;
+    --muted:     #7a8aaa;
+    --radius:    14px;
+  }
 
-    header {
-        text-align: center;
-        padding: 18px 12px 10px 12px;
-        background: linear-gradient(135deg, #ff6f61, #ffcc33);
-        color: #fff;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.25);
-        position: sticky;
-        top: 0;
-        z-index: 1000;
-    }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    header h1 {
-        margin: 0;
-        font-size: 26px;
-        letter-spacing: 1px;
-        text-shadow: 0 2px 4px rgba(0,0,0,0.4);
-    }
+  body {
+    font-family: 'Exo 2', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
 
-    header p {
-        margin: 6px 0 0 0;
-        font-size: 13px;
-        opacity: 0.95;
-    }
+  /* ── BACKGROUND GLOW ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 15% 10%, rgba(240,165,0,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 85%, rgba(0,201,167,0.05) 0%, transparent 55%),
+      radial-gradient(ellipse at 50% 50%, rgba(59,130,246,0.04) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 0;
+  }
 
-    .app-container {
-        max-width: 1100px;
-        margin: 16px auto 40px auto;
-        padding: 0 14px 24px 14px;
-    }
+  /* ── HEADER ── */
+  .header {
+    position: relative;
+    z-index: 10;
+    background: linear-gradient(135deg, #0b0f1a 0%, #141928 60%, #0b0f1a 100%);
+    border-bottom: 2px solid var(--accent);
+    box-shadow: 0 4px 40px rgba(240,165,0,0.2);
+    padding: 0;
+  }
 
-    /* Fun tab bar */
-    .tab-bar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 8px;
-        margin-bottom: 18px;
-        justify-content: center;
-    }
+  .header-top-bar {
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 33%, var(--blue) 66%, var(--purple) 100%);
+  }
 
-    .tab {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-        padding: 8px 14px;
-        border-radius: 999px;
-        border: 2px solid transparent;
-        cursor: pointer;
-        font-size: 13px;
-        font-weight: 600;
-        background: #ffffffdd;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.12);
-        transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease, border-color 0.15s ease;
-        user-select: none;
-    }
+  .header-inner {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 32px 40px 28px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
 
-    .tab:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 4px 7px rgba(0,0,0,0.18);
-    }
+  .header-brand {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
 
-    .tab.active {
-        background: linear-gradient(135deg, #ff9a9e, #fad0c4);
-        border-color: #ff6f61;
-        color: #222;
-    }
+  .brand-icon {
+    width: 64px;
+    height: 64px;
+    background: linear-gradient(135deg, var(--accent), var(--accent3));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 0 24px rgba(240,165,0,0.35);
+    flex-shrink: 0;
+    animation: pulse-glow 3s ease-in-out infinite;
+  }
 
-    .tab .emoji {
-        font-size: 18px;
-    }
+  @keyframes pulse-glow {
+    0%, 100% { box-shadow: 0 0 24px rgba(240,165,0,0.35); }
+    50%       { box-shadow: 0 0 40px rgba(240,165,0,0.55); }
+  }
 
-    /* Checklist table */
-    .card {
-        background: #ffffffee;
-        border-radius: 14px;
-        padding: 16px 16px 14px 16px;
-        box-shadow: 0 3px 8px rgba(0,0,0,0.15);
-    }
+  .brand-text .eyebrow {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 4px;
+  }
 
-    .card-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        margin-bottom: 10px;
-    }
+  .brand-text h1 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: clamp(1.8rem, 4vw, 3rem);
+    font-weight: 700;
+    letter-spacing: 3px;
+    color: var(--text);
+    line-height: 1;
+  }
 
-    .card-header-left {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-    }
+  .brand-text h1 span { color: var(--accent); }
 
-    .card-title {
-        font-size: 18px;
-        font-weight: 700;
-    }
+  .brand-text .tagline {
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-top: 5px;
+    font-style: italic;
+    font-weight: 300;
+  }
 
-    .card-subtitle {
-        font-size: 12px;
-        color: #555;
-    }
+  .header-meta {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+  }
 
-    .status-pill {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 11px;
-        padding: 4px 8px;
-        border-radius: 999px;
-        background: #f2f2f2;
-        color: #333;
-    }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 30px;
+    padding: 5px 14px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
 
-    .status-pill span {
-        font-size: 14px;
-    }
+  .meta-pill .dot {
+    width: 7px; height: 7px;
+    border-radius: 50%;
+    background: var(--accent2);
+    animation: blink 2s ease-in-out infinite;
+  }
 
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        font-size: 12px;
-        margin-bottom: 4px;
-    }
+  @keyframes blink {
+    0%, 100% { opacity: 1; } 50% { opacity: 0.3; }
+  }
 
-    thead {
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        color: #fff;
-    }
+  /* ── MAIN ── */
+  .main {
+    position: relative;
+    z-index: 5;
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 48px 40px 64px;
+  }
 
-    th, td {
-        padding: 6px 6px;
-        text-align: left;
-    }
+  /* ── SECTION INTRO ── */
+  .section-intro {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 36px;
+  }
 
-    th {
-        font-weight: 600;
-        position: sticky;
-        top: 68px; /* below header */
-        background: linear-gradient(135deg, #4facfe, #00f2fe);
-        z-index: 5;
-    }
+  .section-intro .line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--border), transparent);
+  }
 
-    tbody tr:nth-child(even) {
-        background: #f7fbff;
-    }
+  .section-intro h2 {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
 
-    tbody tr:nth-child(odd) {
-        background: #ffffff;
-    }
+  /* ── CARDS GRID ── */
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+    gap: 24px;
+    margin-bottom: 56px;
+  }
 
-    tbody tr:hover {
-        background: #fff7e6;
-        cursor: pointer;
-    }
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    position: relative;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+    cursor: pointer;
+  }
 
-    .badge-status {
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 11px;
-        font-weight: 600;
-        display: inline-block;
-    }
+  .card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: var(--radius);
+    opacity: 0;
+    transition: opacity 0.25s ease;
+  }
 
-    .status-notstarted {
-        background: #ffe6e6;
-        color: #c62828;
-    }
+  .card:hover {
+    transform: translateY(-5px);
+    border-color: var(--card-accent, var(--accent));
+    box-shadow: 0 16px 48px rgba(0,0,0,0.4), 0 0 0 1px var(--card-accent, var(--accent));
+  }
 
-    .status-partial {
-        background: #fff3cd;
-        color: #8a6d1c;
-    }
+  .card:hover::before { opacity: 1; }
 
-    .status-complete {
-        background: #e6ffed;
-        color: #1b5e20;
-    }
+  /* card accent colours */
+  .card-1 { --card-accent: #f0a500; }
+  .card-2 { --card-accent: #3b82f6; }
+  .card-3 { --card-accent: #e94560; }
+  .card-4 { --card-accent: #00c9a7; }
+  .card-5 { --card-accent: #f59e0b; }
 
-    .badge-impact-high {
-        background: #ffebee;
-        color: #c62828;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 11px;
-        font-weight: 600;
-    }
+  .card-banner {
+    height: 6px;
+    background: var(--card-accent, var(--accent));
+  }
 
-    .badge-impact-med {
-        background: #fff8e1;
-        color: #ef6c00;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 11px;
-        font-weight: 600;
-    }
+  .card-body {
+    padding: 26px 28px 20px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .badge-impact-low {
-        background: #e8f5e9;
-        color: #388e3c;
-        padding: 2px 6px;
-        border-radius: 10px;
-        font-size: 11px;
-        font-weight: 600;
-    }
+  .card-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
 
-    .tiny-pill {
-        background: #e0e0e0;
-        border-radius: 999px;
-        padding: 2px 6px;
-        font-size: 10px;
-        color: #424242;
-        display: inline-block;
-    }
+  .card-icon {
+    width: 52px; height: 52px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 24px;
+    flex-shrink: 0;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    box-shadow: 0 0 16px rgba(0,0,0,0.3);
+    transition: box-shadow 0.25s ease;
+  }
 
-    /* Deep-dive / AI panel */
-    .ai-panel {
-        margin-top: 10px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #e0f7fa, #f1f8e9);
-        padding: 10px 12px 8px 12px;
-        border: 1px dashed #26a69a;
-        display: none;
-    }
+  .card:hover .card-icon {
+    box-shadow: 0 0 20px color-mix(in srgb, var(--card-accent) 40%, transparent);
+  }
 
-    .ai-panel-header {
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        gap: 8px;
-        margin-bottom: 4px;
-    }
+  .card-title-block { flex: 1; }
 
-    .ai-panel-title {
-        font-weight: 700;
-        font-size: 13px;
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
+  .card-index {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 3px;
+    color: var(--card-accent, var(--accent));
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
 
-    .ai-chip-row {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 6px;
-        margin-bottom: 6px;
-    }
+  .card-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.25rem;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    line-height: 1.2;
+    color: var(--text);
+  }
 
-    .ai-chip {
-        border-radius: 999px;
-        padding: 3px 8px;
-        font-size: 11px;
-        border: none;
-        cursor: pointer;
-        background: #ffffffdd;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.15);
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.12s ease;
-    }
+  .card-desc {
+    font-size: 0.84rem;
+    line-height: 1.6;
+    color: var(--muted);
+    font-weight: 300;
+    flex: 1;
+    margin-bottom: 20px;
+  }
 
-    .ai-chip:hover {
-        transform: translateY(-1px);
-        box-shadow: 0 3px 6px rgba(0,0,0,0.2);
-    }
+  .card-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 20px;
+  }
 
-    .ai-chip.active {
-        background: #ffecb3;
-    }
+  .tag {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 2px 10px;
+    font-size: 0.68rem;
+    font-family: 'Share Tech Mono', monospace;
+    color: var(--muted);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    transition: border-color 0.2s, color 0.2s;
+  }
 
-    .ai-level {
-        font-size: 12px;
-        margin-bottom: 4px;
-    }
+  .card:hover .tag {
+    border-color: color-mix(in srgb, var(--card-accent) 40%, transparent);
+    color: color-mix(in srgb, var(--card-accent) 80%, var(--muted));
+  }
 
-    .ai-level strong {
-        font-size: 12px;
-    }
+  .card-footer {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 28px;
+    border-top: 1px solid var(--border);
+    background: var(--surface2);
+    transition: background 0.25s ease;
+  }
 
-    .ai-hint {
-        font-size: 11px;
-        color: #555;
-        margin-top: 2px;
-    }
+  .card:hover .card-footer {
+    background: color-mix(in srgb, var(--card-accent) 8%, var(--surface2));
+  }
 
-    .close-ai {
-        border-radius: 999px;
-        padding: 2px 6px;
-        border: none;
-        background: #ffebee;
-        color: #c62828;
-        cursor: pointer;
-        font-size: 11px;
-    }
+  .open-btn {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--card-accent, var(--accent));
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+  }
 
-    .close-ai:hover {
-        background: #ffcdd2;
-    }
+  .open-btn .arrow {
+    display: inline-flex;
+    align-items: center;
+    transition: transform 0.2s ease;
+  }
 
-    .footer-note {
-        text-align: center;
-        font-size: 11px;
-        color: #666;
-        margin-top: 14px;
-    }
+  .card:hover .open-btn .arrow { transform: translateX(4px); }
 
-    /* Responsive */
-    @media (max-width: 768px) {
-        header h1 {
-            font-size: 20px;
-        }
-        table {
-            font-size: 11px;
-        }
-        th, td {
-            padding: 5px 4px;
-        }
-        .card-header {
-            flex-direction: column;
-            align-items: flex-start;
-        }
-    }
+  .card-type-badge {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    padding: 3px 8px;
+    border-radius: 4px;
+    border: 1px solid var(--border);
+    color: var(--muted);
+    letter-spacing: 1px;
+  }
+
+  /* ── STATS STRIP ── */
+  .stats-strip {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin-bottom: 56px;
+  }
+
+  .stat-cell {
+    background: var(--surface);
+    padding: 22px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    transition: background 0.2s;
+  }
+
+  .stat-cell:hover { background: var(--surface2); }
+
+  .stat-val {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--accent);
+  }
+
+  .stat-label {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── HOW TO USE ── */
+  .how-section {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 32px 36px;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 24px 32px;
+    align-items: start;
+    margin-bottom: 56px;
+  }
+
+  .how-icon-wrap {
+    width: 48px; height: 48px;
+    background: linear-gradient(135deg, var(--accent2), var(--blue));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    grid-row: 1 / 3;
+  }
+
+  .how-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--text);
+    align-self: end;
+  }
+
+  .how-steps {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .how-step {
+    flex: 1;
+    min-width: 180px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--accent);
+    flex-shrink: 0;
+    line-height: 1;
+  }
+
+  .step-text {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--muted);
+    font-weight: 300;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    position: relative;
+    z-index: 5;
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+    background: var(--surface);
+  }
+
+  .footer-left {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 2px;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .footer-right {
+    display: flex;
+    gap: 24px;
+    align-items: center;
+  }
+
+  .footer-right span {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 1.5px;
+    color: var(--border);
+    text-transform: uppercase;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .card { animation: fadeUp 0.5s ease both; }
+  .card-1 { animation-delay: 0.05s; }
+  .card-2 { animation-delay: 0.12s; }
+  .card-3 { animation-delay: 0.19s; }
+  .card-4 { animation-delay: 0.26s; }
+  .card-5 { animation-delay: 0.33s; }
+
+  .stats-strip { animation: fadeUp 0.5s ease 0.4s both; }
+  .how-section  { animation: fadeUp 0.5s ease 0.5s both; }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 640px) {
+    .header-inner { padding: 24px 20px 20px; }
+    .main         { padding: 32px 20px 48px; }
+    .brand-text h1 { font-size: 1.6rem; }
+    .header-meta  { display: none; }
+    .how-section  { grid-template-columns: 1fr; }
+    .how-icon-wrap { grid-row: unset; }
+    footer        { padding: 20px; flex-direction: column; align-items: flex-start; }
+  }
 </style>
 </head>
 <body>
 
-<header>
-    <h1>AI_Readiness_Checklist</h1>
-    <p>Tap a category tab, then click any row to open a 3‑level AI deep dive.</p>
+<!-- ── HEADER ── -->
+<header class="header">
+  <div class="header-top-bar"></div>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="brand-icon">⚙️</div>
+      <div class="brand-text">
+        <div class="eyebrow">Value Analysis &amp; Value Engineering</div>
+        <h1>VAVE <span>Training Suite</span></h1>
+        <div class="tagline">Module 1 · Interactive Learning Resources for Graduate &amp; Professional Programs</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div class="meta-pill"><span class="dot"></span> 5 Interactive Tools</div>
+      <div class="meta-pill">M1 · Core Concepts</div>
+    </div>
+  </div>
 </header>
 
-<div class="app-container">
-    <!-- Fun category tabs -->
-    <div class="tab-bar" id="categoryTabs">
-        <div class="tab active" data-category="All">
-            <span class="emoji">🧠</span><span>All</span>
-        </div>
-        <div class="tab" data-category="Systems">
-            <span class="emoji">🖥️</span><span>Systems</span>
-        </div>
-        <div class="tab" data-category="Hardware">
-            <span class="emoji">🤖</span><span>Hardware</span>
-        </div>
-        <div class="tab" data-category="Data">
-            <span class="emoji">📊</span><span>Data</span>
-        </div>
-        <div class="tab" data-category="Org">
-            <span class="emoji">🏢</span><span>Org</span>
-        </div>
-        <div class="tab" data-category="Vendor">
-            <span class="emoji">🤝</span><span>Vendor</span>
-        </div>
-    </div>
+<!-- ── MAIN ── -->
+<main class="main">
 
-    <div class="card">
+  <!-- Stats strip -->
+  <div class="stats-strip">
+    <div class="stat-cell">
+      <div class="stat-val">5</div>
+      <div class="stat-label">Interactive Modules</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--accent2)">M1</div>
+      <div class="stat-label">Current Module</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--blue)">VA</div>
+      <div class="stat-label">Value Analysis</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--purple)">VE</div>
+      <div class="stat-label">Value Engineering</div>
+    </div>
+    <div class="stat-cell">
+      <div class="stat-val" style="color:var(--accent3)">HTML5</div>
+      <div class="stat-label">Web-Based Tools</div>
+    </div>
+  </div>
+
+  <!-- Section heading -->
+  <div class="section-intro">
+    <h2>Module 1 · Resource Files</h2>
+    <div class="line"></div>
+  </div>
+
+  <!-- Cards grid -->
+  <div class="cards-grid">
+
+    <!-- Card 1 -->
+    <a href="VAVE-Component-Comparison-Dashboard.html" class="card card-1" target="_blank" rel="noopener">
+      <div class="card-banner"></div>
+      <div class="card-body">
         <div class="card-header">
-            <div class="card-header-left">
-                <div style="font-size:20px;">🎯</div>
-                <div>
-                    <div class="card-title">Checklist Items</div>
-                    <div class="card-subtitle" id="subtitleInfo">
-                        Showing all categories (click a tab to filter).
-                    </div>
-                </div>
-            </div>
-            <div class="status-pill">
-                <span>⚙️</span>
-                <span id="statusSummary">2 Partial • 3 Not Started • 0 Complete</span>
-            </div>
+          <div class="card-icon">📊</div>
+          <div class="card-title-block">
+            <div class="card-index">Tool 01 / 05</div>
+            <div class="card-title">Component Comparison Dashboard</div>
+          </div>
         </div>
-
-        <div class="table-wrapper">
-            <table id="checklistTable">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Category</th>
-                        <th>Item</th>
-                        <th>Status</th>
-                        <th>Evidence / Tool</th>
-                        <th>Gap</th>
-                        <th>Impact</th>
-                        <th>Owner</th>
-                        <th>Target Date</th>
-                        <th>Remarks</th>
-                    </tr>
-                </thead>
-                <tbody id="checklistBody">
-                    <!-- Filled by JS -->
-                </tbody>
-            </table>
+        <p class="card-desc">Side-by-side comparison interface for analysing multiple component alternatives. Evaluates functional worth, cost, and value index to support design trade-off decisions during the Creative and Evaluation phases of VA/VE.</p>
+        <div class="card-tags">
+          <span class="tag">Comparison</span>
+          <span class="tag">Design</span>
+          <span class="tag">Value Index</span>
+          <span class="tag">Trade-off</span>
         </div>
+      </div>
+      <div class="card-footer">
+        <span class="open-btn">Open Tool <span class="arrow">→</span></span>
+        <span class="card-type-badge">Dashboard</span>
+      </div>
+    </a>
 
-        <!-- AI Deep Dive Panel -->
-        <div class="ai-panel" id="aiPanel">
-            <div class="ai-panel-header">
-                <div class="ai-panel-title">
-                    <span style="font-size:18px;">🤖</span>
-                    <span id="aiTitle">AI Deep Dive</span>
-                </div>
-                <button class="close-ai" onclick="hideAIPanel()">✖ Close</button>
-            </div>
-
-            <div class="ai-chip-row">
-                <button class="ai-chip active" data-level="1" onclick="setAILevel(1)">
-                    <span>🟢</span><span>Level 1 – Snapshot</span>
-                </button>
-                <button class="ai-chip" data-level="2" onclick="setAILevel(2)">
-                    <span>🟡</span><span>Level 2 – Why it matters</span>
-                </button>
-                <button class="ai-chip" data-level="3" onclick="setAILevel(3)">
-                    <span>🔥</span><span>Level 3 – Action playbook</span>
-                </button>
-            </div>
-
-            <div id="aiContent">
-                <!-- AI text injected here -->
-            </div>
-            <div class="ai-hint">
-                Tip: Switch between the three levels to move from quick scan → management story → execution plan.
-            </div>
+    <!-- Card 2 -->
+    <a href="VAVE-Cost-Database-M1.html" class="card card-2" target="_blank" rel="noopener">
+      <div class="card-banner"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon">🗄️</div>
+          <div class="card-title-block">
+            <div class="card-index">Tool 02 / 05</div>
+            <div class="card-title">VAVE Cost Database</div>
+          </div>
         </div>
+        <p class="card-desc">Searchable and filterable cost reference database for generic manufacturing components. Provides benchmark unit costs and cost drivers essential for Function-Cost analysis and identifying high-cost-to-worth targets.</p>
+        <div class="card-tags">
+          <span class="tag">Cost Data</span>
+          <span class="tag">Benchmarking</span>
+          <span class="tag">Manufacturing</span>
+          <span class="tag">Reference</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="open-btn">Open Tool <span class="arrow">→</span></span>
+        <span class="card-type-badge">Database</span>
+      </div>
+    </a>
+
+    <!-- Card 3 -->
+    <a href="VAVE-Function_Cost_Matrix-M1.html" class="card card-3" target="_blank" rel="noopener">
+      <div class="card-banner"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon">🧮</div>
+          <div class="card-title-block">
+            <div class="card-index">Tool 03 / 05</div>
+            <div class="card-title">Function–Cost Matrix</div>
+          </div>
+        </div>
+        <p class="card-desc">Interactive Function–Cost Matrix exercise tool for mapping component costs to primary and secondary functions. Calculates Function Worth vs Cost ratios and highlights value improvement opportunities using FAST-aligned methodology.</p>
+        <div class="card-tags">
+          <span class="tag">FAST</span>
+          <span class="tag">Function Analysis</span>
+          <span class="tag">Matrix</span>
+          <span class="tag">Exercise</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="open-btn">Open Tool <span class="arrow">→</span></span>
+        <span class="card-type-badge">Exercise</span>
+      </div>
+    </a>
+
+    <!-- Card 4 -->
+    <a href="VAVE-ImplementationPlan-Template-M1.html" class="card card-4" target="_blank" rel="noopener">
+      <div class="card-banner"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon">📋</div>
+          <div class="card-title-block">
+            <div class="card-index">Tool 04 / 05</div>
+            <div class="card-title">Implementation Plan Template</div>
+          </div>
+        </div>
+        <p class="card-desc">Structured implementation plan template for VA/VE project execution. Covers action items, responsible owners, timelines, cost savings targets, and review checkpoints to bridge study findings into measurable outcomes.</p>
+        <div class="card-tags">
+          <span class="tag">Implementation</span>
+          <span class="tag">Project Plan</span>
+          <span class="tag">Template</span>
+          <span class="tag">Action Items</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="open-btn">Open Tool <span class="arrow">→</span></span>
+        <span class="card-type-badge">Template</span>
+      </div>
+    </a>
+
+    <!-- Card 5 -->
+    <a href="VAVE-Two-wheeler-Cost-Database-M1.html" class="card card-5" target="_blank" rel="noopener">
+      <div class="card-banner"></div>
+      <div class="card-body">
+        <div class="card-header">
+          <div class="card-icon">🏍️</div>
+          <div class="card-title-block">
+            <div class="card-index">Tool 05 / 05</div>
+            <div class="card-title">Two-Wheeler Cost Database</div>
+          </div>
+        </div>
+        <p class="card-desc">Industry-specific cost reference database focused on two-wheeler / motorcycle sub-systems and components. Enables realistic case-study exercises using actual automotive manufacturing cost data for powertrain, chassis, and body systems.</p>
+        <div class="card-tags">
+          <span class="tag">Two-Wheeler</span>
+          <span class="tag">Automotive</span>
+          <span class="tag">Cost Data</span>
+          <span class="tag">Case Study</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <span class="open-btn">Open Tool <span class="arrow">→</span></span>
+        <span class="card-type-badge">Database</span>
+      </div>
+    </a>
+
+  </div><!-- /cards-grid -->
+
+  <!-- How to use -->
+  <div class="how-section">
+    <div class="how-icon-wrap">💡</div>
+    <div class="how-title">How to Use This Suite</div>
+    <div class="how-steps">
+      <div class="how-step">
+        <span class="step-num">01</span>
+        <span class="step-text">Start with the <strong>Function–Cost Matrix</strong> to identify high cost-to-worth components in your case study.</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">02</span>
+        <span class="step-text">Use the <strong>Cost Databases</strong> (generic or two-wheeler) to benchmark and validate unit costs.</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">03</span>
+        <span class="step-text">Explore alternatives using the <strong>Component Comparison Dashboard</strong> to evaluate trade-offs.</span>
+      </div>
+      <div class="how-step">
+        <span class="step-num">04</span>
+        <span class="step-text">Document accepted ideas in the <strong>Implementation Plan Template</strong> with owners and timelines.</span>
+      </div>
     </div>
+  </div>
 
-    <div class="footer-note">
-        Built as a playful AI readiness cockpit – you can extend the data rows or logic easily in the script section.
-    </div>
-</div>
+</main>
 
-<script>
-    // Base data reconstructed from CSV
-    const checklistData = [
-        {
-            id: 1,
-            category: "Systems",
-            item: "ERP_API_Access",
-            status: "Partial",
-            evidence: "SAP_ODBC",
-            gap: "Limited_fields",
-            impact: "High",
-            owner: "IT_Head",
-            target: "2026-03-15",
-            remarks: "Prioritize_MES"
-        },
-        {
-            id: 2,
-            category: "Hardware",
-            item: "PLC_OPCUA",
-            status: "Partial",
-            evidence: "Siemens_S7",
-            gap: "Only_10_machines",
-            impact: "High",
-            owner: "Automation_Engr",
-            target: "2026-03-31",
-            remarks: "Start_with_IM_line"
-        },
-        {
-            id: 3,
-            category: "Data",
-            item: "Tag_List_Documented",
-            status: "Not_Started",
-            evidence: "N/A",
-            gap: "No_standardization",
-            impact: "High",
-            owner: "Data_Steward",
-            target: "2026-04-15",
-            remarks: "Workshop_needed"
-        },
-        {
-            id: 4,
-            category: "Org",
-            item: "AI_Ethics_Policy",
-            status: "Not_Started",
-            evidence: "N/A",
-            gap: "Draft_needed",
-            impact: "Med",
-            owner: "Plant_Head",
-            target: "2026-03-30",
-            remarks: "Use_ISO_template"
-        },
-        {
-            id: 5,
-            category: "Vendor",
-            item: "SI_Partner_Shortlist",
-            status: "Not_Started",
-            evidence: "N/A",
-            gap: "RFI_outstanding",
-            impact: "Med",
-            owner: "Purchasing",
-            target: "2026-04-10",
-            remarks: "3_quotes_targeted"
-        }
-    ];
-
-    let currentCategory = "All";
-    let currentAIItem = null;
-    let currentLevel = 1;
-
-    function renderTable() {
-        const tbody = document.getElementById("checklistBody");
-        tbody.innerHTML = "";
-
-        const filtered = checklistData.filter(r => 
-            currentCategory === "All" || r.category === currentCategory
-        );
-
-        filtered.forEach(row => {
-            const tr = document.createElement("tr");
-            tr.dataset.id = row.id;
-            tr.onclick = () => openAIPanel(row.id);
-
-            tr.innerHTML = `
-                <td>${row.id}</td>
-                <td><span class="tiny-pill">${row.category}</span></td>
-                <td>${row.item.replace(/_/g, " ")}</td>
-                <td>${renderStatusBadge(row.status)}</td>
-                <td>${row.evidence}</td>
-                <td>${row.gap.replace(/_/g, " ")}</td>
-                <td>${renderImpactBadge(row.impact)}</td>
-                <td>${row.owner}</td>
-                <td>${row.target}</td>
-                <td>${row.remarks.replace(/_/g, " ")}</td>
-            `;
-            tbody.appendChild(tr);
-        });
-
-        // Update subtitle and status summary
-        const subtitle = document.getElementById("subtitleInfo");
-        subtitle.textContent = currentCategory === "All"
-            ? "Showing all categories (click a tab to filter)."
-            : "Showing only " + currentCategory + " items.";
-
-        updateStatusSummary(filtered);
-    }
-
-    function renderStatusBadge(status) {
-        const s = status.toLowerCase();
-        let cls = "";
-        if (s === "not_started") cls = "status-notstarted";
-        else if (s === "partial") cls = "status-partial";
-        else cls = "status-complete";
-        return `<span class="badge-status ${cls}">${status}</span>`;
-    }
-
-    function renderImpactBadge(impact) {
-        const i = impact.toLowerCase();
-        if (i === "high") return `<span class="badge-impact-high">High</span>`;
-        if (i === "med") return `<span class="badge-impact-med">Med</span>`;
-        return `<span class="badge-impact-low">Low</span>`;
-    }
-
-    function updateStatusSummary(rows) {
-        let ns = 0, p = 0, c = 0;
-        rows.forEach(r => {
-            const s = r.status.toLowerCase();
-            if (s === "not_started") ns++;
-            else if (s === "partial") p++;
-            else c++;
-        });
-        const text = `${p} Partial • ${ns} Not Started • ${c} Complete`;
-        document.getElementById("statusSummary").textContent = text;
-    }
-
-    // Tab handling
-    document.getElementById("categoryTabs").addEventListener("click", (e) => {
-        const tab = e.target.closest(".tab");
-        if (!tab) return;
-
-        document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
-        tab.classList.add("active");
-
-        currentCategory = tab.dataset.category;
-        hideAIPanel();
-        renderTable();
-    });
-
-    // AI panel
-    function openAIPanel(id) {
-        const row = checklistData.find(r => r.id === id);
-        if (!row) return;
-        currentAIItem = row;
-        currentLevel = 1;
-        document.querySelectorAll(".ai-chip").forEach(chip => {
-            chip.classList.remove("active");
-            if (chip.dataset.level === "1") chip.classList.add("active");
-        });
-
-        const aiPanel = document.getElementById("aiPanel");
-        aiPanel.style.display = "block";
-
-        const title = `${row.category} → ${row.item.replace(/_/g, " ")}`;
-        document.getElementById("aiTitle").textContent = title;
-        renderAIContent();
-        aiPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    }
-
-    function hideAIPanel() {
-        const aiPanel = document.getElementById("aiPanel");
-        aiPanel.style.display = "none";
-        currentAIItem = null;
-    }
-
-    function setAILevel(level) {
-        currentLevel = level;
-        document.querySelectorAll(".ai-chip").forEach(chip => {
-            chip.classList.toggle("active", Number(chip.dataset.level) === level);
-        });
-        renderAIContent();
-    }
-
-    function renderAIContent() {
-        if (!currentAIItem) return;
-        const container = document.getElementById("aiContent");
-        const r = currentAIItem;
-
-        const prettyItem = r.item.replace(/_/g, " ");
-        const prettyGap = r.gap.replace(/_/g, " ");
-        const prettyRemarks = r.remarks.replace(/_/g, " ");
-
-        if (currentLevel === 1) {
-            container.innerHTML = `
-                <div class="ai-level">
-                    <strong>🧩 Level 1 – Snapshot:</strong>
-                    <br>
-                    • Category: <b>${r.category}</b>, Item: <b>${prettyItem}</b>, Owner: <b>${r.owner}</b>.
-                    <br>
-                    • Current status is <b>${r.status}</b> with impact flagged as <b>${r.impact}</b>.
-                    <br>
-                    • Main gap: <b>${prettyGap}</b>; planned date: <b>${r.target}</b> (${prettyRemarks}).
-                </div>
-            `;
-        } else if (currentLevel === 2) {
-            container.innerHTML = `
-                <div class="ai-level">
-                    <strong>🧠 Level 2 – Why this matters:</strong>
-                    <br>
-                    • If this stays at <b>${r.status}</b>, your AI initiatives may face bottlenecks in this domain (category: <b>${r.category}</b>, impact: <b>${r.impact}</b>).
-                    <br>
-                    • The gap "<b>${prettyGap}</b>" typically translates into rework, manual workarounds, and slower scaling of AI use cases.
-                    <br>
-                    • Closing this by <b>${r.target}</b> strengthens your AI foundation and makes downstream projects more predictable and auditable.
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div class="ai-level">
-                    <strong>🚀 Level 3 – 30‑day action playbook:</strong>
-                    <br>
-                    • Week 1: Clarify scope – define what “Complete” means for <b>${prettyItem}</b> and confirm success metrics with <b>${r.owner}</b>.
-                    <br>
-                    • Week 2: Execute quick wins – address the core gap "<b>${prettyGap}</b>" with a focused mini‑project (involve IT / OT / process teams as needed).
-                    <br>
-                    • Week 3–4: Standardize & prove – document the new way of working, capture simple evidence (screenshots, SOPs, configs) and demo the readiness to stakeholders.
-                    <br>
-                    • After go‑live: Link this readiness item to at least one real AI use case so the business value is visible, not just the checklist tick.
-                </div>
-            `;
-        }
-    }
-
-    // Initialize
-    renderTable();
-</script>
+<!-- ── FOOTER ── -->
+<footer>
+  <div class="footer-left">VAVE Training Suite · Module 1 · © Industrial Training &amp; Education</div>
+  <div class="footer-right">
+    <span>Value Analysis</span>
+    <span>Value Engineering</span>
+    <span>HTML5 · Standalone</span>
+  </div>
+</footer>
 
 </body>
 </html>

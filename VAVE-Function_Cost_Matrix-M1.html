@@ -1,0 +1,1122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAVE - Exercises - M1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;800;900&family=Space+Mono:wght@400;700&family=Fredoka+One&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --primary: #1a1a2e;
+    --accent1: #e94560;
+    --accent2: #f5a623;
+    --accent3: #0f3460;
+    --accent4: #16213e;
+    --green: #00d2a0;
+    --purple: #7c3aed;
+    --card-bg: #ffffff;
+    --label: #374151;
+    --border: #e5e7eb;
+    --radius: 14px;
+    --shadow: 0 8px 32px rgba(0,0,0,0.13);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #0f3460 50%, #16213e 100%);
+    min-height: 100vh;
+    color: #fff;
+  }
+
+  /* ---- HEADER ---- */
+  .header {
+    background: linear-gradient(90deg, #e94560, #f5a623, #00d2a0, #7c3aed);
+    background-size: 300% 100%;
+    animation: gradMove 6s ease infinite;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  @keyframes gradMove {
+    0%{background-position:0% 50%} 50%{background-position:100% 50%} 100%{background-position:0% 50%}
+  }
+  .header-inner {
+    padding: 28px 40px 20px;
+    position: relative;
+    z-index: 2;
+  }
+  .header h1 {
+    font-family: 'Bangers', cursive;
+    font-size: 3.6rem;
+    letter-spacing: 4px;
+    color: #fff;
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.3);
+    line-height: 1;
+  }
+  .header-sub {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: rgba(255,255,255,0.9);
+    margin-top: 6px;
+    letter-spacing: 1px;
+  }
+  .badge-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+  }
+  .badge {
+    background: rgba(255,255,255,0.2);
+    backdrop-filter: blur(6px);
+    border: 1.5px solid rgba(255,255,255,0.4);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  .header-decor {
+    position: absolute;
+    right: 40px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 6rem;
+    opacity: 0.18;
+    font-family: 'Bangers', cursive;
+    letter-spacing: 2px;
+    pointer-events: none;
+  }
+
+  /* ---- MAIN ---- */
+  .main {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 32px 24px 80px;
+  }
+
+  /* ---- STEP CARDS ---- */
+  .steps-row {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+  }
+  .step-pill {
+    flex: 1;
+    min-width: 130px;
+    background: rgba(255,255,255,0.06);
+    border: 2px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 14px 12px;
+    text-align: center;
+    transition: all 0.3s;
+    cursor: default;
+  }
+  .step-pill.active {
+    background: rgba(233,69,96,0.22);
+    border-color: #e94560;
+    box-shadow: 0 0 18px rgba(233,69,96,0.3);
+  }
+  .step-pill .step-num {
+    font-family: 'Bangers', cursive;
+    font-size: 1.8rem;
+    color: #f5a623;
+    line-height: 1;
+  }
+  .step-pill .step-title {
+    font-size: 0.72rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.85);
+    margin-top: 4px;
+    line-height: 1.3;
+  }
+  .step-pill .step-time {
+    font-size: 0.65rem;
+    color: #00d2a0;
+    font-family: 'Space Mono', monospace;
+    margin-top: 3px;
+  }
+
+  /* ---- SECTION CARD ---- */
+  .card {
+    background: #fff;
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    margin-bottom: 28px;
+    overflow: hidden;
+  }
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 18px 24px 14px;
+    border-bottom: 2px solid var(--border);
+  }
+  .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    flex-shrink: 0;
+  }
+  .card-header h2 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.35rem;
+    color: #1a1a2e;
+    letter-spacing: 0.5px;
+  }
+  .card-header p {
+    font-size: 0.8rem;
+    color: #6b7280;
+    margin-top: 2px;
+    font-weight: 600;
+  }
+  .card-body { padding: 22px 24px; }
+
+  /* ---- FORM FIELDS ---- */
+  .form-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+  .form-grid.four-col { grid-template-columns: 1fr 1fr 1fr 1fr; }
+  .field-group { display: flex; flex-direction: column; gap: 6px; }
+  .field-group label {
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--label);
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+  }
+  .field-group input, .field-group select, .field-group textarea {
+    border: 2px solid var(--border);
+    border-radius: 9px;
+    padding: 10px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    background: #f9fafb;
+    transition: all 0.2s;
+    outline: none;
+  }
+  .field-group input:focus, .field-group select:focus, .field-group textarea:focus {
+    border-color: #7c3aed;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.12);
+  }
+  .field-group input::placeholder { color: #d1d5db; font-weight: 400; }
+
+  /* ---- TABLE ---- */
+  .table-wrap { overflow-x: auto; }
+  table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.88rem;
+  }
+  thead tr th {
+    padding: 12px 10px;
+    font-weight: 900;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 0.7px;
+    text-align: center;
+    border-bottom: 3px solid #e5e7eb;
+    white-space: nowrap;
+    color: #fff;
+  }
+  tbody tr { transition: background 0.2s; }
+  tbody tr:hover td { background: #f0f9ff; }
+  tbody tr td {
+    padding: 10px 8px;
+    border-bottom: 1px solid #f3f4f6;
+    vertical-align: middle;
+    color: #1a1a2e;
+    text-align: center;
+  }
+  .type-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+  }
+  .type-primary { background: #fef3c7; color: #92400e; }
+  .type-secondary { background: #dbeafe; color: #1e40af; }
+  .type-tertiary { background: #f0fdf4; color: #166534; }
+
+  td input, td select {
+    border: 1.5px solid #e5e7eb;
+    border-radius: 8px;
+    padding: 7px 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    background: #f9fafb;
+    width: 100%;
+    text-align: center;
+    outline: none;
+    transition: all 0.2s;
+    min-width: 70px;
+  }
+  td input:focus, td select:focus {
+    border-color: #7c3aed;
+    background: #fff;
+    box-shadow: 0 0 0 3px rgba(124,58,237,0.1);
+  }
+  .value-score-cell {
+    font-family: 'Space Mono', monospace;
+    font-weight: 700;
+    font-size: 1rem;
+    min-width: 70px;
+  }
+  .score-good { color: #059669; }
+  .score-fair { color: #d97706; }
+  .score-poor { color: #dc2626; }
+
+  /* ---- FORMULA BOX ---- */
+  .formula-box {
+    background: linear-gradient(135deg, #1a1a2e, #0f3460);
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-top: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: center;
+  }
+  .formula-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .formula-eq {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.9rem;
+    color: #f5a623;
+    font-weight: 700;
+  }
+  .legend-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .legend-text { font-size: 0.8rem; color: rgba(255,255,255,0.85); font-weight: 700; }
+
+  /* ---- VAVE OPPS ---- */
+  .opp-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 4px;
+  }
+  .opp-card {
+    border: 2px dashed #fca5a5;
+    border-radius: 12px;
+    padding: 16px;
+    background: #fff5f5;
+  }
+  .opp-card h4 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    color: #e94560;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .opp-num {
+    background: #e94560;
+    color: white;
+    border-radius: 50%;
+    width: 22px;
+    height: 22px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 900;
+    flex-shrink: 0;
+  }
+  .opp-card textarea {
+    width: 100%;
+    border: 1.5px solid #fca5a5;
+    border-radius: 8px;
+    padding: 8px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #1a1a2e;
+    background: #fff;
+    resize: vertical;
+    min-height: 70px;
+    outline: none;
+  }
+  .opp-card textarea:focus { border-color: #e94560; box-shadow: 0 0 0 3px rgba(233,69,96,0.1); }
+  .opp-label {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #9f1239;
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    margin-top: 8px;
+    margin-bottom: 3px;
+    display: block;
+  }
+
+  /* ---- TARGET TABLE ---- */
+  .target-tbl thead tr th { background: #0f3460; }
+  .target-tbl tbody td { text-align: center; }
+  .savings-total {
+    background: linear-gradient(90deg, #00d2a0, #059669);
+    color: white;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.1rem;
+    border-radius: 10px;
+    padding: 12px 20px;
+    margin-top: 14px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  /* ---- FUNCTION REFERENCE ---- */
+  .ref-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
+  .ref-category {
+    border-radius: 12px;
+    padding: 14px 16px;
+    border: 2px solid transparent;
+  }
+  .ref-category h4 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    margin-bottom: 8px;
+  }
+  .ref-category .funcs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .func-tag {
+    background: rgba(255,255,255,0.85);
+    border-radius: 6px;
+    padding: 3px 9px;
+    font-size: 0.73rem;
+    font-weight: 800;
+    font-family: 'Space Mono', monospace;
+    cursor: default;
+  }
+
+  .ref-engine { background: #fff7ed; border-color: #fed7aa; }
+  .ref-engine h4 { color: #c2410c; }
+  .ref-engine .func-tag { color: #c2410c; border: 1px solid #fed7aa; }
+
+  .ref-trans { background: #eff6ff; border-color: #bfdbfe; }
+  .ref-trans h4 { color: #1d4ed8; }
+  .ref-trans .func-tag { color: #1d4ed8; border: 1px solid #bfdbfe; }
+
+  .ref-chassis { background: #f0fdf4; border-color: #bbf7d0; }
+  .ref-chassis h4 { color: #15803d; }
+  .ref-chassis .func-tag { color: #15803d; border: 1px solid #bbf7d0; }
+
+  .ref-elec { background: #fdf4ff; border-color: #e9d5ff; }
+  .ref-elec h4 { color: #7e22ce; }
+  .ref-elec .func-tag { color: #7e22ce; border: 1px solid #e9d5ff; }
+
+  .ref-body { background: #fff1f2; border-color: #fecdd3; }
+  .ref-body h4 { color: #be123c; }
+  .ref-body .func-tag { color: #be123c; border: 1px solid #fecdd3; }
+
+  /* ---- COST CHECK ---- */
+  .cost-check-bar {
+    background: #f9fafb;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    padding: 14px 20px;
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cost-check-bar .label { font-weight: 800; font-size: 0.85rem; color: #374151; }
+  .cost-check-bar .val {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #1a1a2e;
+  }
+  .check-ok { color: #059669; }
+  .check-warn { color: #dc2626; }
+  .pct-bar {
+    flex: 1;
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    min-width: 100px;
+  }
+  .pct-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #00d2a0, #7c3aed);
+    border-radius: 6px;
+    transition: width 0.4s;
+  }
+
+  /* ---- BUTTONS ---- */
+  .btn-row {
+    display: flex;
+    gap: 12px;
+    margin-top: 24px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .btn {
+    padding: 13px 28px;
+    border-radius: 30px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.05rem;
+    letter-spacing: 0.5px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.25s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #e94560, #f5a623);
+    color: white;
+    box-shadow: 0 4px 20px rgba(233,69,96,0.35);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 28px rgba(233,69,96,0.4); }
+  .btn-secondary {
+    background: linear-gradient(135deg, #7c3aed, #00d2a0);
+    color: white;
+    box-shadow: 0 4px 20px rgba(124,58,237,0.3);
+  }
+  .btn-secondary:hover { transform: translateY(-2px); }
+  .btn-danger {
+    background: #f3f4f6;
+    color: #6b7280;
+    border: 2px solid #e5e7eb;
+  }
+  .btn-danger:hover { background: #fee2e2; color: #dc2626; border-color: #fca5a5; }
+  .btn-print {
+    background: linear-gradient(135deg, #0f3460, #1a1a2e);
+    color: white;
+  }
+
+  /* ---- TOAST ---- */
+  .toast {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: #1a1a2e;
+    color: white;
+    padding: 14px 28px;
+    border-radius: 30px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    z-index: 9999;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    border: 2px solid #00d2a0;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* ---- WATERMARK / TRAINER ---- */
+  .trainer-credit {
+    position: fixed;
+    bottom: 12px;
+    right: 18px;
+    font-size: 0.65rem;
+    color: rgba(255,255,255,0.35);
+    font-family: 'Space Mono', monospace;
+    font-weight: 400;
+    z-index: 100;
+    pointer-events: none;
+  }
+
+  /* ---- PRINT ---- */
+  @media print {
+    body { background: #fff !important; color: #000; }
+    .header { background: #1a1a2e !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .steps-row, .btn-row, .trainer-credit { display: none !important; }
+    .main { padding: 10px !important; max-width: 100% !important; }
+    .card { box-shadow: none; border: 1.5px solid #e5e7eb; }
+    .formula-box { background: #1a1a2e !important; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    .formula-eq { color: #f5a623 !important; }
+    thead tr th { print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    input, select, textarea { border: 1px solid #ccc !important; }
+    .toast { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <h1>⚙️ VAVE – Exercises – M1</h1>
+    <div class="header-sub">Value Analysis &amp; Value Engineering Training · Module 1, Session 2</div>
+    <div class="badge-row">
+      <span class="badge">📋 Function-Cost Matrix</span>
+      <span class="badge">🔍 VAVE Opportunity Analysis</span>
+      <span class="badge">🎯 Cost Reduction Targets</span>
+      <span class="badge">⏱ 45 Minutes</span>
+    </div>
+  </div>
+  <div class="header-decor">VAVE</div>
+</div>
+
+<div class="main">
+
+  <!-- STEP PILLS -->
+  <div class="steps-row">
+    <div class="step-pill active">
+      <div class="step-num">①</div>
+      <div class="step-title">Component Selection</div>
+      <div class="step-time">5 min</div>
+    </div>
+    <div class="step-pill">
+      <div class="step-num">②</div>
+      <div class="step-title">Function Identification</div>
+      <div class="step-time">10 min</div>
+    </div>
+    <div class="step-pill">
+      <div class="step-num">③</div>
+      <div class="step-title">Cost Allocation</div>
+      <div class="step-time">10 min</div>
+    </div>
+    <div class="step-pill">
+      <div class="step-num">④</div>
+      <div class="step-title">VAVE Opportunities</div>
+      <div class="step-time">10 min</div>
+    </div>
+    <div class="step-pill">
+      <div class="step-num">⑤</div>
+      <div class="step-title">Presentation</div>
+      <div class="step-time">5 min</div>
+    </div>
+  </div>
+
+  <!-- STEP 1: COMPONENT DETAILS -->
+  <div class="card" id="step1-card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fff7ed">🔩</div>
+      <div>
+        <h2>Step 1 — Component Details</h2>
+        <p>Select a two-wheeler component and fill in its details</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="field-group">
+          <label>Component Name</label>
+          <input type="text" id="comp-name" placeholder="e.g. Clutch Assembly, Brake Caliper...">
+        </div>
+        <div class="field-group">
+          <label>Part Number</label>
+          <input type="text" id="part-no" placeholder="e.g. TRN-CL-105">
+        </div>
+        <div class="field-group">
+          <label>Total Component Cost (₹)</label>
+          <input type="number" id="total-cost" placeholder="e.g. 950" oninput="updateAll()">
+        </div>
+        <div class="field-group">
+          <label>Component Category</label>
+          <select id="comp-category">
+            <option value="">— Select Category —</option>
+            <option>Engine Components</option>
+            <option>Transmission Components</option>
+            <option>Chassis Components</option>
+            <option>Electrical Components</option>
+            <option>Body Components</option>
+          </select>
+        </div>
+        <div class="field-group">
+          <label>Team / Participant Name(s)</label>
+          <input type="text" id="team-name" placeholder="e.g. Team Alpha / John, Priya, Rajan">
+        </div>
+        <div class="field-group">
+          <label>Date</label>
+          <input type="date" id="date-field">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 2+3: FUNCTION BREAKDOWN TABLE -->
+  <div class="card" id="step23-card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#eff6ff">📊</div>
+      <div>
+        <h2>Steps 2 &amp; 3 — Function Breakdown &amp; Cost Allocation</h2>
+        <p>Identify functions using Verb + Noun format · Allocate costs · Compute Value Scores</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th style="background:#1a1a2e;width:90px">Function Type</th>
+              <th style="background:#0f3460">Function Description</th>
+              <th style="background:#1d4ed8">Function Verb + Noun</th>
+              <th style="background:#7c3aed">Est. Cost (₹)</th>
+              <th style="background:#7c3aed">% of Total</th>
+              <th style="background:#e94560">Importance<br>(1–5)</th>
+              <th style="background:#059669">Value Score</th>
+            </tr>
+          </thead>
+          <tbody id="func-tbody">
+            <!-- Rows injected by JS -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- COST CHECK BAR -->
+      <div class="cost-check-bar">
+        <span class="label">💰 Total Allocated:</span>
+        <span class="val" id="sum-display">₹ 0</span>
+        <span class="label">of</span>
+        <span class="val" id="total-display">₹ —</span>
+        <div class="pct-bar"><div class="pct-fill" id="pct-fill" style="width:0%"></div></div>
+        <span id="check-msg" class="check-warn" style="font-weight:800;font-size:0.82rem"></span>
+      </div>
+
+      <!-- FORMULA -->
+      <div class="formula-box">
+        <div class="formula-item">
+          <span style="font-size:1.1rem">🧮</span>
+          <span class="formula-eq">Value Score = Importance Rating ÷ (Cost % ÷ 10)</span>
+        </div>
+        <div class="formula-item">
+          <div class="legend-dot" style="background:#059669"></div>
+          <span class="legend-text">Score &gt; 3 → Good Value ✅</span>
+        </div>
+        <div class="formula-item">
+          <div class="legend-dot" style="background:#d97706"></div>
+          <span class="legend-text">Score 1–3 → Fair Value ⚠️</span>
+        </div>
+        <div class="formula-item">
+          <div class="legend-dot" style="background:#dc2626"></div>
+          <span class="legend-text">Score &lt; 1 → Poor Value 🚨 VAVE!</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 4: VAVE OPPORTUNITIES -->
+  <div class="card" id="step4-card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fff1f2">🚨</div>
+      <div>
+        <h2>Step 4 — VAVE Opportunity Analysis</h2>
+        <p>Focus on functions with Value Score &lt; 1.5 · Brainstorm improvements</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="opp-grid">
+        <div class="opp-card">
+          <h4><span class="opp-num">1</span> Opportunity #1</h4>
+          <span class="opp-label">Function Name / Verb+Noun</span>
+          <input type="text" id="opp1-func" placeholder="e.g. Engage Power" style="width:100%;margin-bottom:6px;border:1.5px solid #fca5a5;border-radius:8px;padding:7px 10px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:600;outline:none;background:#fff;">
+          <span class="opp-label">Issue / Root Cause</span>
+          <textarea id="opp1-issue" placeholder="Describe why this function has poor value..."></textarea>
+          <span class="opp-label">Potential Solution / VAVE Idea</span>
+          <textarea id="opp1-soln" placeholder="Material substitution, design simplification, elimination..."></textarea>
+        </div>
+        <div class="opp-card">
+          <h4><span class="opp-num">2</span> Opportunity #2</h4>
+          <span class="opp-label">Function Name / Verb+Noun</span>
+          <input type="text" id="opp2-func" placeholder="e.g. Interrupt Torque" style="width:100%;margin-bottom:6px;border:1.5px solid #fca5a5;border-radius:8px;padding:7px 10px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:600;outline:none;background:#fff;">
+          <span class="opp-label">Issue / Root Cause</span>
+          <textarea id="opp2-issue" placeholder="Describe why this function has poor value..."></textarea>
+          <span class="opp-label">Potential Solution / VAVE Idea</span>
+          <textarea id="opp2-soln" placeholder="Component integration, process change, standardisation..."></textarea>
+        </div>
+        <div class="opp-card">
+          <h4><span class="opp-num">3</span> Opportunity #3</h4>
+          <span class="opp-label">Function Name / Verb+Noun</span>
+          <input type="text" id="opp3-func" placeholder="e.g. Cushion Shock" style="width:100%;margin-bottom:6px;border:1.5px solid #fca5a5;border-radius:8px;padding:7px 10px;font-family:'Nunito',sans-serif;font-size:0.88rem;font-weight:600;outline:none;background:#fff;">
+          <span class="opp-label">Issue / Root Cause</span>
+          <textarea id="opp3-issue" placeholder="Describe why this function has poor value..."></textarea>
+          <span class="opp-label">Potential Solution / VAVE Idea</span>
+          <textarea id="opp3-soln" placeholder="Spring simplification, geometry change, tolerance relaxation..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 5: COST REDUCTION TARGETS -->
+  <div class="card" id="step5-card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#f0fdf4">🎯</div>
+      <div>
+        <h2>Step 5 — Cost Reduction Target Setting</h2>
+        <p>Set measurable targets for the identified VAVE opportunities</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="table-wrap">
+        <table class="target-tbl">
+          <thead>
+            <tr>
+              <th style="background:#0f3460">Function</th>
+              <th style="background:#7c3aed">Current Cost (₹)</th>
+              <th style="background:#059669">Target Cost (₹)</th>
+              <th style="background:#00d2a0;color:#1a1a2e">Reduction (₹)</th>
+              <th style="background:#e94560">Reduction (%)</th>
+              <th style="background:#f5a623;color:#1a1a2e">Action Required</th>
+            </tr>
+          </thead>
+          <tbody id="target-tbody">
+            <tr>
+              <td><input type="text" id="t1-func" placeholder="Function name"></td>
+              <td><input type="number" id="t1-curr" placeholder="0" oninput="updateTargetRow(1)"></td>
+              <td><input type="number" id="t1-tgt" placeholder="0" oninput="updateTargetRow(1)"></td>
+              <td><span id="t1-red">—</span></td>
+              <td><span id="t1-pct">—</span></td>
+              <td><input type="text" id="t1-action" placeholder="e.g. Material change"></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="t2-func" placeholder="Function name"></td>
+              <td><input type="number" id="t2-curr" placeholder="0" oninput="updateTargetRow(2)"></td>
+              <td><input type="number" id="t2-tgt" placeholder="0" oninput="updateTargetRow(2)"></td>
+              <td><span id="t2-red">—</span></td>
+              <td><span id="t2-pct">—</span></td>
+              <td><input type="text" id="t2-action" placeholder="e.g. Design optimisation"></td>
+            </tr>
+            <tr>
+              <td><input type="text" id="t3-func" placeholder="Function name"></td>
+              <td><input type="number" id="t3-curr" placeholder="0" oninput="updateTargetRow(3)"></td>
+              <td><input type="number" id="t3-tgt" placeholder="0" oninput="updateTargetRow(3)"></td>
+              <td><span id="t3-red">—</span></td>
+              <td><span id="t3-pct">—</span></td>
+              <td><input type="text" id="t3-action" placeholder="e.g. Spring simplification"></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="savings-total">
+        <span>🏆 Total Estimated Savings</span>
+        <span id="total-savings">₹ 0 &nbsp;|&nbsp; 0%</span>
+      </div>
+
+      <!-- PRESENTATION NOTES -->
+      <div style="margin-top:20px">
+        <div class="field-group">
+          <label>📢 Presentation Notes — Key Findings &amp; Justification</label>
+          <textarea id="pres-notes" rows="4" style="border:2px solid #e5e7eb;border-radius:10px;padding:12px;font-family:'Nunito',sans-serif;font-size:0.92rem;font-weight:600;color:#1a1a2e;background:#f9fafb;outline:none;resize:vertical;width:100%;" placeholder="Summarise your top 2–3 VAVE opportunities, data justification, and expected impact on component cost..."></textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FUNCTION REFERENCE -->
+  <div class="card">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fdf4ff">📚</div>
+      <div>
+        <h2>Quick Reference — Common Functions in Two-Wheeler Components</h2>
+        <p>Use these Verb+Noun examples as a starting point for your analysis</p>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="ref-grid">
+        <div class="ref-category ref-engine">
+          <h4>🔥 Engine Components</h4>
+          <div class="funcs">
+            <span class="func-tag">Generate Power</span>
+            <span class="func-tag">Convert Energy</span>
+            <span class="func-tag">Seal Combustion</span>
+            <span class="func-tag">Dissipate Heat</span>
+            <span class="func-tag">Support Load</span>
+          </div>
+        </div>
+        <div class="ref-category ref-trans">
+          <h4>⚙️ Transmission Components</h4>
+          <div class="funcs">
+            <span class="func-tag">Transmit Torque</span>
+            <span class="func-tag">Change Ratio</span>
+            <span class="func-tag">Engage Clutch</span>
+            <span class="func-tag">Support Shaft</span>
+            <span class="func-tag">Reduce Noise</span>
+          </div>
+        </div>
+        <div class="ref-category ref-chassis">
+          <h4>🏗️ Chassis Components</h4>
+          <div class="funcs">
+            <span class="func-tag">Support Weight</span>
+            <span class="func-tag">Absorb Shock</span>
+            <span class="func-tag">Maintain Alignment</span>
+            <span class="func-tag">Protect Components</span>
+            <span class="func-tag">Provide Rigidity</span>
+          </div>
+        </div>
+        <div class="ref-category ref-elec">
+          <h4>⚡ Electrical Components</h4>
+          <div class="funcs">
+            <span class="func-tag">Supply Current</span>
+            <span class="func-tag">Control Timing</span>
+            <span class="func-tag">Illuminate Path</span>
+            <span class="func-tag">Store Energy</span>
+            <span class="func-tag">Convert Voltage</span>
+          </div>
+        </div>
+        <div class="ref-category ref-body" style="grid-column:1/-1">
+          <h4>🏍️ Body Components</h4>
+          <div class="funcs">
+            <span class="func-tag">Contain Fluid</span>
+            <span class="func-tag">Protect Rider</span>
+            <span class="func-tag">Enhance Appearance</span>
+            <span class="func-tag">Reduce Drag</span>
+            <span class="func-tag">Mount Hardware</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BUTTONS -->
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="loadExample()">💡 Load Example (Clutch Assembly)</button>
+    <button class="btn btn-primary" onclick="calculateAll()">🧮 Calculate Value Scores</button>
+    <button class="btn btn-print" onclick="window.print()">🖨️ Print / Save Results</button>
+    <button class="btn btn-danger" onclick="resetAll()">🔄 Reset All</button>
+  </div>
+
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- TRAINER CREDIT -->
+<div class="trainer-credit">Trainer: Prabhakar Neelakanth</div>
+
+<script>
+// ---- ROW DEFINITIONS ----
+const rows = [
+  { type: 'Primary', color: 'type-primary' },
+  { type: 'Primary', color: 'type-primary' },
+  { type: 'Secondary', color: 'type-secondary' },
+  { type: 'Secondary', color: 'type-secondary' },
+  { type: 'Secondary', color: 'type-secondary' },
+  { type: 'Tertiary', color: 'type-tertiary' },
+  { type: 'Tertiary', color: 'type-tertiary' },
+];
+
+function buildTable() {
+  const tbody = document.getElementById('func-tbody');
+  tbody.innerHTML = '';
+  rows.forEach((r, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td><span class="type-badge ${r.color}">${r.type}</span></td>
+      <td><input type="text" id="desc${i}" placeholder="e.g. Enable gear engagement"></td>
+      <td><input type="text" id="verb${i}" placeholder="Verb + Noun (e.g. Engage Power)"></td>
+      <td><input type="number" id="cost${i}" placeholder="0" min="0" oninput="updateAll()"></td>
+      <td><span id="pct${i}" style="font-family:'Space Mono',monospace;font-weight:700;color:#7c3aed">0%</span></td>
+      <td>
+        <select id="imp${i}" onchange="updateAll()">
+          <option value="">-</option>
+          <option value="1">1 – Low</option>
+          <option value="2">2</option>
+          <option value="3">3 – Mid</option>
+          <option value="4">4</option>
+          <option value="5">5 – High</option>
+        </select>
+      </td>
+      <td><span class="value-score-cell" id="score${i}">—</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+function updateAll() {
+  const total = parseFloat(document.getElementById('total-cost').value) || 0;
+  document.getElementById('total-display').textContent = total ? `₹ ${total.toLocaleString()}` : '₹ —';
+
+  let sumCost = 0;
+  for (let i = 0; i < rows.length; i++) {
+    const c = parseFloat(document.getElementById(`cost${i}`).value) || 0;
+    sumCost += c;
+  }
+
+  for (let i = 0; i < rows.length; i++) {
+    const c = parseFloat(document.getElementById(`cost${i}`).value) || 0;
+    const imp = parseFloat(document.getElementById(`imp${i}`).value) || 0;
+    const pct = total > 0 ? (c / total) * 100 : 0;
+    document.getElementById(`pct${i}`).textContent = pct.toFixed(1) + '%';
+
+    let scoreEl = document.getElementById(`score${i}`);
+    if (imp > 0 && pct > 0) {
+      const score = imp / (pct / 10);
+      scoreEl.textContent = score.toFixed(2);
+      scoreEl.className = 'value-score-cell ' + (score > 3 ? 'score-good' : score >= 1 ? 'score-fair' : 'score-poor');
+    } else {
+      scoreEl.textContent = '—';
+      scoreEl.className = 'value-score-cell';
+    }
+  }
+
+  // cost check bar
+  document.getElementById('sum-display').textContent = `₹ ${sumCost.toLocaleString()}`;
+  const pctFilled = total > 0 ? Math.min((sumCost / total) * 100, 100) : 0;
+  document.getElementById('pct-fill').style.width = pctFilled + '%';
+
+  if (total > 0) {
+    const diff = Math.abs(sumCost - total);
+    const msg = document.getElementById('check-msg');
+    if (diff < 1) {
+      msg.textContent = '✅ Costs balance perfectly!';
+      msg.className = 'check-ok';
+    } else {
+      msg.textContent = `⚠️ Difference: ₹ ${diff.toFixed(0)} — Costs must sum to ₹${total}`;
+      msg.className = 'check-warn';
+    }
+  }
+}
+
+function calculateAll() {
+  updateAll();
+  showToast('✅ Value Scores calculated! Check highlighted rows.');
+}
+
+function updateTargetRow(n) {
+  const curr = parseFloat(document.getElementById(`t${n}-curr`).value) || 0;
+  const tgt = parseFloat(document.getElementById(`t${n}-tgt`).value) || 0;
+  const red = curr - tgt;
+  const pct = curr > 0 ? ((red / curr) * 100).toFixed(1) : 0;
+  document.getElementById(`t${n}-red`).textContent = red >= 0 ? `₹ ${red.toFixed(0)}` : '—';
+  document.getElementById(`t${n}-pct`).textContent = red >= 0 ? `${pct}%` : '—';
+  updateTotalSavings();
+}
+
+function updateTotalSavings() {
+  let totalRed = 0, totalCurr = 0;
+  for (let n = 1; n <= 3; n++) {
+    const curr = parseFloat(document.getElementById(`t${n}-curr`).value) || 0;
+    const tgt = parseFloat(document.getElementById(`t${n}-tgt`).value) || 0;
+    if (curr > tgt) { totalRed += curr - tgt; totalCurr += curr; }
+  }
+  const pct = totalCurr > 0 ? ((totalRed / totalCurr) * 100).toFixed(1) : 0;
+  document.getElementById('total-savings').textContent = `₹ ${totalRed.toFixed(0)} | ${pct}% reduction`;
+}
+
+function loadExample() {
+  document.getElementById('comp-name').value = 'Clutch Assembly';
+  document.getElementById('part-no').value = 'TRN-CL-105';
+  document.getElementById('total-cost').value = 950;
+  document.getElementById('comp-category').value = 'Transmission Components';
+  document.getElementById('team-name').value = 'Demo Team';
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('date-field').value = today;
+
+  const data = [
+    { desc: 'Enable gear engagement', verb: 'Engage Power', cost: 380, imp: 5 },
+    { desc: 'Disconnect engine from transmission', verb: 'Interrupt Torque', cost: 285, imp: 5 },
+    { desc: 'Provide smooth engagement', verb: 'Cushion Shock', cost: 143, imp: 3 },
+    { desc: 'Withstand thermal loads', verb: 'Resist Heat', cost: 95, imp: 3 },
+    { desc: '', verb: '', cost: 0, imp: '' },
+    { desc: 'Maintain alignment', verb: 'Position Components', cost: 47, imp: 2 },
+    { desc: '', verb: '', cost: 0, imp: '' },
+  ];
+
+  data.forEach((d, i) => {
+    document.getElementById(`desc${i}`).value = d.desc;
+    document.getElementById(`verb${i}`).value = d.verb;
+    document.getElementById(`cost${i}`).value = d.cost || '';
+    document.getElementById(`imp${i}`).value = d.imp || '';
+  });
+
+  document.getElementById('opp1-func').value = 'Engage Power';
+  document.getElementById('opp1-issue').value = 'High cost for primary function — 40% of total cost with relatively low value score.';
+  document.getElementById('opp1-soln').value = 'Material substitution: Steel → Aluminium alloy. Explore powder metallurgy for friction disc.';
+
+  document.getElementById('opp2-func').value = 'Interrupt Torque';
+  document.getElementById('opp2-issue').value = 'Moderate cost efficiency — 30% of total. Separate components add assembly complexity.';
+  document.getElementById('opp2-soln').value = 'Integrate with other components. Combine push rod and bearing into single sub-assembly.';
+
+  document.getElementById('t1-func').value = 'Engage Power';
+  document.getElementById('t1-curr').value = 380;
+  document.getElementById('t1-tgt').value = 300;
+  document.getElementById('t1-action').value = 'Material change: Steel → Aluminium';
+  document.getElementById('t2-func').value = 'Interrupt Torque';
+  document.getElementById('t2-curr').value = 285;
+  document.getElementById('t2-tgt').value = 250;
+  document.getElementById('t2-action').value = 'Design optimisation';
+  document.getElementById('t3-func').value = 'Cushion Shock';
+  document.getElementById('t3-curr').value = 143;
+  document.getElementById('t3-tgt').value = 130;
+  document.getElementById('t3-action').value = 'Spring simplification';
+
+  for (let n = 1; n <= 3; n++) updateTargetRow(n);
+  updateAll();
+  showToast('💡 Example loaded — Clutch Assembly!');
+}
+
+function resetAll() {
+  if (!confirm('Reset all fields? This will clear all your entries.')) return;
+  ['comp-name','part-no','team-name','date-field','pres-notes',
+   'opp1-func','opp1-issue','opp1-soln',
+   'opp2-func','opp2-issue','opp2-soln',
+   'opp3-func','opp3-issue','opp3-soln'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.value = '';
+  });
+  document.getElementById('total-cost').value = '';
+  document.getElementById('comp-category').value = '';
+
+  for (let i = 0; i < rows.length; i++) {
+    ['desc','verb','cost'].forEach(f => document.getElementById(`${f}${i}`).value = '');
+    document.getElementById(`imp${i}`).value = '';
+    document.getElementById(`pct${i}`).textContent = '0%';
+    const sc = document.getElementById(`score${i}`);
+    sc.textContent = '—'; sc.className = 'value-score-cell';
+  }
+
+  for (let n = 1; n <= 3; n++) {
+    ['func','curr','tgt','action'].forEach(f => document.getElementById(`t${n}-${f}`).value = '');
+    document.getElementById(`t${n}-red`).textContent = '—';
+    document.getElementById(`t${n}-pct`).textContent = '—';
+  }
+  document.getElementById('total-savings').textContent = '₹ 0 | 0%';
+  document.getElementById('sum-display').textContent = '₹ 0';
+  document.getElementById('total-display').textContent = '₹ —';
+  document.getElementById('pct-fill').style.width = '0%';
+  document.getElementById('check-msg').textContent = '';
+  showToast('🔄 All fields reset!');
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+// Init
+buildTable();
+document.getElementById('date-field').value = new Date().toISOString().split('T')[0];
+</script>
+</body>
+</html>

@@ -1,0 +1,1218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAVE Cost Database – M1</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0f172a;
+    --surface: #1e293b;
+    --surface2: #273549;
+    --accent: #f59e0b;
+    --accent2: #38bdf8;
+    --accent3: #34d399;
+    --accent4: #f87171;
+    --accent5: #a78bfa;
+    --text: #f1f5f9;
+    --muted: #94a3b8;
+    --border: #334155;
+    --radius: 12px;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image: radial-gradient(ellipse at 20% 20%, rgba(56,189,248,0.08) 0%, transparent 60%),
+                      radial-gradient(ellipse at 80% 80%, rgba(245,158,11,0.07) 0%, transparent 60%);
+  }
+
+  /* HEADER */
+  header {
+    background: linear-gradient(135deg, #0c1a2e 0%, #1e293b 100%);
+    border-bottom: 3px solid var(--accent);
+    padding: 20px 40px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 30px rgba(0,0,0,0.5);
+  }
+
+  .header-left { display: flex; flex-direction: column; gap: 2px; }
+
+  h1 {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2.8rem;
+    letter-spacing: 4px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+  }
+
+  .subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+
+  .badge {
+    background: var(--accent);
+    color: #000;
+    font-weight: 900;
+    font-size: 0.7rem;
+    padding: 4px 10px;
+    border-radius: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  /* NAV TABS */
+  nav {
+    display: flex;
+    gap: 6px;
+    padding: 16px 40px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    flex-wrap: nowrap;
+  }
+
+  .tab-btn {
+    padding: 8px 20px;
+    border: 2px solid var(--border);
+    border-radius: 30px;
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .tab-btn:hover { border-color: var(--accent2); color: var(--accent2); }
+  .tab-btn.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+  /* MAIN */
+  main { padding: 30px 40px; max-width: 1400px; margin: 0 auto; }
+
+  .section { display: none; animation: fadeIn 0.35s ease; }
+  .section.active { display: block; }
+
+  @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } to { opacity:1; transform: translateY(0); } }
+
+  /* CARDS */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .card-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.4rem;
+    letter-spacing: 2px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .card-title span { font-size: 1.2rem; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 20px; }
+
+  @media(max-width: 900px) { .grid-2, .grid-3 { grid-template-columns: 1fr; } }
+
+  /* KPI CARDS */
+  .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 14px; margin-bottom: 24px; }
+
+  .kpi {
+    background: var(--surface2);
+    border-radius: var(--radius);
+    padding: 18px;
+    text-align: center;
+    border-top: 4px solid var(--accent);
+    transition: transform 0.2s;
+  }
+
+  .kpi:hover { transform: translateY(-3px); }
+  .kpi:nth-child(2) { border-color: var(--accent2); }
+  .kpi:nth-child(3) { border-color: var(--accent3); }
+  .kpi:nth-child(4) { border-color: var(--accent4); }
+  .kpi:nth-child(5) { border-color: var(--accent5); }
+
+  .kpi-val {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 1.8rem;
+    color: var(--accent);
+    letter-spacing: 2px;
+  }
+
+  .kpi:nth-child(2) .kpi-val { color: var(--accent2); }
+  .kpi:nth-child(3) .kpi-val { color: var(--accent3); }
+  .kpi:nth-child(4) .kpi-val { color: var(--accent4); }
+  .kpi:nth-child(5) .kpi-val { color: var(--accent5); }
+
+  .kpi-lbl { font-size: 0.7rem; color: var(--muted); font-weight: 700; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+
+  /* TABLE */
+  .tbl-wrap { overflow-x: auto; }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  th {
+    background: var(--surface2);
+    color: var(--accent);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 0.9rem;
+    letter-spacing: 2px;
+    padding: 10px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--accent);
+  }
+
+  td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+    font-size: 0.82rem;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.03); }
+
+  .priority-5 { color: var(--accent4); font-weight: 800; }
+  .priority-4 { color: var(--accent); font-weight: 700; }
+  .priority-3 { color: var(--accent2); }
+
+  .tag {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .tag-elec { background: rgba(168,139,250,0.2); color: var(--accent5); }
+  .tag-chassis { background: rgba(56,189,248,0.2); color: var(--accent2); }
+  .tag-engine { background: rgba(248,113,113,0.2); color: var(--accent4); }
+  .tag-trans { background: rgba(52,211,153,0.2); color: var(--accent3); }
+  .tag-wheels { background: rgba(245,158,11,0.2); color: var(--accent); }
+  .tag-body { background: rgba(148,163,184,0.2); color: var(--muted); }
+
+  /* BAR CHART */
+  .bar-chart { display: flex; flex-direction: column; gap: 10px; }
+
+  .bar-row { display: flex; align-items: center; gap: 10px; }
+
+  .bar-label { width: 160px; font-size: 0.78rem; color: var(--muted); font-weight: 700; text-align: right; flex-shrink: 0; }
+
+  .bar-track { flex: 1; background: var(--surface2); border-radius: 4px; height: 22px; overflow: hidden; }
+
+  .bar-fill {
+    height: 100%;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    padding-left: 8px;
+    font-size: 0.72rem;
+    font-weight: 800;
+    color: #000;
+    transition: width 1s ease;
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  .bar-val { width: 70px; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; color: var(--text); flex-shrink: 0; }
+
+  /* FORM ELEMENTS */
+  label {
+    display: block;
+    font-size: 0.78rem;
+    font-weight: 800;
+    color: var(--muted);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+  }
+
+  input[type="text"], input[type="number"], select, textarea {
+    width: 100%;
+    background: var(--surface2);
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 14px;
+  }
+
+  input:focus, select:focus, textarea:focus { border-color: var(--accent2); }
+
+  textarea { resize: vertical; min-height: 80px; }
+
+  select option { background: var(--surface); }
+
+  .btn {
+    padding: 10px 24px;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.2s;
+  }
+
+  .btn-primary { background: var(--accent); color: #000; }
+  .btn-primary:hover { background: #fbbf24; transform: translateY(-1px); }
+  .btn-secondary { background: var(--accent2); color: #000; }
+  .btn-secondary:hover { background: #7dd3fc; }
+  .btn-success { background: var(--accent3); color: #000; }
+  .btn-danger { background: var(--accent4); color: #000; }
+  .btn-outline { background: transparent; border: 2px solid var(--accent); color: var(--accent); }
+  .btn-outline:hover { background: var(--accent); color: #000; }
+
+  .btn-row { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px; }
+
+  /* RESULT BOX */
+  .result-box {
+    background: var(--surface2);
+    border: 2px solid var(--accent3);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-top: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    display: none;
+  }
+
+  .result-box.show { display: block; }
+
+  .result-line { display: flex; justify-content: space-between; padding: 5px 0; border-bottom: 1px solid var(--border); }
+  .result-line:last-child { border-bottom: none; font-weight: 800; color: var(--accent); }
+
+  /* SECTION HEADERS */
+  .sec-title {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 2rem;
+    letter-spacing: 3px;
+    color: var(--text);
+    margin-bottom: 6px;
+  }
+
+  .sec-desc { color: var(--muted); font-size: 0.9rem; margin-bottom: 24px; }
+
+  /* EXERCISE CARDS */
+  .ex-card {
+    border-left: 5px solid var(--accent);
+    padding-left: 16px;
+    margin-bottom: 16px;
+  }
+
+  .ex-card:nth-child(2) { border-color: var(--accent2); }
+  .ex-card:nth-child(3) { border-color: var(--accent3); }
+
+  .ex-title { font-weight: 900; font-size: 0.95rem; margin-bottom: 4px; }
+  .ex-desc { font-size: 0.83rem; color: var(--muted); }
+
+  /* HIGHLIGHT */
+  .highlight { background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.3); border-radius: 8px; padding: 12px 16px; margin-bottom: 14px; font-size: 0.85rem; }
+  .highlight strong { color: var(--accent); }
+
+  /* STARS */
+  .stars { color: var(--accent4); font-size: 1rem; }
+
+  /* PRINT */
+  .print-section { display: none; }
+
+  @media print {
+    body { background: #fff !important; color: #000 !important; }
+    header, nav, .no-print { display: none !important; }
+    .section { display: block !important; }
+    .print-section { display: block; }
+    .card { border: 1px solid #ccc; page-break-inside: avoid; }
+    * { color: #000 !important; background: #fff !important; }
+    table th { background: #f0f0f0 !important; }
+    .trainer-credit { display: block !important; text-align: right; font-size: 9px; color: #666; margin-top: 20px; }
+  }
+
+  /* TRAINER */
+  .trainer-credit {
+    position: fixed;
+    bottom: 10px;
+    right: 14px;
+    font-size: 0.65rem;
+    color: var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+    z-index: 200;
+  }
+
+  /* TOOLTIP */
+  [data-tip] { position: relative; cursor: help; }
+  [data-tip]:hover::after {
+    content: attr(data-tip);
+    position: absolute;
+    bottom: 120%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #000;
+    color: #fff;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    z-index: 999;
+  }
+
+  /* ACCORDION */
+  .accordion-header {
+    background: var(--surface2);
+    padding: 12px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 800;
+    font-size: 0.88rem;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 4px;
+    transition: background 0.2s;
+  }
+
+  .accordion-header:hover { background: rgba(56,189,248,0.1); }
+
+  .accordion-body {
+    background: var(--surface2);
+    padding: 0 16px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease, padding 0.3s;
+    border-radius: 0 0 8px 8px;
+    font-size: 0.83rem;
+    color: var(--muted);
+  }
+
+  .accordion-body.open { max-height: 500px; padding: 14px 16px; }
+
+  /* SCORE */
+  .score-badge {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 20px;
+    font-weight: 900;
+    font-size: 0.8rem;
+    letter-spacing: 1px;
+  }
+
+  .score-high { background: rgba(52,211,153,0.2); color: var(--accent3); }
+  .score-med { background: rgba(245,158,11,0.2); color: var(--accent); }
+  .score-low { background: rgba(248,113,113,0.2); color: var(--accent4); }
+
+  /* PROGRESS */
+  .progress-track { background: var(--surface2); border-radius: 4px; height: 8px; margin-bottom: 4px; overflow: hidden; }
+  .progress-fill { height: 100%; border-radius: 4px; background: linear-gradient(90deg, var(--accent3), var(--accent2)); }
+
+  /* SECTION-SPECIFIC COLORS */
+  #overview .card-title { color: var(--accent); }
+  #components .card-title { color: var(--accent2); }
+  #materials .card-title { color: var(--accent3); }
+  #costreduction .card-title { color: var(--accent4); }
+  #exercises .card-title { color: var(--accent5); }
+  #calculator .card-title { color: var(--accent); }
+
+  .info-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 20px;
+    padding: 3px 10px;
+    font-size: 0.72rem;
+    color: var(--accent2);
+    font-weight: 700;
+    margin-bottom: 10px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-left">
+    <h1>VAVE · Cost Database · M1</h1>
+    <div class="subtitle">Value Analysis &amp; Value Engineering · Module 1 · Session 2 · Training Dashboard</div>
+  </div>
+  <div class="header-right">
+    <span class="badge">Training Use Only</span>
+    <button class="btn btn-outline no-print" onclick="window.print()">🖨️ Print Results</button>
+  </div>
+</header>
+
+<nav class="no-print">
+  <button class="tab-btn active" onclick="showTab('overview')">📊 Overview</button>
+  <button class="tab-btn" onclick="showTab('components')">🔩 Top Components</button>
+  <button class="tab-btn" onclick="showTab('materials')">🧪 Materials</button>
+  <button class="tab-btn" onclick="showTab('costreduction')">💡 Cost Reduction</button>
+  <button class="tab-btn" onclick="showTab('exercises')">📝 Exercises</button>
+  <button class="tab-btn" onclick="showTab('calculator')">🧮 Calculator</button>
+  <button class="tab-btn" onclick="showTab('benchmark')">📈 Benchmarking</button>
+</nav>
+
+<main>
+
+<!-- ===== OVERVIEW ===== -->
+<div id="overview" class="section active">
+  <div class="sec-title">Vehicle Cost Overview</div>
+  <div class="sec-desc">Total Ex-Factory Vehicle Cost Structure · 125cc Commuter Segment · Q1 2026 Data</div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-val">₹54,685</div><div class="kpi-lbl">Total Ex-Factory Cost</div></div>
+    <div class="kpi"><div class="kpi-val">₹24,000</div><div class="kpi-lbl">Top 10 Components</div></div>
+    <div class="kpi"><div class="kpi-val">43.9%</div><div class="kpi-lbl">Top 10 Share</div></div>
+    <div class="kpi"><div class="kpi-val">6</div><div class="kpi-lbl">Major Systems</div></div>
+    <div class="kpi"><div class="kpi-val">84.1 kg</div><div class="kpi-lbl">Total Vehicle Weight</div></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📦</span> System-Level Cost Breakdown</div>
+    <div class="bar-chart" id="systemBars"></div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span>⚖️</span> Cost per kg Analysis</div>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>System</th><th>Total Cost (₹)</th><th>Weight (kg)</th><th>₹/kg</th></tr>
+          <tr><td>Electrical System</td><td>₹13,900</td><td>9.91</td><td class="priority-5">₹1,403</td></tr>
+          <tr><td>Engine Components</td><td>₹7,585</td><td>12.35</td><td class="priority-4">₹614</td></tr>
+          <tr><td>Transmission System</td><td>₹7,230</td><td>11.97</td><td class="priority-4">₹604</td></tr>
+          <tr><td>Body &amp; Cosmetics</td><td>₹6,260</td><td>10.53</td><td>₹595</td></tr>
+          <tr><td>Wheels &amp; Braking</td><td>₹10,470</td><td>18.97</td><td>₹552</td></tr>
+          <tr><td>Chassis &amp; Frame</td><td>₹9,240</td><td>20.60</td><td>₹449</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>🏆</span> VAVE Priority Summary</div>
+      <div class="highlight"><strong>Key Insight:</strong> Electrical system has the highest cost-density (₹1,403/kg) — making it the prime VAVE target. It also shows the largest competitor cost gap of 10.1%.</div>
+      <div style="margin-top:12px">
+        <div style="margin-bottom:8px; font-size:0.82rem; color:var(--muted)">Overall VAVE Potential</div>
+        <div style="display:flex; flex-direction:column; gap:6px">
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:3px"><span>Quick Wins (₹400 savings)</span><span style="color:var(--accent3)">26% avg</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:26%"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:3px"><span>Strategic Initiatives (₹1,600 savings)</span><span style="color:var(--accent2)">22% avg</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:22%; background:linear-gradient(90deg,var(--accent2),var(--accent5))"></div></div>
+          </div>
+          <div>
+            <div style="display:flex; justify-content:space-between; font-size:0.78rem; margin-bottom:3px"><span>Total Gap vs Best Competitor</span><span style="color:var(--accent4)">5.4%</span></div>
+            <div class="progress-track"><div class="progress-fill" style="width:5.4%; background:linear-gradient(90deg,var(--accent4),var(--accent))"></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COMPONENTS ===== -->
+<div id="components" class="section">
+  <div class="sec-title">Top Components &amp; Cost Drivers</div>
+  <div class="sec-desc">Top 10 highest-cost components with VAVE priority ratings and value-density analysis</div>
+
+  <div class="card">
+    <div class="card-title"><span>🔩</span> Top 10 Highest-Cost Components</div>
+    <div class="info-pill">★ = VAVE Priority Stars (5 = Critical)</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Rank</th><th>Component</th><th>System</th><th>Cost (₹)</th><th>% of Total</th><th>VAVE Priority</th></tr>
+        <tr><td><strong>1</strong></td><td>ECU (Engine Control)</td><td><span class="tag tag-elec">Electrical</span></td><td><strong>₹3,850</strong></td><td>7.0%</td><td><span class="stars">★★★★★</span></td></tr>
+        <tr><td><strong>2</strong></td><td>Front Fork Assembly</td><td><span class="tag tag-chassis">Chassis</span></td><td><strong>₹2,450</strong></td><td>4.5%</td><td><span class="stars">★★★★★</span></td></tr>
+        <tr><td><strong>3</strong></td><td>Rear Tire (130/70-17)</td><td><span class="tag tag-wheels">Wheels</span></td><td><strong>₹2,250</strong></td><td>4.1%</td><td><span class="stars">★★★★★</span></td></tr>
+        <tr><td><strong>4</strong></td><td>Cylinder Block</td><td><span class="tag tag-engine">Engine</span></td><td><strong>₹2,200</strong></td><td>4.0%</td><td><span class="stars">★★★★★</span></td></tr>
+        <tr><td><strong>5</strong></td><td>Front Tire (100/80-17)</td><td><span class="tag tag-wheels">Wheels</span></td><td><strong>₹1,850</strong></td><td>3.4%</td><td><span class="stars">★★★★</span></td></tr>
+        <tr><td><strong>6</strong></td><td>Cylinder Head</td><td><span class="tag tag-engine">Engine</span></td><td><strong>₹1,850</strong></td><td>3.4%</td><td><span class="stars">★★★★</span></td></tr>
+        <tr><td><strong>7</strong></td><td>Gear Set (5-speed)</td><td><span class="tag tag-trans">Transmission</span></td><td><strong>₹1,850</strong></td><td>3.4%</td><td><span class="stars">★★★★</span></td></tr>
+        <tr><td><strong>8</strong></td><td>Main Frame</td><td><span class="tag tag-chassis">Chassis</span></td><td><strong>₹1,850</strong></td><td>3.4%</td><td><span class="stars">★★★★</span></td></tr>
+        <tr><td><strong>9</strong></td><td>Rear Suspension</td><td><span class="tag tag-chassis">Chassis</span></td><td><strong>₹1,850</strong></td><td>3.4%</td><td><span class="stars">★★★★</span></td></tr>
+        <tr><td><strong>10</strong></td><td>Alternator/Generator</td><td><span class="tag tag-elec">Electrical</span></td><td><strong>₹1,850</strong></td><td>3.4%</td><td><span class="stars">★★★★</span></td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>⚡</span> High Value-Density Components (Cost &gt; ₹1,000/kg)</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Component</th><th>Weight (kg)</th><th>Cost (₹)</th><th>Cost/kg (₹)</th><th>VAVE Focus Strategy</th></tr>
+        <tr><td>ECU</td><td>0.35</td><td>₹3,850</td><td class="priority-5">₹11,000</td><td>🔬 Material / Design Alternatives</td></tr>
+        <tr><td>Speedometer Console</td><td>0.45</td><td>₹1,650</td><td class="priority-5">₹3,667</td><td>⚙️ Feature Optimization</td></tr>
+        <tr><td>Ignition Coil</td><td>0.25</td><td>₹450</td><td class="priority-4">₹1,800</td><td>🤝 Supplier Negotiation</td></tr>
+        <tr><td>Alternator</td><td>1.8</td><td>₹1,850</td><td class="priority-4">₹1,028</td><td>✂️ Design Simplification</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🏗️</span> Low Value-Density Components (Cost &lt; ₹500/kg)</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Component</th><th>Weight (kg)</th><th>Cost (₹)</th><th>Cost/kg (₹)</th><th>VAVE Focus Strategy</th></tr>
+        <tr><td>Main Frame</td><td>8.5</td><td>₹1,850</td><td>₹218</td><td>⚖️ Weight Reduction</td></tr>
+        <tr><td>Cylinder Block</td><td>4.8</td><td>₹2,200</td><td>₹458</td><td>🔄 Material Substitution</td></tr>
+        <tr><td>Crankshaft</td><td>3.2</td><td>₹1,650</td><td>₹516</td><td>⚡ Process Optimization</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MATERIALS ===== -->
+<div id="materials" class="section">
+  <div class="sec-title">Material Cost Distribution</div>
+  <div class="sec-desc">Breakdown of total vehicle cost by material type with typical applications</div>
+
+  <div class="card">
+    <div class="card-title"><span>🧪</span> Material Cost Distribution</div>
+    <div class="bar-chart" id="materialBars"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📋</span> Material Details &amp; Applications</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Material Type</th><th>Total Cost (₹)</th><th>% of Total</th><th>Typical Applications</th></tr>
+        <tr><td>Electronics &amp; Electrical</td><td>₹8,850</td><td>16.2%</td><td>ECU, sensors, wiring harness</td></tr>
+        <tr><td>Rubber Compounds</td><td>₹8,100</td><td>14.8%</td><td>Tires, grips, seals</td></tr>
+        <tr><td>Aluminum Alloys</td><td>₹7,650</td><td>14.0%</td><td>Engine parts, wheels, body panels</td></tr>
+        <tr><td>Alloy Steel</td><td>₹6,950</td><td>12.7%</td><td>Transmission shafts, gears</td></tr>
+        <tr><td>Cast Iron</td><td>₹4,850</td><td>8.9%</td><td>Engine block, brake discs</td></tr>
+        <tr><td>Forged Steel</td><td>₹4,030</td><td>7.4%</td><td>Crankshaft, connecting rod</td></tr>
+        <tr><td>ABS Plastic</td><td>₹3,420</td><td>6.3%</td><td>Body panels, cowls</td></tr>
+        <tr><td>Other Materials</td><td>₹10,835</td><td>19.7%</td><td>Miscellaneous components</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>💰</span> Lead Time &amp; Supplier Risk</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>Component</th><th>Lead Time (days)</th><th>Impact</th><th>Mitigation Strategy</th></tr>
+        <tr><td>ECU</td><td class="priority-5">60 days</td><td>Very High</td><td>Long-term contract, safety stock</td></tr>
+        <tr><td>Front Fork Assembly</td><td class="priority-4">50 days</td><td>High</td><td>Dual sourcing</td></tr>
+        <tr><td>Crankshaft</td><td class="priority-4">45 days</td><td>High</td><td>Advance planning</td></tr>
+        <tr><td>Final Drive Chain</td><td>45 days</td><td>Medium</td><td>Local alternative</td></tr>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ===== COST REDUCTION ===== -->
+<div id="costreduction" class="section">
+  <div class="sec-title">Cost Reduction Opportunities</div>
+  <div class="sec-desc">Identified VAVE savings initiatives organized by investment level and approach</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span>⚡</span> Quick Wins – Low Investment</div>
+      <div class="info-pill">📦 Subtotal Savings: ₹400 (26%)</div>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Component</th><th>Current (₹)</th><th>Target (₹)</th><th>Savings</th><th>Approach</th></tr>
+          <tr><td>Side Panels</td><td>₹850</td><td>₹650</td><td class="score-high"><span class="score-badge score-high">₹200 / 24%</span></td><td>ABS → PP</td></tr>
+          <tr><td>Clutch Plate</td><td>₹280</td><td>₹220</td><td><span class="score-badge score-med">₹60 / 21%</span></td><td>Simplified design</td></tr>
+          <tr><td>Graphics/Decals</td><td>₹420</td><td>₹280</td><td class="priority-5"><span class="score-badge score-high">₹140 / 33%</span></td><td>In-house production</td></tr>
+        </table>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>🚀</span> Strategic Initiatives – High Savings</div>
+      <div class="info-pill">🎯 Subtotal Savings: ₹1,600 (22%)</div>
+      <div class="tbl-wrap">
+        <table>
+          <tr><th>Component</th><th>Current (₹)</th><th>Target (₹)</th><th>Savings</th><th>Approach</th></tr>
+          <tr><td>ECU</td><td>₹3,850</td><td>₹2,950</td><td><span class="score-badge score-high">₹900 / 23%</span></td><td>Feature rationalization</td></tr>
+          <tr><td>Main Frame</td><td>₹1,850</td><td>₹1,450</td><td><span class="score-badge score-med">₹400 / 22%</span></td><td>Hydroforming process</td></tr>
+          <tr><td>Gearbox Housing</td><td>₹1,450</td><td>₹1,150</td><td><span class="score-badge score-med">₹300 / 21%</span></td><td>Die optimization</td></tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📖</span> Quick Reference: VAVE Actions by Cost Range</div>
+    <div class="grid-3">
+      <div style="background:var(--surface2); border-radius:10px; padding:16px; border-top:4px solid var(--accent3)">
+        <div style="font-weight:900; margin-bottom:10px; color:var(--accent3)">Components &lt; ₹500</div>
+        <ul style="list-style:none; font-size:0.83rem; color:var(--muted); line-height:2">
+          <li>✅ Material substitution</li>
+          <li>✅ Design simplification</li>
+          <li>✅ Part consolidation</li>
+          <li>✅ Supplier price negotiation</li>
+        </ul>
+      </div>
+      <div style="background:var(--surface2); border-radius:10px; padding:16px; border-top:4px solid var(--accent2)">
+        <div style="font-weight:900; margin-bottom:10px; color:var(--accent2)">Components ₹500–₹1,500</div>
+        <ul style="list-style:none; font-size:0.83rem; color:var(--muted); line-height:2">
+          <li>🔍 Detailed function analysis</li>
+          <li>🔍 Competitor benchmarking</li>
+          <li>🔍 Alternative process evaluation</li>
+          <li>🔍 Should-cost modeling</li>
+        </ul>
+      </div>
+      <div style="background:var(--surface2); border-radius:10px; padding:16px; border-top:4px solid var(--accent4)">
+        <div style="font-weight:900; margin-bottom:10px; color:var(--accent4)">Components &gt; ₹1,500</div>
+        <ul style="list-style:none; font-size:0.83rem; color:var(--muted); line-height:2">
+          <li>🛠️ Deep technical review</li>
+          <li>🛠️ Multiple alternative concepts</li>
+          <li>🛠️ Cross-functional team approach</li>
+          <li>🛠️ Strategic supplier partnerships</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== EXERCISES ===== -->
+<div id="exercises" class="section">
+  <div class="sec-title">Training Exercises</div>
+  <div class="sec-desc">Complete each exercise and record your findings. Your entries will be available to print.</div>
+
+  <!-- Exercise 1 -->
+  <div class="card">
+    <div class="card-title"><span>📝</span> Exercise 1 · Function-Cost Matrix</div>
+    <div class="highlight"><strong>Instructions:</strong> Select a component in the ₹500–₹2,000 range. Identify its primary and secondary functions. Rate the value delivered against cost. Use components like Clutch Assembly (₹950), Brake Caliper (₹1,250), or Seat Assembly (₹1,250).</div>
+
+    <div class="grid-2">
+      <div>
+        <label>Participant Name</label>
+        <input type="text" id="ex1-name" placeholder="Enter your name">
+
+        <label>Select Component</label>
+        <select id="ex1-component">
+          <option value="">-- Choose a component --</option>
+          <option value="Clutch Assembly|950">Clutch Assembly – ₹950</option>
+          <option value="Brake Caliper|1250">Brake Caliper – ₹1,250</option>
+          <option value="Seat Assembly|1250">Seat Assembly – ₹1,250</option>
+          <option value="Instrument Cluster|1650">Instrument Cluster – ₹1,650</option>
+          <option value="Air Filter|350">Air Filter – ₹350</option>
+        </select>
+
+        <label>Primary Function</label>
+        <input type="text" id="ex1-primary" placeholder="What does it DO? (verb + noun)">
+
+        <label>Secondary Functions</label>
+        <textarea id="ex1-secondary" placeholder="List secondary functions, one per line..."></textarea>
+      </div>
+      <div>
+        <label>Cost Worth Rating (1–5 stars)</label>
+        <select id="ex1-worth">
+          <option value="">-- Select rating --</option>
+          <option value="5">★★★★★ – Excellent value (function fully justifies cost)</option>
+          <option value="4">★★★★☆ – Good value (minor improvement possible)</option>
+          <option value="3">★★★☆☆ – Average value (some over-engineering)</option>
+          <option value="2">★★☆☆☆ – Poor value (significant re-design needed)</option>
+          <option value="1">★☆☆☆☆ – Very poor value (urgent VAVE action needed)</option>
+        </select>
+
+        <label>Proposed VAVE Action</label>
+        <textarea id="ex1-action" placeholder="Describe your improvement idea..."></textarea>
+
+        <label>Estimated Savings (₹)</label>
+        <input type="number" id="ex1-savings" placeholder="e.g. 150">
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveExercise1()">💾 Save &amp; Review</button>
+      <button class="btn btn-outline" onclick="clearEx('ex1-result')">🔄 Clear</button>
+    </div>
+    <div class="result-box" id="ex1-result"></div>
+  </div>
+
+  <!-- Exercise 2 -->
+  <div class="card">
+    <div class="card-title"><span>🔄</span> Exercise 2 · Material Comparison</div>
+    <div class="highlight"><strong>Instructions:</strong> Select a component and compare the current material against an alternative. Calculate the potential cost/weight impact. Try: Main Frame (Steel vs Aluminum) or Wheel Rims (Cast vs Forged).</div>
+
+    <div class="grid-2">
+      <div>
+        <label>Component</label>
+        <select id="ex2-comp">
+          <option value="">-- Select --</option>
+          <option value="Main Frame|8.5|1850|218">Main Frame (8.5 kg, ₹1,850)</option>
+          <option value="Cylinder Block|4.8|2200|458">Cylinder Block (4.8 kg, ₹2,200)</option>
+          <option value="Wheel Rim Front|1.8|650|361">Wheel Rim Front (1.8 kg, ₹650)</option>
+          <option value="Side Panels|1.2|850|708">Side Panels (1.2 kg, ₹850)</option>
+        </select>
+
+        <label>Current Material</label>
+        <input type="text" id="ex2-current-mat" placeholder="e.g. Mild Steel">
+
+        <label>Proposed Alternative Material</label>
+        <input type="text" id="ex2-alt-mat" placeholder="e.g. High Strength Aluminum Alloy">
+      </div>
+      <div>
+        <label>Expected Weight Change (%)</label>
+        <input type="number" id="ex2-wt-change" placeholder="e.g. -30 (for 30% reduction)">
+
+        <label>Expected Cost Change (%)</label>
+        <input type="number" id="ex2-cost-change" placeholder="e.g. +15 (for 15% increase)">
+
+        <label>Key Trade-offs / Risks</label>
+        <textarea id="ex2-tradeoffs" placeholder="Strength, weldability, tooling changes, supplier availability..."></textarea>
+      </div>
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-secondary" onclick="saveExercise2()">💾 Save &amp; Calculate</button>
+    </div>
+    <div class="result-box" id="ex2-result"></div>
+  </div>
+
+  <!-- Exercise 3 -->
+  <div class="card">
+    <div class="card-title"><span>💡</span> Exercise 3 · VAVE Brainstorm</div>
+    <div class="highlight"><strong>Instructions:</strong> Focus on high-cost / high-weight items. Generate at least 3 VAVE ideas for a selected component. Estimate the savings potential for each idea.</div>
+
+    <div>
+      <label>Target Component (focus on ECU ₹3,850 / Main Frame 8.5kg / Electrical ₹13,900)</label>
+      <select id="ex3-comp">
+        <option value="">-- Select target --</option>
+        <option value="ECU|3850">ECU – ₹3,850 (7.0% of total)</option>
+        <option value="Main Frame|1850">Main Frame – ₹1,850 (8.5 kg)</option>
+        <option value="Electrical System|13900">Electrical System – ₹13,900 (35.7%)</option>
+        <option value="Gearbox Housing|1450">Gearbox Housing – ₹1,450</option>
+      </select>
+
+      <label>Idea 1 – Describe &amp; Estimated Savings</label>
+      <div class="grid-2">
+        <textarea id="ex3-idea1" placeholder="Describe VAVE idea 1..."></textarea>
+        <input type="number" id="ex3-save1" placeholder="Estimated savings ₹" style="height:80px">
+      </div>
+
+      <label>Idea 2 – Describe &amp; Estimated Savings</label>
+      <div class="grid-2">
+        <textarea id="ex3-idea2" placeholder="Describe VAVE idea 2..."></textarea>
+        <input type="number" id="ex3-save2" placeholder="Estimated savings ₹" style="height:80px">
+      </div>
+
+      <label>Idea 3 – Describe &amp; Estimated Savings</label>
+      <div class="grid-2">
+        <textarea id="ex3-idea3" placeholder="Describe VAVE idea 3..."></textarea>
+        <input type="number" id="ex3-save3" placeholder="Estimated savings ₹" style="height:80px">
+      </div>
+
+      <label>Group / Team Name</label>
+      <input type="text" id="ex3-team" placeholder="Enter your team/group name">
+    </div>
+    <div class="btn-row">
+      <button class="btn btn-success" onclick="saveExercise3()">💾 Save Brainstorm</button>
+    </div>
+    <div class="result-box" id="ex3-result"></div>
+  </div>
+</div>
+
+<!-- ===== CALCULATOR ===== -->
+<div id="calculator" class="section">
+  <div class="sec-title">Cost Estimation Calculator</div>
+  <div class="sec-desc">Use standard VAVE formulas to estimate component costs. Results auto-calculate.</div>
+
+  <div class="grid-2">
+    <div class="card">
+      <div class="card-title"><span>🧮</span> Material Cost Calculator</div>
+      <div class="highlight"><strong>Formula:</strong> Material Cost = (Raw Material Weight × Material Price) × (1 + Scrap Factor)</div>
+
+      <label>Raw Material Weight (kg)</label>
+      <input type="number" id="mat-weight" placeholder="e.g. 5.0" oninput="calcMaterial()">
+
+      <label>Material Price (₹/kg)</label>
+      <input type="number" id="mat-price" placeholder="e.g. 120">
+
+      <label>Process Type (for Scrap Factor)</label>
+      <select id="mat-process" onchange="calcMaterial()">
+        <option value="">-- Select process --</option>
+        <option value="0.175">Casting (15–20%)</option>
+        <option value="0.125">Forging (10–15%)</option>
+        <option value="0.35">Machining from Bar (30–40%)</option>
+        <option value="0.125">Sheet Metal Forming (10–15%)</option>
+        <option value="0.075">Plastic Molding (5–10%)</option>
+      </select>
+
+      <button class="btn btn-primary" onclick="calcMaterial()">Calculate Material Cost</button>
+      <div class="result-box" id="mat-result"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-title"><span>⚙️</span> Processing Cost Calculator</div>
+      <div class="highlight"><strong>Formula:</strong> Processing Cost = (Cycle Time × Machine Rate) + (Labor Time × Labor Rate)</div>
+
+      <label>Cycle Time (hours)</label>
+      <input type="number" id="proc-cycle" placeholder="e.g. 0.5" step="0.01">
+
+      <label>Machine Type</label>
+      <select id="proc-machine">
+        <option value="">-- Select machine --</option>
+        <option value="1000">CNC Machining (₹800–1,200/hr) → avg ₹1,000</option>
+        <option value="750">Die Casting (₹600–900/hr) → avg ₹750</option>
+        <option value="650">Injection Molding (₹500–800/hr) → avg ₹650</option>
+        <option value="500">Welding (₹400–600/hr) → avg ₹500</option>
+        <option value="400">Assembly (₹300–500/hr) → avg ₹400</option>
+      </select>
+
+      <label>Labor Time (hours)</label>
+      <input type="number" id="proc-labor-time" placeholder="e.g. 0.25" step="0.01">
+
+      <label>Labor Rate (₹/hr)</label>
+      <input type="number" id="proc-labor-rate" placeholder="e.g. 180">
+
+      <button class="btn btn-secondary" onclick="calcProcessing()">Calculate Processing Cost</button>
+      <div class="result-box" id="proc-result"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>📊</span> Total Component Cost Summary</div>
+    <div class="grid-2">
+      <div>
+        <label>Component Name</label>
+        <input type="text" id="total-name" placeholder="e.g. Crankshaft">
+
+        <label>Material Cost (₹) – from calculator above</label>
+        <input type="number" id="total-mat" placeholder="Auto-fill or enter manually">
+
+        <label>Processing Cost (₹) – from calculator above</label>
+        <input type="number" id="total-proc" placeholder="Auto-fill or enter manually">
+
+        <label>Overhead % (typical 20–30%)</label>
+        <input type="number" id="total-oh" placeholder="e.g. 25">
+
+        <label>Profit Margin % (typical 10–15%)</label>
+        <input type="number" id="total-pm" placeholder="e.g. 12">
+      </div>
+      <div style="display:flex; flex-direction:column; justify-content:center; gap:10px">
+        <button class="btn btn-primary" onclick="calcTotal()" style="width:100%">📊 Calculate Full Cost</button>
+        <div class="result-box show" id="total-result" style="display:block">
+          <div style="color:var(--muted); text-align:center; font-size:0.8rem; padding:10px">Fill in values and click Calculate</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== BENCHMARK ===== -->
+<div id="benchmark" class="section">
+  <div class="sec-title">Competitor Benchmarking</div>
+  <div class="sec-desc">125cc Commuter Segment · Cost comparison vs best-in-class competitors</div>
+
+  <div class="card">
+    <div class="card-title"><span>📈</span> System-Level Cost Gap Analysis</div>
+    <div class="tbl-wrap">
+      <table>
+        <tr><th>System</th><th>Our Cost (₹)</th><th>Competitor A (₹)</th><th>Competitor B (₹)</th><th>Gap vs Best (₹)</th><th>Gap %</th></tr>
+        <tr><td>Electrical System</td><td>₹13,900</td><td>₹12,500</td><td>₹13,200</td><td class="priority-5">-₹1,400</td><td class="priority-5">-10.1%</td></tr>
+        <tr><td>Engine Components</td><td>₹7,585</td><td>₹7,200</td><td>₹6,950</td><td class="priority-4">-₹635</td><td class="priority-4">-8.4%</td></tr>
+        <tr><td>Transmission System</td><td>₹7,230</td><td>₹6,800</td><td>₹7,100</td><td>-₹430</td><td>-5.9%</td></tr>
+        <tr><td>Chassis &amp; Frame</td><td>₹9,240</td><td>₹8,950</td><td>₹9,450</td><td>-₹290</td><td>-3.1%</td></tr>
+        <tr><td>Wheels &amp; Brakes</td><td>₹10,470</td><td>₹10,200</td><td>₹10,650</td><td>-₹270</td><td>-2.6%</td></tr>
+        <tr><td>Body &amp; Cosmetics</td><td>₹6,260</td><td>₹6,100</td><td>₹6,450</td><td>-₹160</td><td>-2.6%</td></tr>
+        <tr style="font-weight:800"><td><strong>TOTAL</strong></td><td>₹54,685</td><td>₹51,750</td><td>₹53,800</td><td class="priority-5">-₹2,935</td><td class="priority-5">-5.4%</td></tr>
+      </table>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span>🎯</span> Your Benchmark Analysis</div>
+    <div class="highlight"><strong>Key Insight:</strong> The Electrical System shows the largest absolute gap of ₹1,400 (10.1%) vs best competitor — this is the primary VAVE opportunity and should receive the highest cross-functional team attention.</div>
+
+    <label>Which system would you prioritize for VAVE action and why?</label>
+    <textarea id="bench-priority" placeholder="Analyze the data: which system, what approach, expected timeline?"></textarea>
+
+    <label>Propose one specific action to close the Electrical System gap</label>
+    <textarea id="bench-action" placeholder="Your recommendation with justification..."></textarea>
+
+    <label>Your Name / Team</label>
+    <input type="text" id="bench-name" placeholder="Enter name or team">
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="saveBenchmark()">💾 Save Analysis</button>
+    </div>
+    <div class="result-box" id="bench-result"></div>
+  </div>
+</div>
+
+</main>
+
+<!-- PRINT OUTPUT AREA -->
+<div class="print-section" id="printArea"></div>
+
+<div class="trainer-credit">Trainer: Prabhakar Neelakanth</div>
+
+<script>
+  // TAB SWITCHING
+  function showTab(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+  }
+
+  // SYSTEM BARS
+  const systems = [
+    { name: 'Electrical System', cost: 13900, pct: 35.7, color: '#a78bfa' },
+    { name: 'Wheels & Braking', cost: 10470, pct: 26.9, color: '#38bdf8' },
+    { name: 'Chassis & Frame', cost: 9240, pct: 23.8, color: '#34d399' },
+    { name: 'Engine Components', cost: 7585, pct: 19.5, color: '#f87171' },
+    { name: 'Transmission', cost: 7230, pct: 18.6, color: '#f59e0b' },
+    { name: 'Body & Cosmetics', cost: 6260, pct: 16.1, color: '#94a3b8' },
+  ];
+
+  const sysContainer = document.getElementById('systemBars');
+  systems.forEach(s => {
+    sysContainer.innerHTML += `
+      <div class="bar-row">
+        <div class="bar-label">${s.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${s.pct*2.5}%; background:${s.color}; min-width:40px">
+            ${s.pct}%
+          </div>
+        </div>
+        <div class="bar-val" style="color:${s.color}">₹${s.cost.toLocaleString()}</div>
+      </div>`;
+  });
+
+  // MATERIAL BARS
+  const materials = [
+    { name: 'Electronics & Electrical', cost: 8850, pct: 16.2, color: '#a78bfa' },
+    { name: 'Rubber Compounds', cost: 8100, pct: 14.8, color: '#f87171' },
+    { name: 'Aluminum Alloys', cost: 7650, pct: 14.0, color: '#38bdf8' },
+    { name: 'Alloy Steel', cost: 6950, pct: 12.7, color: '#34d399' },
+    { name: 'Cast Iron', cost: 4850, pct: 8.9, color: '#fb923c' },
+    { name: 'Forged Steel', cost: 4030, pct: 7.4, color: '#f59e0b' },
+    { name: 'ABS Plastic', cost: 3420, pct: 6.3, color: '#94a3b8' },
+    { name: 'Other Materials', cost: 10835, pct: 19.7, color: '#64748b' },
+  ];
+
+  const matContainer = document.getElementById('materialBars');
+  materials.forEach(m => {
+    matContainer.innerHTML += `
+      <div class="bar-row">
+        <div class="bar-label">${m.name}</div>
+        <div class="bar-track">
+          <div class="bar-fill" style="width:${m.pct*4.5}%; background:${m.color}; min-width:40px">
+            ${m.pct}%
+          </div>
+        </div>
+        <div class="bar-val" style="color:${m.color}">₹${m.cost.toLocaleString()}</div>
+      </div>`;
+  });
+
+  // CALCULATORS
+  function calcMaterial() {
+    const wt = parseFloat(document.getElementById('mat-weight').value);
+    const pr = parseFloat(document.getElementById('mat-price').value);
+    const sf = parseFloat(document.getElementById('mat-process').value);
+    if (!wt || !pr || !sf) return;
+    const base = wt * pr;
+    const total = base * (1 + sf);
+    const rb = document.getElementById('mat-result');
+    rb.classList.add('show');
+    rb.innerHTML = `
+      <div class="result-line"><span>Raw Material (wt × price)</span><span>₹${base.toFixed(2)}</span></div>
+      <div class="result-line"><span>Scrap Factor Applied (${(sf*100).toFixed(0)}%)</span><span>₹${(base*sf).toFixed(2)}</span></div>
+      <div class="result-line"><span>Total Material Cost</span><span>₹${total.toFixed(2)}</span></div>
+    `;
+    document.getElementById('total-mat').value = total.toFixed(2);
+  }
+
+  function calcProcessing() {
+    const ct = parseFloat(document.getElementById('proc-cycle').value);
+    const mr = parseFloat(document.getElementById('proc-machine').value);
+    const lt = parseFloat(document.getElementById('proc-labor-time').value);
+    const lr = parseFloat(document.getElementById('proc-labor-rate').value);
+    if (!ct || !mr || !lt || !lr) { alert('Please fill all processing fields'); return; }
+    const mc = ct * mr;
+    const lc = lt * lr;
+    const total = mc + lc;
+    const rb = document.getElementById('proc-result');
+    rb.classList.add('show');
+    rb.innerHTML = `
+      <div class="result-line"><span>Machine Cost (${ct}h × ₹${mr})</span><span>₹${mc.toFixed(2)}</span></div>
+      <div class="result-line"><span>Labor Cost (${lt}h × ₹${lr})</span><span>₹${lc.toFixed(2)}</span></div>
+      <div class="result-line"><span>Total Processing Cost</span><span>₹${total.toFixed(2)}</span></div>
+    `;
+    document.getElementById('total-proc').value = total.toFixed(2);
+  }
+
+  function calcTotal() {
+    const name = document.getElementById('total-name').value || 'Component';
+    const mat = parseFloat(document.getElementById('total-mat').value) || 0;
+    const proc = parseFloat(document.getElementById('total-proc').value) || 0;
+    const oh = parseFloat(document.getElementById('total-oh').value) || 0;
+    const pm = parseFloat(document.getElementById('total-pm').value) || 0;
+    if (!mat && !proc) { alert('Enter at least material or processing cost'); return; }
+    const mfg = mat + proc;
+    const ohCost = mfg * (oh / 100);
+    const subtotal = mfg + ohCost;
+    const profit = subtotal * (pm / 100);
+    const total = subtotal + profit;
+    const rb = document.getElementById('total-result');
+    rb.classList.add('show');
+    rb.innerHTML = `
+      <div style="font-weight:800; color:var(--accent2); margin-bottom:8px; font-size:0.9rem">${name} – Full Cost Build-Up</div>
+      <div class="result-line"><span>Material Cost</span><span>₹${mat.toFixed(2)}</span></div>
+      <div class="result-line"><span>Processing Cost</span><span>₹${proc.toFixed(2)}</span></div>
+      <div class="result-line"><span>Manufacturing Cost</span><span>₹${mfg.toFixed(2)}</span></div>
+      <div class="result-line"><span>Overhead (${oh}%)</span><span>₹${ohCost.toFixed(2)}</span></div>
+      <div class="result-line"><span>Sub-total with Overhead</span><span>₹${subtotal.toFixed(2)}</span></div>
+      <div class="result-line"><span>Profit Margin (${pm}%)</span><span>₹${profit.toFixed(2)}</span></div>
+      <div class="result-line"><span>⭐ TOTAL COMPONENT COST</span><span>₹${total.toFixed(2)}</span></div>
+    `;
+  }
+
+  // EXERCISE SAVERS
+  function saveExercise1() {
+    const name = document.getElementById('ex1-name').value;
+    const compRaw = document.getElementById('ex1-component').value;
+    const primary = document.getElementById('ex1-primary').value;
+    const secondary = document.getElementById('ex1-secondary').value;
+    const worth = document.getElementById('ex1-worth').value;
+    const action = document.getElementById('ex1-action').value;
+    const savings = document.getElementById('ex1-savings').value;
+
+    if (!name || !compRaw || !primary) { alert('Please fill Name, Component and Primary Function at minimum.'); return; }
+
+    const [comp, cost] = compRaw.split('|');
+    const worthStars = '★'.repeat(parseInt(worth||0)) + '☆'.repeat(5 - parseInt(worth||0));
+    const rb = document.getElementById('ex1-result');
+    rb.classList.add('show');
+    rb.innerHTML = `
+      <div style="font-weight:800; color:var(--accent5); margin-bottom:10px; font-size:0.95rem">✅ Exercise 1 – Function-Cost Matrix Result</div>
+      <div class="result-line"><span>Participant</span><span>${name}</span></div>
+      <div class="result-line"><span>Component</span><span>${comp} (₹${parseInt(cost).toLocaleString()})</span></div>
+      <div class="result-line"><span>Primary Function</span><span>${primary}</span></div>
+      <div class="result-line"><span>Secondary Functions</span><span>${secondary.replace(/\n/g, ' | ')}</span></div>
+      <div class="result-line"><span>Value Rating</span><span>${worthStars}</span></div>
+      <div class="result-line"><span>Proposed VAVE Action</span><span>${action || '—'}</span></div>
+      <div class="result-line"><span>Estimated Savings</span><span>₹${savings ? parseInt(savings).toLocaleString() : '—'}</span></div>
+    `;
+  }
+
+  function saveExercise2() {
+    const compRaw = document.getElementById('ex2-comp').value;
+    const curMat = document.getElementById('ex2-current-mat').value;
+    const altMat = document.getElementById('ex2-alt-mat').value;
+    const wtChg = document.getElementById('ex2-wt-change').value;
+    const costChg = document.getElementById('ex2-cost-change').value;
+    const tradeoffs = document.getElementById('ex2-tradeoffs').value;
+
+    if (!compRaw || !curMat || !altMat) { alert('Please fill Component, Current and Alternative material fields.'); return; }
+
+    const [comp, wt, cost] = compRaw.split('|');
+    const newCost = parseFloat(cost) * (1 + parseFloat(costChg||0)/100);
+    const newWt = parseFloat(wt) * (1 + parseFloat(wtChg||0)/100);
+    const savingsAmt = parseFloat(cost) - newCost;
+
+    const rb = document.getElementById('ex2-result');
+    rb.classList.add('show');
+    rb.innerHTML = `
+      <div style="font-weight:800; color:var(--accent3); margin-bottom:10px; font-size:0.95rem">✅ Exercise 2 – Material Comparison Result</div>
+      <div class="result-line"><span>Component</span><span>${comp}</span></div>
+      <div class="result-line"><span>Current Material</span><span>${curMat} (₹${parseFloat(cost).toLocaleString()}, ${wt} kg)</span></div>
+      <div class="result-line"><span>Alternative Material</span><span>${altMat}</span></div>
+      <div class="result-line"><span>Projected New Cost</span><span>₹${newCost.toFixed(0)} (${costChg >= 0 ? '+' : ''}${costChg}%)</span></div>
+      <div class="result-line"><span>Projected New Weight</span><span>${newWt.toFixed(2)} kg (${wtChg >= 0 ? '+' : ''}${wtChg}%)</span></div>
+      <div class="result-line"><span>Cost Saving / (Increase)</span><span style="color:${savingsAmt>=0?'var(--accent3)':'var(--accent4)'}">₹${savingsAmt.toFixed(0)}</span></div>
+      <div class="result-line"><span>Trade-offs</span><span>${tradeoffs || '—'}</span></div>
+    `;
+  }
+
+  function saveExercise3() {
+    const compRaw = document.getElementById('ex3-comp').value;
+    const idea1 = document.getElementById('ex3-idea1').value;
+    const idea2 = document.getElementById('ex3-idea2').value;
+    const idea3 = document.getElementById('ex3-idea3').value;
+    const s1 = parseFloat(document.getElementById('ex3-save1').value) || 0;
+    const s2 = parseFloat(document.getElementById('ex3-save2').value) || 0;
+    const s3 = parseFloat(document.getElementById('ex3-save3').value) || 0;
+    const team = document.getElementById('ex3-team').value;
+
+    if (!compRaw || (!idea1 && !idea2)) { alert('Please select a component and enter at least 2 ideas.'); return; }
+
+    const [comp, cost] = compRaw.split('|');
+    const total = s1 + s2 + s3;
+    const pct = (total / parseFloat(cost) * 100).toFixed(1);
+
+    const rb = document.getElementById('ex3-result');
+    rb.classList.add('show');
+    rb.innerHTML = `
+      <div style="font-weight:800; color:var(--accent4); margin-bottom:10px; font-size:0.95rem">✅ Exercise 3 – VAVE Brainstorm Summary</div>
+      <div class="result-line"><span>Team / Participant</span><span>${team || '—'}</span></div>
+      <div class="result-line"><span>Target Component</span><span>${comp} (₹${parseInt(cost).toLocaleString()})</span></div>
+      ${idea1 ? `<div class="result-line"><span>Idea 1</span><span>${idea1.substring(0,60)}… | ₹${s1.toLocaleString()}</span></div>` : ''}
+      ${idea2 ? `<div class="result-line"><span>Idea 2</span><span>${idea2.substring(0,60)}… | ₹${s2.toLocaleString()}</span></div>` : ''}
+      ${idea3 ? `<div class="result-line"><span>Idea 3</span><span>${idea3.substring(0,60)}… | ₹${s3.toLocaleString()}</span></div>` : ''}
+      <div class="result-line"><span>Total Estimated Savings</span><span>₹${total.toLocaleString()} (${pct}% of component cost)</span></div>
+    `;
+  }
+
+  function saveBenchmark() {
+    const priority = document.getElementById('bench-priority').value;
+    const action = document.getElementById('bench-action').value;
+    const name = document.getElementById('bench-name').value;
+
+    if (!priority || !action) { alert('Please fill in both analysis fields.'); return; }
+
+    const rb = document.getElementById('bench-result');
+    rb.classList.add('show');
+    rb.innerHTML = `
+      <div style="font-weight:800; color:var(--accent2); margin-bottom:10px; font-size:0.95rem">✅ Benchmark Analysis Saved</div>
+      <div class="result-line"><span>Participant / Team</span><span>${name || '—'}</span></div>
+      <div class="result-line"><span>Priority System Analysis</span><span>${priority.substring(0,80)}…</span></div>
+      <div class="result-line"><span>Proposed Action</span><span>${action.substring(0,80)}…</span></div>
+      <div class="result-line"><span>Status</span><span>✅ Ready to print</span></div>
+    `;
+  }
+
+  function clearEx(id) {
+    const rb = document.getElementById(id);
+    rb.classList.remove('show');
+    rb.innerHTML = '';
+  }
+</script>
+</body>
+</html>

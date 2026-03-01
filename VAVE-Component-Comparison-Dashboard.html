@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAVE Training · Component Comparison Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a2e;
+    --paper: #f5f0e8;
+    --accent1: #e63946;
+    --accent2: #2a9d8f;
+    --accent3: #f4a261;
+    --accent4: #6a4c93;
+    --accent5: #457b9d;
+    --light: #ffffff;
+    --muted: #6b7280;
+    --border: #d1c9b8;
+    --success: #2a9d8f;
+    --warn: #f4a261;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--paper);
+    color: var(--ink);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── HERO HEADER ── */
+  .hero {
+    background: var(--ink);
+    color: white;
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-stripe {
+    height: 8px;
+    background: linear-gradient(90deg, var(--accent1) 0%, var(--accent3) 25%, var(--accent2) 50%, var(--accent4) 75%, var(--accent5) 100%);
+  }
+  .hero-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 32px 48px;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+  }
+  .hero-badge {
+    display: inline-block;
+    background: var(--accent1);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 4px 12px;
+    border-radius: 2px;
+    margin-bottom: 14px;
+  }
+  .hero h1 {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 4vw, 52px);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 10px;
+  }
+  .hero h1 span { color: var(--accent3); }
+  .hero-sub {
+    font-size: 16px;
+    color: #a0aec0;
+    font-weight: 300;
+    max-width: 540px;
+  }
+  .hero-meta {
+    background: rgba(255,255,255,0.07);
+    border: 1px solid rgba(255,255,255,0.12);
+    border-radius: 12px;
+    padding: 20px 24px;
+    text-align: center;
+    min-width: 180px;
+  }
+  .hero-meta .big { font-family: 'Syne', sans-serif; font-size: 32px; font-weight: 800; color: var(--accent3); }
+  .hero-meta .label { font-size: 12px; color: #a0aec0; letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-bar-wrap {
+    background: white;
+    border-bottom: 2px solid var(--border);
+    padding: 16px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+  }
+  .progress-inner { max-width: 1200px; margin: 0 auto; display: flex; gap: 6px; align-items: center; }
+  .step-pill {
+    flex: 1;
+    text-align: center;
+    padding: 7px 4px;
+    border-radius: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: 2px solid transparent;
+    color: var(--muted);
+    background: var(--paper);
+  }
+  .step-pill.active { background: var(--ink); color: white; border-color: var(--ink); }
+  .step-pill.done { background: var(--accent2); color: white; border-color: var(--accent2); }
+  .step-pill:hover:not(.active) { border-color: var(--ink); color: var(--ink); }
+
+  /* ── MAIN LAYOUT ── */
+  .main { max-width: 1200px; margin: 0 auto; padding: 40px 32px 80px; }
+
+  /* ── SECTION CARDS ── */
+  .card {
+    background: white;
+    border-radius: 16px;
+    border: 2px solid var(--border);
+    margin-bottom: 32px;
+    overflow: hidden;
+    transition: box-shadow 0.2s;
+  }
+  .card:hover { box-shadow: 0 8px 32px rgba(0,0,0,0.08); }
+  .card-header {
+    padding: 20px 28px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    border-bottom: 2px solid var(--border);
+  }
+  .card-icon {
+    width: 44px; height: 44px;
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px;
+    flex-shrink: 0;
+  }
+  .card-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--ink);
+  }
+  .card-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+  .card-body { padding: 28px; }
+
+  /* ── FORM ELEMENTS ── */
+  label {
+    display: block;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+  input[type="text"], input[type="number"], input[type="date"], select, textarea {
+    width: 100%;
+    padding: 11px 14px;
+    border: 2px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  input:focus, select:focus, textarea:focus {
+    border-color: var(--accent5);
+    box-shadow: 0 0 0 3px rgba(69,123,157,0.12);
+  }
+  textarea { resize: vertical; min-height: 70px; }
+
+  .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; }
+  .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .form-group { margin-bottom: 0; }
+
+  /* ── ALT TABS ── */
+  .alt-tabs { display: flex; gap: 0; border-bottom: 2px solid var(--border); margin-bottom: 0; }
+  .alt-tab {
+    padding: 13px 22px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -2px;
+    color: var(--muted);
+    transition: all 0.2s;
+  }
+  .alt-tab.active { color: var(--ink); border-bottom-color: var(--accent1); }
+  .alt-tab:hover:not(.active) { color: var(--ink); }
+  .alt-panel { display: none; padding: 28px; }
+  .alt-panel.active { display: block; }
+
+  /* ── TABLES ── */
+  .data-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  .data-table th {
+    background: var(--ink);
+    color: white;
+    padding: 10px 14px;
+    text-align: left;
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .data-table td { padding: 9px 14px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:nth-child(even) td { background: #faf9f5; }
+  .data-table input { border: 1.5px solid #e5ddd0; padding: 6px 9px; border-radius: 6px; font-size: 13px; width: 100%; min-width: 80px; }
+  .data-table input:focus { border-color: var(--accent5); outline: none; }
+  .data-table select { border: 1.5px solid #e5ddd0; padding: 6px 9px; border-radius: 6px; font-size: 13px; width: 100%; }
+  .total-row td { background: #f0faf8 !important; font-weight: 600; color: var(--accent2) !important; border-top: 2px solid var(--accent2) !important; }
+  .col-param { font-weight: 500; color: var(--ink); min-width: 160px; }
+
+  /* ── SCORE TABLE ── */
+  .score-table .score-cell input {
+    width: 60px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+  .score-key {
+    display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px;
+  }
+  .score-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 600;
+  }
+
+  /* ── RISK TABLE ── */
+  .risk-select { font-weight: 700; text-align: center; }
+  .risk-L { color: var(--accent2); }
+  .risk-M { color: var(--accent3); }
+  .risk-H { color: var(--accent1); }
+
+  /* ── RECOMMENDATION ── */
+  .rec-options { display: flex; gap: 16px; margin: 16px 0; flex-wrap: wrap; }
+  .rec-option {
+    flex: 1;
+    min-width: 160px;
+    border: 2px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+  }
+  .rec-option:hover { border-color: var(--accent5); }
+  .rec-option.selected { border-color: var(--accent1); background: #fff0f1; }
+  .rec-option input { display: none; }
+  .rec-option .opt-icon { font-size: 28px; margin-bottom: 8px; }
+  .rec-option .opt-label { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+  .rec-option .opt-sub { font-size: 12px; color: var(--muted); margin-top: 4px; }
+
+  /* ── PRIORITY PILLS ── */
+  .priority-options { display: flex; gap: 10px; margin-top: 10px; }
+  .priority-btn {
+    padding: 8px 20px;
+    border-radius: 20px;
+    border: 2px solid var(--border);
+    cursor: pointer;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    transition: all 0.2s;
+  }
+  .priority-btn:hover { transform: translateY(-1px); }
+  .priority-btn.p-high.selected { background: var(--accent1); border-color: var(--accent1); color: white; }
+  .priority-btn.p-med.selected { background: var(--accent3); border-color: var(--accent3); color: white; }
+  .priority-btn.p-low.selected { background: var(--accent2); border-color: var(--accent2); color: white; }
+
+  /* ── OUTPUT PANEL ── */
+  .output-panel {
+    background: var(--ink);
+    color: white;
+    border-radius: 16px;
+    padding: 32px;
+    margin-top: 40px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.8;
+    display: none;
+  }
+  .output-panel.visible { display: block; }
+  .output-panel h3 { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 20px; color: var(--accent3); }
+  .output-section { margin-bottom: 24px; }
+  .output-section h4 { color: var(--accent2); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 8px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 6px; }
+  .output-line { display: flex; gap: 12px; padding: 4px 0; }
+  .output-key { color: #a0aec0; min-width: 200px; }
+  .output-val { color: white; font-weight: 600; }
+  .output-val.highlight { color: var(--accent3); }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+    border: 2px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+  }
+  .btn-primary { background: var(--ink); color: white; }
+  .btn-primary:hover { background: #2d2d4a; transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.2); }
+  .btn-accent { background: var(--accent1); color: white; }
+  .btn-accent:hover { background: #c1121f; transform: translateY(-2px); }
+  .btn-success { background: var(--accent2); color: white; }
+  .btn-success:hover { background: #1f7a70; transform: translateY(-2px); }
+  .btn-outline { background: transparent; border-color: var(--ink); color: var(--ink); }
+  .btn-outline:hover { background: var(--ink); color: white; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 24px; }
+
+  /* ── INFO BOX ── */
+  .info-box {
+    background: #e8f4fd;
+    border-left: 4px solid var(--accent5);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #1a3a5c;
+  }
+  .tip-box {
+    background: #fff8ee;
+    border-left: 4px solid var(--accent3);
+    border-radius: 0 8px 8px 0;
+    padding: 14px 18px;
+    margin-bottom: 24px;
+    font-size: 14px;
+    color: #7a4a10;
+  }
+  .tip-box strong { color: var(--accent3); }
+
+  /* ── SUSTAINABILITY ── */
+  .sustain-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  @media (max-width: 700px) { .sustain-grid { grid-template-columns: 1fr 1fr; } }
+
+  /* ── SECTION DIVIDER ── */
+  .section-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 36px 0 20px;
+  }
+  .section-divider span {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    white-space: nowrap;
+  }
+  .section-divider::before, .section-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── TRAINER INFO ── */
+  .trainer-strip {
+    background: linear-gradient(135deg, var(--accent4), var(--accent5));
+    color: white;
+    padding: 14px 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .trainer-strip .t-name { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; }
+  .trainer-strip .t-meta { font-size: 12px; opacity: 0.8; }
+
+  /* ── SCORE VISUAL ── */
+  .score-bar-wrap { margin-top: 24px; }
+  .score-bar-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+  .score-bar-label { font-size: 13px; font-weight: 500; min-width: 100px; }
+  .score-bar { flex: 1; height: 12px; background: var(--border); border-radius: 6px; overflow: hidden; }
+  .score-bar-fill { height: 100%; border-radius: 6px; transition: width 0.6s ease; }
+  .score-bar-val { font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 600; min-width: 40px; text-align: right; }
+
+  /* ── SCROLL ANIMATION ── */
+  .card { animation: fadeUp 0.4s ease both; }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .card:nth-child(2) { animation-delay: 0.05s; }
+  .card:nth-child(3) { animation-delay: 0.10s; }
+  .card:nth-child(4) { animation-delay: 0.15s; }
+  .card:nth-child(5) { animation-delay: 0.20s; }
+  .card:nth-child(6) { animation-delay: 0.25s; }
+
+  @media (max-width: 600px) {
+    .hero-inner { grid-template-columns: 1fr; }
+    .form-grid-2 { grid-template-columns: 1fr; }
+    .alt-tab { padding: 10px 14px; font-size: 12px; }
+    .main { padding: 24px 16px 60px; }
+  }
+  .char-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    margin-left: 6px;
+  }
+  .env-yes { background: #d1fae5; color: #065f46; }
+  .env-no { background: #fee2e2; color: #991b1b; }
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-stripe"></div>
+  <div class="hero-inner">
+    <div>
+      <div class="hero-badge">VAVE Training · Module 1 · Session 2</div>
+      <h1>Component<br><span>Comparison</span><br>Dashboard</h1>
+      <p class="hero-sub">Structured comparative analysis of design alternatives — evaluating cost, weight, performance & manufacturability to identify the optimal VAVE solution.</p>
+    </div>
+    <div class="hero-meta">
+      <div class="big">3</div>
+      <div class="label">Design<br>Alternatives</div>
+      <div style="margin-top:14px; border-top:1px solid rgba(255,255,255,0.15); padding-top:14px;">
+        <div class="big">⏱ 60</div>
+        <div class="label">Minutes</div>
+      </div>
+    </div>
+  </div>
+  <div class="trainer-strip">
+    <div>
+      <div class="t-name">Trainer Info</div>
+      <div class="t-meta">Fill in your name and date below in Component Identification</div>
+    </div>
+    <div style="font-size: 13px; opacity: 0.85;">
+      💡 Teams of 4–5 · Select one component · Compare 2–3 alternatives · Present in 10 min
+    </div>
+  </div>
+</div>
+
+<!-- STICKY PROGRESS -->
+<div class="progress-bar-wrap">
+  <div class="progress-inner">
+    <div class="step-pill active" onclick="scrollToSection('s1')">1 · Identification</div>
+    <div class="step-pill" onclick="scrollToSection('s2')">2 · Alternatives</div>
+    <div class="step-pill" onclick="scrollToSection('s3')">3 · Comparison</div>
+    <div class="step-pill" onclick="scrollToSection('s4')">4 · Performance</div>
+    <div class="step-pill" onclick="scrollToSection('s5')">5 · Risk & Sustain</div>
+    <div class="step-pill" onclick="scrollToSection('s6')">6 · Recommendation</div>
+    <div class="step-pill" onclick="scrollToSection('s7')">7 · Output</div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- INSTRUCTIONS -->
+  <div class="info-box">
+    📋 <strong>How to use this dashboard:</strong> Fill in each section from top to bottom. All inputs feed into the final summary output. Use the scoring scale at the bottom of the Comparison Matrix to rate each alternative fairly.
+  </div>
+
+  <!-- ── SECTION 1: IDENTIFICATION ── -->
+  <div class="card" id="s1">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fff0f1;">🔩</div>
+      <div>
+        <div class="card-title">Component Identification</div>
+        <div class="card-subtitle">Define what you're analysing before comparing alternatives</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="form-grid">
+        <div class="form-group">
+          <label>Component Name</label>
+          <input type="text" id="compName" placeholder="e.g. Brake Caliper Bracket" oninput="updateLive()">
+        </div>
+        <div class="form-group">
+          <label>Component Function</label>
+          <input type="text" id="compFunc" placeholder="e.g. Houses brake pads and applies clamping force">
+        </div>
+        <div class="form-group">
+          <label>Current Part Number</label>
+          <input type="text" id="partNum" placeholder="e.g. BRK-2240-A">
+        </div>
+        <div class="form-group">
+          <label>Annual Volume (units)</label>
+          <input type="number" id="annualVol" placeholder="e.g. 50000" oninput="recalcAll()">
+        </div>
+        <div class="form-group">
+          <label>Analysis Date</label>
+          <input type="date" id="analysisDate">
+        </div>
+        <div class="form-group">
+          <label>Analyst / Trainer Name</label>
+          <input type="text" id="analystName" placeholder="Your name here">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 2: ALTERNATIVES ── -->
+  <div class="card" id="s2">
+    <div class="card-header">
+      <div class="card-icon" style="background:#e8f4fd;">📐</div>
+      <div>
+        <div class="card-title">Design Alternative Comparison Matrix</div>
+        <div class="card-subtitle">Enter technical and cost details for each design option</div>
+      </div>
+    </div>
+
+    <div class="alt-tabs">
+      <div class="alt-tab active" onclick="switchTab(0)">🔵 Alt 1 · Baseline</div>
+      <div class="alt-tab" onclick="switchTab(1)">🟠 Alt 2 · Option A</div>
+      <div class="alt-tab" onclick="switchTab(2)">🟢 Alt 3 · Option B</div>
+    </div>
+
+    <!-- ALT 1 -->
+    <div class="alt-panel active" id="altpanel-0">
+      <div class="tip-box">🔵 This is your <strong>current / baseline design</strong> — the reference against which all savings are calculated.</div>
+      <div class="form-group" style="margin-bottom:20px;">
+        <label>Description</label>
+        <textarea id="alt1desc" placeholder="Describe the current design briefly..."></textarea>
+      </div>
+      <div class="section-divider"><span>Technical Parameters</span></div>
+      <table class="data-table">
+        <thead><tr><th>Parameter</th><th>Specification</th><th>Value</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="col-param">Material</td><td><input type="text" id="a1_mat_spec" placeholder="e.g. Grey Cast Iron GCI-250"></td><td><input type="text" id="a1_mat_val" placeholder="—"></td><td><input type="text" id="a1_mat_note" placeholder="Standard stock"></td></tr>
+          <tr><td class="col-param">Manufacturing Process</td><td><input type="text" id="a1_proc_spec" placeholder="e.g. Sand Casting + Machining"></td><td><input type="text" id="a1_proc_val" placeholder="—"></td><td><input type="text" id="a1_proc_note" placeholder="In-house"></td></tr>
+          <tr><td class="col-param">Weight (kg)</td><td><input type="text" id="a1_wt_spec" placeholder="Nominal"></td><td><input type="number" id="a1_wt" placeholder="0.85" step="0.01" oninput="recalcAll()"></td><td><input type="text" id="a1_wt_note" placeholder="Measured"></td></tr>
+          <tr><td class="col-param">Dimensions L×W×H (mm)</td><td><input type="text" id="a1_dim_spec" placeholder="e.g. 120×80×45"></td><td><input type="text" id="a1_dim_val" placeholder="—"></td><td><input type="text" id="a1_dim_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Surface Finish (µm)</td><td><input type="text" id="a1_sf_spec" placeholder="Ra value"></td><td><input type="text" id="a1_sf_val" placeholder="—"></td><td><input type="text" id="a1_sf_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Tolerance Requirements</td><td><input type="text" id="a1_tol_spec" placeholder="e.g. ±0.2 mm"></td><td><input type="text" id="a1_tol_val" placeholder="—"></td><td><input type="text" id="a1_tol_note" placeholder="—"></td></tr>
+        </tbody>
+      </table>
+      <div class="section-divider"><span>Cost Breakdown</span></div>
+      <table class="data-table">
+        <thead><tr><th>Cost Element</th><th>Amount (₹)</th><th>% of Total</th></tr></thead>
+        <tbody>
+          <tr><td class="col-param">Raw Material</td><td><input type="number" id="a1c1" placeholder="0" oninput="recalcCost(1)"></td><td id="a1p1">—</td></tr>
+          <tr><td class="col-param">Processing</td><td><input type="number" id="a1c2" placeholder="0" oninput="recalcCost(1)"></td><td id="a1p2">—</td></tr>
+          <tr><td class="col-param">Tooling (amortized)</td><td><input type="number" id="a1c3" placeholder="0" oninput="recalcCost(1)"></td><td id="a1p3">—</td></tr>
+          <tr><td class="col-param">Labor</td><td><input type="number" id="a1c4" placeholder="0" oninput="recalcCost(1)"></td><td id="a1p4">—</td></tr>
+          <tr><td class="col-param">Quality Control</td><td><input type="number" id="a1c5" placeholder="0" oninput="recalcCost(1)"></td><td id="a1p5">—</td></tr>
+          <tr><td class="col-param">Packaging</td><td><input type="number" id="a1c6" placeholder="0" oninput="recalcCost(1)"></td><td id="a1p6">—</td></tr>
+          <tr><td class="col-param">Logistics</td><td><input type="number" id="a1c7" placeholder="0" oninput="recalcCost(1)"></td><td id="a1p7">—</td></tr>
+          <tr class="total-row"><td class="col-param">Total Unit Cost</td><td id="a1total" style="font-family:'JetBrains Mono',monospace; font-weight:700;">₹ 0</td><td>100%</td></tr>
+        </tbody>
+      </table>
+      <div class="form-grid-2" style="margin-top:16px;">
+        <div class="form-group"><label>Supplier</label><input type="text" id="a1_supplier" placeholder="Supplier name"></div>
+        <div class="form-group"><label>Lead Time (days)</label><input type="number" id="a1_lead" placeholder="e.g. 21"></div>
+      </div>
+    </div>
+
+    <!-- ALT 2 -->
+    <div class="alt-panel" id="altpanel-1">
+      <div class="tip-box">🟠 <strong>Design Option A</strong> — your first alternative. Typically a process change, material substitution, or geometry optimisation.</div>
+      <div class="form-group" style="margin-bottom:20px;">
+        <label>Description</label>
+        <textarea id="alt2desc" placeholder="Describe Design Option A..."></textarea>
+      </div>
+      <div class="section-divider"><span>Technical Parameters</span></div>
+      <table class="data-table">
+        <thead><tr><th>Parameter</th><th>Specification</th><th>Value</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="col-param">Material</td><td><input type="text" id="a2_mat_spec" placeholder="e.g. Aluminium Alloy A380"></td><td><input type="text" id="a2_mat_val" placeholder="—"></td><td><input type="text" id="a2_mat_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Manufacturing Process</td><td><input type="text" id="a2_proc_spec" placeholder="e.g. HPDC + Machining"></td><td><input type="text" id="a2_proc_val" placeholder="—"></td><td><input type="text" id="a2_proc_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Weight (kg)</td><td><input type="text" id="a2_wt_spec" placeholder="Nominal"></td><td><input type="number" id="a2_wt" placeholder="0.52" step="0.01" oninput="recalcAll()"></td><td><input type="text" id="a2_wt_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Dimensions L×W×H (mm)</td><td><input type="text" id="a2_dim_spec" placeholder="—"></td><td><input type="text" id="a2_dim_val" placeholder="—"></td><td><input type="text" id="a2_dim_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Surface Finish (µm)</td><td><input type="text" id="a2_sf_spec" placeholder="—"></td><td><input type="text" id="a2_sf_val" placeholder="—"></td><td><input type="text" id="a2_sf_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Tolerance Requirements</td><td><input type="text" id="a2_tol_spec" placeholder="—"></td><td><input type="text" id="a2_tol_val" placeholder="—"></td><td><input type="text" id="a2_tol_note" placeholder="—"></td></tr>
+        </tbody>
+      </table>
+      <div class="section-divider"><span>Cost Breakdown</span></div>
+      <table class="data-table">
+        <thead><tr><th>Cost Element</th><th>Amount (₹)</th><th>% of Total</th></tr></thead>
+        <tbody>
+          <tr><td class="col-param">Raw Material</td><td><input type="number" id="a2c1" placeholder="0" oninput="recalcCost(2)"></td><td id="a2p1">—</td></tr>
+          <tr><td class="col-param">Processing</td><td><input type="number" id="a2c2" placeholder="0" oninput="recalcCost(2)"></td><td id="a2p2">—</td></tr>
+          <tr><td class="col-param">Tooling (amortized)</td><td><input type="number" id="a2c3" placeholder="0" oninput="recalcCost(2)"></td><td id="a2p3">—</td></tr>
+          <tr><td class="col-param">Labor</td><td><input type="number" id="a2c4" placeholder="0" oninput="recalcCost(2)"></td><td id="a2p4">—</td></tr>
+          <tr><td class="col-param">Quality Control</td><td><input type="number" id="a2c5" placeholder="0" oninput="recalcCost(2)"></td><td id="a2p5">—</td></tr>
+          <tr><td class="col-param">Packaging</td><td><input type="number" id="a2c6" placeholder="0" oninput="recalcCost(2)"></td><td id="a2p6">—</td></tr>
+          <tr><td class="col-param">Logistics</td><td><input type="number" id="a2c7" placeholder="0" oninput="recalcCost(2)"></td><td id="a2p7">—</td></tr>
+          <tr class="total-row"><td class="col-param">Total Unit Cost</td><td id="a2total" style="font-family:'JetBrains Mono',monospace; font-weight:700;">₹ 0</td><td>100%</td></tr>
+        </tbody>
+      </table>
+      <div class="form-grid-2" style="margin-top:16px;">
+        <div class="form-group"><label>Supplier</label><input type="text" id="a2_supplier" placeholder="Supplier name"></div>
+        <div class="form-group"><label>Lead Time (days)</label><input type="number" id="a2_lead" placeholder="e.g. 14"></div>
+      </div>
+    </div>
+
+    <!-- ALT 3 -->
+    <div class="alt-panel" id="altpanel-2">
+      <div class="tip-box">🟢 <strong>Design Option B</strong> — your second alternative. Often a premium or higher-performance variant.</div>
+      <div class="form-group" style="margin-bottom:20px;">
+        <label>Description</label>
+        <textarea id="alt3desc" placeholder="Describe Design Option B..."></textarea>
+      </div>
+      <div class="section-divider"><span>Technical Parameters</span></div>
+      <table class="data-table">
+        <thead><tr><th>Parameter</th><th>Specification</th><th>Value</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td class="col-param">Material</td><td><input type="text" id="a3_mat_spec" placeholder="e.g. Forged Aluminium 7075"></td><td><input type="text" id="a3_mat_val" placeholder="—"></td><td><input type="text" id="a3_mat_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Manufacturing Process</td><td><input type="text" id="a3_proc_spec" placeholder="e.g. Closed-die Forging + CNC"></td><td><input type="text" id="a3_proc_val" placeholder="—"></td><td><input type="text" id="a3_proc_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Weight (kg)</td><td><input type="text" id="a3_wt_spec" placeholder="Nominal"></td><td><input type="number" id="a3_wt" placeholder="0.48" step="0.01" oninput="recalcAll()"></td><td><input type="text" id="a3_wt_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Dimensions L×W×H (mm)</td><td><input type="text" id="a3_dim_spec" placeholder="—"></td><td><input type="text" id="a3_dim_val" placeholder="—"></td><td><input type="text" id="a3_dim_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Surface Finish (µm)</td><td><input type="text" id="a3_sf_spec" placeholder="—"></td><td><input type="text" id="a3_sf_val" placeholder="—"></td><td><input type="text" id="a3_sf_note" placeholder="—"></td></tr>
+          <tr><td class="col-param">Tolerance Requirements</td><td><input type="text" id="a3_tol_spec" placeholder="—"></td><td><input type="text" id="a3_tol_val" placeholder="—"></td><td><input type="text" id="a3_tol_note" placeholder="—"></td></tr>
+        </tbody>
+      </table>
+      <div class="section-divider"><span>Cost Breakdown</span></div>
+      <table class="data-table">
+        <thead><tr><th>Cost Element</th><th>Amount (₹)</th><th>% of Total</th></tr></thead>
+        <tbody>
+          <tr><td class="col-param">Raw Material</td><td><input type="number" id="a3c1" placeholder="0" oninput="recalcCost(3)"></td><td id="a3p1">—</td></tr>
+          <tr><td class="col-param">Processing</td><td><input type="number" id="a3c2" placeholder="0" oninput="recalcCost(3)"></td><td id="a3p2">—</td></tr>
+          <tr><td class="col-param">Tooling (amortized)</td><td><input type="number" id="a3c3" placeholder="0" oninput="recalcCost(3)"></td><td id="a3p3">—</td></tr>
+          <tr><td class="col-param">Labor</td><td><input type="number" id="a3c4" placeholder="0" oninput="recalcCost(3)"></td><td id="a3p4">—</td></tr>
+          <tr><td class="col-param">Quality Control</td><td><input type="number" id="a3c5" placeholder="0" oninput="recalcCost(3)"></td><td id="a3p5">—</td></tr>
+          <tr><td class="col-param">Packaging</td><td><input type="number" id="a3c6" placeholder="0" oninput="recalcCost(3)"></td><td id="a3p6">—</td></tr>
+          <tr><td class="col-param">Logistics</td><td><input type="number" id="a3c7" placeholder="0" oninput="recalcCost(3)"></td><td id="a3p7">—</td></tr>
+          <tr class="total-row"><td class="col-param">Total Unit Cost</td><td id="a3total" style="font-family:'JetBrains Mono',monospace; font-weight:700;">₹ 0</td><td>100%</td></tr>
+        </tbody>
+      </table>
+      <div class="form-grid-2" style="margin-top:16px;">
+        <div class="form-group"><label>Supplier</label><input type="text" id="a3_supplier" placeholder="Supplier name"></div>
+        <div class="form-group"><label>Lead Time (days)</label><input type="number" id="a3_lead" placeholder="e.g. 35"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 3: WEIGHTED COMPARISON ── -->
+  <div class="card" id="s3">
+    <div class="card-header">
+      <div class="card-icon" style="background:#f0faf8;">⚖️</div>
+      <div>
+        <div class="card-title">Comprehensive Comparison Matrix</div>
+        <div class="card-subtitle">Score each criterion per alternative. Weighted scores auto-calculate.</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="score-key">
+        <span style="font-size:13px; font-weight:600; margin-right:4px;">Scoring Scale →</span>
+        <span class="score-badge" style="background:#fee2e2;color:#991b1b;">1 Poor</span>
+        <span class="score-badge" style="background:#fef3c7;color:#92400e;">3 Acceptable</span>
+        <span class="score-badge" style="background:#d1fae5;color:#065f46;">5 Excellent</span>
+        <span class="score-badge" style="background:#dbeafe;color:#1e40af;">7 Outstanding</span>
+        <span class="score-badge" style="background:#ede9fe;color:#5b21b6;">10 Best-in-class</span>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="data-table score-table">
+          <thead>
+            <tr>
+              <th>Criteria</th>
+              <th>Weight</th>
+              <th>🔵 Baseline</th>
+              <th>🟠 Option A</th>
+              <th>🟢 Option B</th>
+              <th>Wtd. A1</th>
+              <th>Wtd. A2</th>
+              <th>Wtd. A3</th>
+            </tr>
+          </thead>
+          <tbody id="scoreTableBody">
+            <!-- Rows injected by JS -->
+          </tbody>
+          <tfoot>
+            <tr style="background:#f0f4ff;">
+              <td colspan="2" style="font-family:'Syne',sans-serif; font-weight:800; font-size:14px; padding:12px 14px;">WEIGHTED TOTAL SCORE</td>
+              <td id="ws1" style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:var(--accent5); padding:12px 14px;">—</td>
+              <td id="ws2" style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:var(--accent3); padding:12px 14px;">—</td>
+              <td id="ws3" style="font-family:'JetBrains Mono',monospace; font-weight:700; font-size:16px; color:var(--accent2); padding:12px 14px;">—</td>
+              <td colspan="3"></td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <!-- Score bars -->
+      <div class="score-bar-wrap" id="scoreBarWrap" style="display:none;">
+        <div class="section-divider"><span>Visual Score Comparison</span></div>
+        <div class="score-bar-row">
+          <div class="score-bar-label" style="color:var(--accent5);">🔵 Baseline</div>
+          <div class="score-bar"><div class="score-bar-fill" id="bar1" style="width:0%; background:var(--accent5);"></div></div>
+          <div class="score-bar-val" id="bv1">0</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label" style="color:var(--accent3);">🟠 Option A</div>
+          <div class="score-bar"><div class="score-bar-fill" id="bar2" style="width:0%; background:var(--accent3);"></div></div>
+          <div class="score-bar-val" id="bv2">0</div>
+        </div>
+        <div class="score-bar-row">
+          <div class="score-bar-label" style="color:var(--accent2);">🟢 Option B</div>
+          <div class="score-bar"><div class="score-bar-fill" id="bar3" style="width:0%; background:var(--accent2);"></div></div>
+          <div class="score-bar-val" id="bv3">0</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 4: PERFORMANCE + MFGABILITY ── -->
+  <div class="card" id="s4">
+    <div class="card-header">
+      <div class="card-icon" style="background:#f3f0ff;">🧪</div>
+      <div>
+        <div class="card-title">Performance & Manufacturability</div>
+        <div class="card-subtitle">Technical performance metrics and process capability comparison</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="section-divider"><span>Performance Comparison (Test Standards)</span></div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr><th>Metric</th><th>Test Standard</th><th>🔵 Baseline</th><th>🟠 Option A</th><th>🟢 Option B</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="col-param">Tensile Strength (MPa)</td><td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);">IS 1608</td><td><input type="text" id="p_ts_1" placeholder="—"></td><td><input type="text" id="p_ts_2" placeholder="—"></td><td><input type="text" id="p_ts_3" placeholder="—"></td></tr>
+            <tr><td class="col-param">Yield Strength (MPa)</td><td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);">IS 1608</td><td><input type="text" id="p_ys_1" placeholder="—"></td><td><input type="text" id="p_ys_2" placeholder="—"></td><td><input type="text" id="p_ys_3" placeholder="—"></td></tr>
+            <tr><td class="col-param">Impact Resistance (J)</td><td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);">IS 1598</td><td><input type="text" id="p_ir_1" placeholder="—"></td><td><input type="text" id="p_ir_2" placeholder="—"></td><td><input type="text" id="p_ir_3" placeholder="—"></td></tr>
+            <tr><td class="col-param">Fatigue Life (cycles)</td><td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);">SAE J1099</td><td><input type="text" id="p_fl_1" placeholder="—"></td><td><input type="text" id="p_fl_2" placeholder="—"></td><td><input type="text" id="p_fl_3" placeholder="—"></td></tr>
+            <tr><td class="col-param">Corrosion Resistance</td><td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);">Salt Spray</td><td><input type="text" id="p_cr_1" placeholder="e.g. 96 hrs"></td><td><input type="text" id="p_cr_2" placeholder="—"></td><td><input type="text" id="p_cr_3" placeholder="—"></td></tr>
+            <tr><td class="col-param">Temperature Range (°C)</td><td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--muted);">Thermal Cycling</td><td><input type="text" id="p_tr_1" placeholder="e.g. -20 to 150"></td><td><input type="text" id="p_tr_2" placeholder="—"></td><td><input type="text" id="p_tr_3" placeholder="—"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-divider"><span>Manufacturability Assessment</span></div>
+      <div style="overflow-x:auto;">
+        <table class="data-table">
+          <thead>
+            <tr><th>Factor</th><th>🔵 Baseline</th><th>🟠 Option A</th><th>🟢 Option B</th><th>Impact</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-param">Process Capability (Cpk)</td>
+              <td><input type="text" id="m_cpk_1" placeholder="e.g. 1.33"></td>
+              <td><input type="text" id="m_cpk_2" placeholder="—"></td>
+              <td><input type="text" id="m_cpk_3" placeholder="—"></td>
+              <td><select id="m_cpk_imp"><option>H</option><option>M</option><option>L</option></select></td>
+            </tr>
+            <tr>
+              <td class="col-param">Setup Time (min)</td>
+              <td><input type="number" id="m_st_1" placeholder="—"></td>
+              <td><input type="number" id="m_st_2" placeholder="—"></td>
+              <td><input type="number" id="m_st_3" placeholder="—"></td>
+              <td><select id="m_st_imp"><option>H</option><option selected>M</option><option>L</option></select></td>
+            </tr>
+            <tr>
+              <td class="col-param">Cycle Time (sec)</td>
+              <td><input type="number" id="m_ct_1" placeholder="—"></td>
+              <td><input type="number" id="m_ct_2" placeholder="—"></td>
+              <td><input type="number" id="m_ct_3" placeholder="—"></td>
+              <td><select id="m_ct_imp"><option>H</option><option selected>M</option><option>L</option></select></td>
+            </tr>
+            <tr>
+              <td class="col-param">Scrap Rate (%)</td>
+              <td><input type="number" id="m_sr_1" placeholder="—" step="0.1"></td>
+              <td><input type="number" id="m_sr_2" placeholder="—" step="0.1"></td>
+              <td><input type="number" id="m_sr_3" placeholder="—" step="0.1"></td>
+              <td><select id="m_sr_imp"><option>H</option><option>M</option><option>L</option></select></td>
+            </tr>
+            <tr>
+              <td class="col-param">Operator Skill Level</td>
+              <td><select id="m_osk_1"><option>H</option><option selected>M</option><option>L</option></select></td>
+              <td><select id="m_osk_2"><option>H</option><option selected>M</option><option>L</option></select></td>
+              <td><select id="m_osk_3"><option>H</option><option selected>M</option><option>L</option></select></td>
+              <td><select id="m_osk_imp"><option>H</option><option selected>M</option><option>L</option></select></td>
+            </tr>
+            <tr>
+              <td class="col-param">Equipment Availability</td>
+              <td><select id="m_eq_1"><option>H</option><option selected>M</option><option>L</option></select></td>
+              <td><select id="m_eq_2"><option>H</option><option selected>M</option><option>L</option></select></td>
+              <td><select id="m_eq_3"><option>H</option><option selected>M</option><option>L</option></select></td>
+              <td><select id="m_eq_imp"><option>H</option><option selected>M</option><option>L</option></select></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 5: RISK + SUSTAINABILITY ── -->
+  <div class="card" id="s5">
+    <div class="card-header">
+      <div class="card-icon" style="background:#fff8ee;">⚡</div>
+      <div>
+        <div class="card-title">Risk Assessment & Sustainability</div>
+        <div class="card-subtitle">Rate risk levels (L/M/H) and capture environmental impact data</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <div class="section-divider"><span>Investment & Payback Analysis</span></div>
+      <div style="overflow-x:auto; margin-bottom:28px;">
+        <table class="data-table">
+          <thead>
+            <tr><th>Alternative</th><th>Tooling Cost (₹)</th><th>Development Cost (₹)</th><th>Total Investment (₹)</th><th>Annual Savings (₹)</th><th>Payback (months)</th><th>3-Year NPV (₹)</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="col-param">🟠 Option A</td>
+              <td><input type="number" id="inv_a2_tool" placeholder="0" oninput="recalcPayback()"></td>
+              <td><input type="number" id="inv_a2_dev" placeholder="0" oninput="recalcPayback()"></td>
+              <td id="inv_a2_total" style="font-family:'JetBrains Mono',monospace; font-weight:600;">—</td>
+              <td id="inv_a2_sav" style="font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--accent2);">—</td>
+              <td id="inv_a2_pb" style="font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--accent3);">—</td>
+              <td><input type="text" id="inv_a2_npv" placeholder="Calculate"></td>
+            </tr>
+            <tr>
+              <td class="col-param">🟢 Option B</td>
+              <td><input type="number" id="inv_a3_tool" placeholder="0" oninput="recalcPayback()"></td>
+              <td><input type="number" id="inv_a3_dev" placeholder="0" oninput="recalcPayback()"></td>
+              <td id="inv_a3_total" style="font-family:'JetBrains Mono',monospace; font-weight:600;">—</td>
+              <td id="inv_a3_sav" style="font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--accent2);">—</td>
+              <td id="inv_a3_pb" style="font-family:'JetBrains Mono',monospace; font-weight:600; color:var(--accent3);">—</td>
+              <td><input type="text" id="inv_a3_npv" placeholder="Calculate"></td>
+            </tr>
+          </tbody>
+        </table>
+        <div style="display:flex; gap:20px; margin-top:12px;">
+          <div style="flex:1;"><label>Discount Rate (%)</label><input type="number" id="discountRate" placeholder="12" value="12"></div>
+          <div style="flex:1;"><label>Planning Horizon (years)</label><input type="number" id="planHorizon" placeholder="3" value="3"></div>
+        </div>
+      </div>
+
+      <div class="section-divider"><span>Risk Assessment Matrix</span></div>
+      <div style="overflow-x:auto; margin-bottom:28px;">
+        <table class="data-table">
+          <thead>
+            <tr><th>Risk Factor</th><th>🔵 Baseline</th><th>🟠 Option A</th><th>🟢 Option B</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="col-param">Technical Risk</td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+            </tr>
+            <tr><td class="col-param">Supplier Risk</td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+            </tr>
+            <tr><td class="col-param">Quality Risk</td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+            </tr>
+            <tr><td class="col-param">Schedule Risk</td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+            </tr>
+            <tr><td class="col-param">Cost Overrun Risk</td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+              <td><select class="risk-select" onchange="styleRisk(this)"><option>L</option><option>M</option><option>H</option></select></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-divider"><span>Environmental & Sustainability Impact</span></div>
+      <div style="overflow-x:auto; margin-bottom:16px;">
+        <table class="data-table">
+          <thead>
+            <tr><th>Factor</th><th>Unit</th><th>🔵 Baseline</th><th>🟠 Option A</th><th>🟢 Option B</th></tr>
+          </thead>
+          <tbody>
+            <tr><td class="col-param">Material Recyclability</td><td style="color:var(--muted); font-size:12px;">%</td><td><input type="number" id="e1_1" placeholder="—" min="0" max="100"></td><td><input type="number" id="e1_2" placeholder="—" min="0" max="100"></td><td><input type="number" id="e1_3" placeholder="—" min="0" max="100"></td></tr>
+            <tr><td class="col-param">Carbon Footprint</td><td style="color:var(--muted); font-size:12px;">kg CO₂</td><td><input type="number" id="e2_1" placeholder="—" step="0.1"></td><td><input type="number" id="e2_2" placeholder="—" step="0.1"></td><td><input type="number" id="e2_3" placeholder="—" step="0.1"></td></tr>
+            <tr><td class="col-param">Energy Consumption</td><td style="color:var(--muted); font-size:12px;">kWh</td><td><input type="number" id="e3_1" placeholder="—" step="0.1"></td><td><input type="number" id="e3_2" placeholder="—" step="0.1"></td><td><input type="number" id="e3_3" placeholder="—" step="0.1"></td></tr>
+            <tr><td class="col-param">Hazardous Materials</td><td style="color:var(--muted); font-size:12px;">Yes/No</td>
+              <td><select id="e4_1"><option>No</option><option>Yes</option></select></td>
+              <td><select id="e4_2"><option>No</option><option>Yes</option></select></td>
+              <td><select id="e4_3"><option>No</option><option>Yes</option></select></td>
+            </tr>
+            <tr><td class="col-param">End-of-Life Disposal Cost (₹)</td><td style="color:var(--muted); font-size:12px;">₹</td><td><input type="number" id="e5_1" placeholder="—"></td><td><input type="number" id="e5_2" placeholder="—"></td><td><input type="number" id="e5_3" placeholder="—"></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="section-divider"><span>Qualitative Advantages & Disadvantages</span></div>
+      <div class="form-grid-2" style="margin-top:8px;">
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:var(--accent3); margin-bottom:12px; font-size:14px;">🟠 Option A</div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Advantage 1</label><input type="text" id="a2_adv1" placeholder="e.g. Lower unit cost"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Advantage 2</label><input type="text" id="a2_adv2" placeholder="—"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Advantage 3</label><input type="text" id="a2_adv3" placeholder="—"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Disadvantage 1</label><input type="text" id="a2_dis1" placeholder="e.g. Lower fatigue strength"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Disadvantage 2</label><input type="text" id="a2_dis2" placeholder="—"></div>
+          <div class="form-group"><label>Disadvantage 3</label><input type="text" id="a2_dis3" placeholder="—"></div>
+        </div>
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-weight:700; color:var(--accent2); margin-bottom:12px; font-size:14px;">🟢 Option B</div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Advantage 1</label><input type="text" id="a3_adv1" placeholder="e.g. Superior strength-to-weight"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Advantage 2</label><input type="text" id="a3_adv2" placeholder="—"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Advantage 3</label><input type="text" id="a3_adv3" placeholder="—"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Disadvantage 1</label><input type="text" id="a3_dis1" placeholder="e.g. Higher cost"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Disadvantage 2</label><input type="text" id="a3_dis2" placeholder="—"></div>
+          <div class="form-group"><label>Disadvantage 3</label><input type="text" id="a3_dis3" placeholder="—"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 6: RECOMMENDATION ── -->
+  <div class="card" id="s6">
+    <div class="card-header">
+      <div class="card-icon" style="background:#d1fae5;">✅</div>
+      <div>
+        <div class="card-title">Recommendation & Implementation Plan</div>
+        <div class="card-subtitle">Final decision, justification and critical success actions</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <label style="margin-bottom:12px;">Recommended Alternative</label>
+      <div class="rec-options">
+        <div class="rec-option" onclick="selectRec('baseline',this)">
+          <div class="opt-icon">🔵</div>
+          <div class="opt-label">Baseline</div>
+          <div class="opt-sub">Stay with current design</div>
+        </div>
+        <div class="rec-option" onclick="selectRec('optionA',this)">
+          <div class="opt-icon">🟠</div>
+          <div class="opt-label">Option A</div>
+          <div class="opt-sub">Cost-driven choice</div>
+        </div>
+        <div class="rec-option" onclick="selectRec('optionB',this)">
+          <div class="opt-icon">🟢</div>
+          <div class="opt-label">Option B</div>
+          <div class="opt-sub">Performance-driven choice</div>
+        </div>
+      </div>
+
+      <div class="form-group" style="margin-top:20px; margin-bottom:20px;">
+        <label>Justification</label>
+        <textarea id="rec_justify" rows="3" placeholder="Explain why this alternative is recommended over others, referencing cost, performance, risk, and manufacturability factors..."></textarea>
+      </div>
+
+      <label>Implementation Priority</label>
+      <div class="priority-options">
+        <div class="priority-btn p-high" onclick="selectPriority('high',this)">🔴 High</div>
+        <div class="priority-btn p-med" onclick="selectPriority('medium',this)">🟡 Medium</div>
+        <div class="priority-btn p-low" onclick="selectPriority('low',this)">🟢 Low</div>
+      </div>
+
+      <div class="section-divider"><span>Key Success Factors & Critical Actions</span></div>
+      <div class="form-grid-2">
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:12px; color:var(--accent4);">🎯 Key Success Factors</div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Factor 1</label><input type="text" id="ksf1" placeholder="e.g. Supplier qualification completed"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Factor 2</label><input type="text" id="ksf2" placeholder="—"></div>
+          <div class="form-group"><label>Factor 3</label><input type="text" id="ksf3" placeholder="—"></div>
+        </div>
+        <div>
+          <div style="font-family:'Syne',sans-serif; font-weight:700; font-size:14px; margin-bottom:12px; color:var(--accent1);">⚡ Critical Actions Required</div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Action 1</label><input type="text" id="act1" placeholder="e.g. Procure prototype samples by Week 3"></div>
+          <div class="form-group" style="margin-bottom:10px;"><label>Action 2</label><input type="text" id="act2" placeholder="—"></div>
+          <div class="form-group"><label>Action 3</label><input type="text" id="act3" placeholder="—"></div>
+        </div>
+      </div>
+
+      <div class="btn-row">
+        <button class="btn btn-accent" onclick="generateOutput()">📊 Generate Summary Output</button>
+        <button class="btn btn-outline" onclick="clearAll()">🔄 Reset Dashboard</button>
+        <button class="btn btn-success" onclick="window.print()">🖨️ Print / Save PDF</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SECTION 7: OUTPUT ── -->
+  <div class="output-panel" id="s7">
+    <h3>📊 VAVE Analysis Summary Report</h3>
+    <div id="outputContent"></div>
+    <div style="margin-top:24px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.1); font-size:11px; color:#718096; font-family:'DM Sans',sans-serif;">
+      Generated by VAVE Training Dashboard · Module 1 Session 2 · <span id="outDate"></span>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── Score criteria config ──
+const scoreRows = [
+  { label: 'Unit Cost', weight: 30 },
+  { label: 'Tooling Investment', weight: 10 },
+  { label: 'Annual Cost Savings', weight: 15 },
+  { label: 'Weight Reduction', weight: 10 },
+  { label: 'Strength / Durability', weight: 10 },
+  { label: 'Functional Performance', weight: 15 },
+  { label: 'Mfg. Process Complexity', weight: 5 },
+  { label: 'Quality Consistency', weight: 5 },
+];
+
+let selectedRec = null;
+let selectedPriority = null;
+
+function buildScoreTable() {
+  const tbody = document.getElementById('scoreTableBody');
+  tbody.innerHTML = '';
+  let total = scoreRows.reduce((s,r) => s + r.weight, 0);
+  scoreRows.forEach((row, i) => {
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="col-param">${row.label}</td>
+      <td style="font-family:'JetBrains Mono',monospace; font-size:12px; font-weight:600; color:var(--accent4);">${row.weight}%</td>
+      <td class="score-cell"><input type="number" id="sc_${i}_1" min="1" max="10" placeholder="—" oninput="recalcWeighted()"></td>
+      <td class="score-cell"><input type="number" id="sc_${i}_2" min="1" max="10" placeholder="—" oninput="recalcWeighted()"></td>
+      <td class="score-cell"><input type="number" id="sc_${i}_3" min="1" max="10" placeholder="—" oninput="recalcWeighted()"></td>
+      <td id="wc_${i}_1" style="font-size:12px; color:var(--accent5); font-family:'JetBrains Mono',monospace;">—</td>
+      <td id="wc_${i}_2" style="font-size:12px; color:var(--accent3); font-family:'JetBrains Mono',monospace;">—</td>
+      <td id="wc_${i}_3" style="font-size:12px; color:var(--accent2); font-family:'JetBrains Mono',monospace;">—</td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+buildScoreTable();
+
+function recalcWeighted() {
+  let totals = [0,0,0];
+  let filled = false;
+  scoreRows.forEach((row, i) => {
+    [1,2,3].forEach((a, ai) => {
+      const v = parseFloat(document.getElementById(`sc_${i}_${a}`)?.value) || 0;
+      const wt = row.weight / 100 * v;
+      totals[ai] += wt;
+      document.getElementById(`wc_${i}_${a}`).textContent = v ? (row.weight/100*v).toFixed(2) : '—';
+      if (v) filled = true;
+    });
+  });
+  if (filled) {
+    [1,2,3].forEach((a, ai) => {
+      document.getElementById(`ws${a}`).textContent = totals[ai].toFixed(2);
+    });
+    // Update bars
+    const mx = Math.max(...totals, 0.01);
+    document.getElementById('scoreBarWrap').style.display = 'block';
+    [1,2,3].forEach((a, ai) => {
+      document.getElementById(`bar${a}`).style.width = (totals[ai]/mx*100)+'%';
+      document.getElementById(`bv${a}`).textContent = totals[ai].toFixed(2);
+    });
+  }
+}
+
+function recalcCost(alt) {
+  let total = 0;
+  for(let i=1;i<=7;i++) {
+    const v = parseFloat(document.getElementById(`a${alt}c${i}`)?.value) || 0;
+    total += v;
+  }
+  document.getElementById(`a${alt}total`).textContent = `₹ ${total.toLocaleString('en-IN')}`;
+  for(let i=1;i<=7;i++) {
+    const v = parseFloat(document.getElementById(`a${alt}c${i}`)?.value) || 0;
+    const pct = total > 0 ? ((v/total)*100).toFixed(1)+'%' : '—';
+    document.getElementById(`a${alt}p${i}`).textContent = pct;
+  }
+  recalcAll();
+}
+
+function getTotal(alt) {
+  let t = 0;
+  for(let i=1;i<=7;i++) t += parseFloat(document.getElementById(`a${alt}c${i}`)?.value) || 0;
+  return t;
+}
+
+function recalcAll() {
+  // called on weight/vol changes
+  recalcPayback();
+}
+
+function recalcPayback() {
+  const vol = parseFloat(document.getElementById('annualVol')?.value) || 0;
+  const c1 = getTotal(1);
+  const c2 = getTotal(2);
+  const c3 = getTotal(3);
+  const sav2 = (c1 - c2) * vol;
+  const sav3 = (c1 - c3) * vol;
+
+  document.getElementById('inv_a2_sav').textContent = sav2 ? `₹ ${sav2.toLocaleString('en-IN')}` : '—';
+  document.getElementById('inv_a3_sav').textContent = sav3 ? `₹ ${sav3.toLocaleString('en-IN')}` : '—';
+
+  [2,3].forEach(alt => {
+    const tool = parseFloat(document.getElementById(`inv_a${alt}_tool`)?.value) || 0;
+    const dev  = parseFloat(document.getElementById(`inv_a${alt}_dev`)?.value) || 0;
+    const inv  = tool + dev;
+    document.getElementById(`inv_a${alt}_total`).textContent = inv ? `₹ ${inv.toLocaleString('en-IN')}` : '—';
+    const sav = alt === 2 ? sav2 : sav3;
+    const annSav = sav / 12;
+    if (inv > 0 && annSav > 0) {
+      const pb = inv / annSav;
+      document.getElementById(`inv_a${alt}_pb`).textContent = pb.toFixed(1) + ' mo';
+    }
+  });
+}
+
+function switchTab(idx) {
+  document.querySelectorAll('.alt-tab').forEach((t,i) => t.classList.toggle('active', i===idx));
+  document.querySelectorAll('.alt-panel').forEach((p,i) => p.classList.toggle('active', i===idx));
+}
+
+function selectRec(val, el) {
+  selectedRec = val;
+  document.querySelectorAll('.rec-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function selectPriority(val, el) {
+  selectedPriority = val;
+  document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function styleRisk(sel) {
+  sel.className = 'risk-select risk-' + sel.value;
+}
+
+function scrollToSection(id) {
+  const el = document.getElementById(id);
+  if (el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+}
+
+function v(id) { return document.getElementById(id)?.value || ''; }
+
+function generateOutput() {
+  const panel = document.getElementById('s7');
+  const content = document.getElementById('outputContent');
+  document.getElementById('outDate').textContent = new Date().toLocaleDateString('en-IN', {day:'numeric',month:'long',year:'numeric'});
+
+  const c1 = getTotal(1), c2 = getTotal(2), c3 = getTotal(3);
+  const vol = parseFloat(v('annualVol')) || 0;
+  const sav2 = (c1-c2)*vol, sav3 = (c1-c3)*vol;
+  const w1 = parseFloat(v('a1_wt'))||0, w2 = parseFloat(v('a2_wt'))||0, w3 = parseFloat(v('a3_wt'))||0;
+  const ws1 = document.getElementById('ws1').textContent;
+  const ws2 = document.getElementById('ws2').textContent;
+  const ws3 = document.getElementById('ws3').textContent;
+
+  const recMap = { baseline: '🔵 Baseline (Alt 1)', optionA: '🟠 Option A (Alt 2)', optionB: '🟢 Option B (Alt 3)' };
+
+  content.innerHTML = `
+    <div class="output-section">
+      <h4>Component Identification</h4>
+      <div class="output-line"><span class="output-key">Component:</span><span class="output-val highlight">${v('compName') || 'Not specified'}</span></div>
+      <div class="output-line"><span class="output-key">Function:</span><span class="output-val">${v('compFunc') || '—'}</span></div>
+      <div class="output-line"><span class="output-key">Part Number:</span><span class="output-val">${v('partNum') || '—'}</span></div>
+      <div class="output-line"><span class="output-key">Annual Volume:</span><span class="output-val">${vol ? vol.toLocaleString('en-IN') + ' units' : '—'}</span></div>
+      <div class="output-line"><span class="output-key">Analyst:</span><span class="output-val">${v('analystName') || '—'}</span></div>
+      <div class="output-line"><span class="output-key">Analysis Date:</span><span class="output-val">${v('analysisDate') || '—'}</span></div>
+    </div>
+    <div class="output-section">
+      <h4>Cost & Savings Analysis</h4>
+      <div class="output-line"><span class="output-key">Baseline Unit Cost:</span><span class="output-val highlight">₹ ${c1.toLocaleString('en-IN')}</span></div>
+      <div class="output-line"><span class="output-key">Option A Unit Cost:</span><span class="output-val">₹ ${c2.toLocaleString('en-IN')} ${c2 && c1 ? '('+(((c2-c1)/c1)*100).toFixed(1)+'%)' : ''}</span></div>
+      <div class="output-line"><span class="output-key">Option B Unit Cost:</span><span class="output-val">₹ ${c3.toLocaleString('en-IN')} ${c3 && c1 ? '('+(((c3-c1)/c1)*100).toFixed(1)+'%)' : ''}</span></div>
+      <div class="output-line"><span class="output-key">Option A Annual Savings:</span><span class="output-val" style="color:#4ade80;">₹ ${sav2.toLocaleString('en-IN')}</span></div>
+      <div class="output-line"><span class="output-key">Option B Annual Savings:</span><span class="output-val" style="color:#4ade80;">₹ ${sav3.toLocaleString('en-IN')}</span></div>
+    </div>
+    <div class="output-section">
+      <h4>Weight Analysis</h4>
+      <div class="output-line"><span class="output-key">Baseline Weight:</span><span class="output-val highlight">${w1 || '—'} kg</span></div>
+      <div class="output-line"><span class="output-key">Option A Weight:</span><span class="output-val">${w2 || '—'} kg ${w2 && w1 ? '('+((w2-w1)/w1*100).toFixed(1)+'%)' : ''}</span></div>
+      <div class="output-line"><span class="output-key">Option B Weight:</span><span class="output-val">${w3 || '—'} kg ${w3 && w1 ? '('+((w3-w1)/w1*100).toFixed(1)+'%)' : ''}</span></div>
+    </div>
+    <div class="output-section">
+      <h4>Weighted Scores</h4>
+      <div class="output-line"><span class="output-key">🔵 Baseline Score:</span><span class="output-val">${ws1}</span></div>
+      <div class="output-line"><span class="output-key">🟠 Option A Score:</span><span class="output-val">${ws2}</span></div>
+      <div class="output-line"><span class="output-key">🟢 Option B Score:</span><span class="output-val">${ws3}</span></div>
+    </div>
+    <div class="output-section">
+      <h4>Recommendation</h4>
+      <div class="output-line"><span class="output-key">Recommended:</span><span class="output-val highlight">${selectedRec ? recMap[selectedRec] : 'Not selected'}</span></div>
+      <div class="output-line"><span class="output-key">Priority:</span><span class="output-val">${selectedPriority ? selectedPriority.toUpperCase() : '—'}</span></div>
+      <div class="output-line"><span class="output-key">Justification:</span><span class="output-val" style="max-width:480px; white-space:normal;">${v('rec_justify') || '—'}</span></div>
+    </div>
+    <div class="output-section">
+      <h4>Critical Actions</h4>
+      <div class="output-line"><span class="output-key">Action 1:</span><span class="output-val">${v('act1') || '—'}</span></div>
+      <div class="output-line"><span class="output-key">Action 2:</span><span class="output-val">${v('act2') || '—'}</span></div>
+      <div class="output-line"><span class="output-key">Action 3:</span><span class="output-val">${v('act3') || '—'}</span></div>
+    </div>
+  `;
+  panel.classList.add('visible');
+  setTimeout(() => panel.scrollIntoView({ behavior:'smooth' }), 100);
+
+  // Mark steps done
+  document.querySelectorAll('.step-pill').forEach((p,i) => { if(i<6) p.classList.add('done'); });
+  const last = document.querySelectorAll('.step-pill')[6];
+  if (last) { last.classList.remove('done'); last.classList.add('active'); }
+}
+
+function clearAll() {
+  if (!confirm('Reset all fields? This cannot be undone.')) return;
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="date"], textarea').forEach(el => el.value = '');
+  document.getElementById('outputContent').innerHTML = '';
+  document.getElementById('s7').classList.remove('visible');
+  selectedRec = null; selectedPriority = null;
+  document.querySelectorAll('.rec-option').forEach(o => o.classList.remove('selected'));
+  document.querySelectorAll('.priority-btn').forEach(b => b.classList.remove('selected'));
+  [1,2,3].forEach(a => { document.getElementById(`a${a}total`).textContent = '₹ 0'; });
+  document.getElementById('ws1').textContent='—';
+  document.getElementById('ws2').textContent='—';
+  document.getElementById('ws3').textContent='—';
+  document.getElementById('scoreBarWrap').style.display='none';
+  document.querySelectorAll('.step-pill').forEach((p,i) => { p.classList.remove('done','active'); if(i===0) p.classList.add('active'); });
+}
+
+function updateLive() {}
+
+// Init risk styling
+document.querySelectorAll('.risk-select').forEach(s => styleRisk(s));
+
+// Intersection observer for step pills
+const sections = ['s1','s2','s3','s4','s5','s6'];
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      const idx = sections.indexOf(e.target.id);
+      if (idx >= 0) {
+        document.querySelectorAll('.step-pill').forEach((p,i) => {
+          p.classList.remove('active');
+          if (i === idx) p.classList.add('active');
+        });
+      }
+    }
+  });
+}, { rootMargin: '-40% 0px -55% 0px' });
+sections.forEach(id => { const el = document.getElementById(id); if(el) observer.observe(el); });
+</script>
+</body>
+</html>

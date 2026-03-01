@@ -1,0 +1,1228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAVE Cost Database – M1</title>
+<link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&family=Exo+2:wght@300;400;500;600;700;800&family=Share+Tech+Mono&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d1117;
+    --surface: #161b22;
+    --surface2: #1c2433;
+    --accent: #f0a500;
+    --accent2: #e05c2e;
+    --teal: #00c9a7;
+    --blue: #3b82f6;
+    --purple: #8b5cf6;
+    --red: #ef4444;
+    --green: #22c55e;
+    --text: #e6edf3;
+    --muted: #8b949e;
+    --border: #30363d;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ANIMATED BACKGROUND */
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 20% 20%, rgba(240,165,0,0.05) 0%, transparent 50%),
+                radial-gradient(ellipse at 80% 80%, rgba(0,201,167,0.05) 0%, transparent 50%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    background: linear-gradient(135deg, #0d1117 0%, #1a1f2e 50%, #0d1117 100%);
+    border-bottom: 2px solid var(--accent);
+    padding: 18px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 4px 30px rgba(240,165,0,0.15);
+  }
+
+  .header-left { display: flex; align-items: center; gap: 16px; }
+
+  .moto-icon {
+    font-size: 42px;
+    filter: drop-shadow(0 0 8px var(--accent));
+    animation: float 3s ease-in-out infinite;
+  }
+
+  @keyframes float {
+    0%,100% { transform: translateY(0px); }
+    50% { transform: translateY(-6px); }
+  }
+
+  .header-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--accent);
+    letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(240,165,0,0.4);
+  }
+
+  .header-sub {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--teal);
+    letter-spacing: 2px;
+  }
+
+  .header-right { display: flex; align-items: center; gap: 12px; }
+
+  .badge {
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: #000;
+    font-family: 'Rajdhani', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: 1px;
+  }
+
+  /* ===== LAYOUT ===== */
+  .main {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 24px 20px;
+  }
+
+  /* ===== SECTION HEADERS ===== */
+  .section-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    color: var(--accent);
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 2px;
+    background: linear-gradient(to right, var(--accent), transparent);
+  }
+
+  /* ===== SUMMARY CARDS ===== */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .sum-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+    cursor: pointer;
+  }
+
+  .sum-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 30px rgba(0,0,0,0.4);
+  }
+
+  .sum-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+  }
+
+  .sum-card.engine::before { background: linear-gradient(90deg, #f97316, #ef4444); }
+  .sum-card.trans::before  { background: linear-gradient(90deg, #8b5cf6, #3b82f6); }
+  .sum-card.chassis::before{ background: linear-gradient(90deg, #22c55e, #14b8a6); }
+  .sum-card.elec::before   { background: linear-gradient(90deg, #f0a500, #facc15); }
+  .sum-card.wheels::before { background: linear-gradient(90deg, #06b6d4, #3b82f6); }
+  .sum-card.body::before   { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+
+  .card-icon { font-size: 2rem; margin-bottom: 8px; }
+  .card-sys { font-family: 'Rajdhani', sans-serif; font-size: 0.8rem; letter-spacing: 2px; color: var(--muted); text-transform: uppercase; }
+  .card-cost { font-family: 'Share Tech Mono', monospace; font-size: 1.6rem; color: var(--accent); font-weight: 700; }
+  .card-meta { font-size: 0.78rem; color: var(--muted); margin-top: 4px; }
+
+  .pct-bar { height: 4px; background: var(--border); border-radius: 2px; margin-top: 8px; overflow: hidden; }
+  .pct-fill { height: 100%; border-radius: 2px; transition: width 1s ease; }
+  .engine .pct-fill { background: linear-gradient(90deg, #f97316, #ef4444); }
+  .trans .pct-fill  { background: linear-gradient(90deg, #8b5cf6, #3b82f6); }
+  .chassis .pct-fill{ background: linear-gradient(90deg, #22c55e, #14b8a6); }
+  .elec .pct-fill   { background: linear-gradient(90deg, #f0a500, #facc15); }
+  .wheels .pct-fill { background: linear-gradient(90deg, #06b6d4, #3b82f6); }
+  .body .pct-fill   { background: linear-gradient(90deg, #ec4899, #f43f5e); }
+
+  /* ===== TABS ===== */
+  .tabs {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .tab-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    padding: 8px 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-transform: uppercase;
+  }
+
+  .tab-btn:hover, .tab-btn.active {
+    background: var(--accent);
+    color: #000;
+    border-color: var(--accent);
+    box-shadow: 0 4px 15px rgba(240,165,0,0.3);
+  }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ===== DATA TABLE ===== */
+  .data-table-wrap {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 24px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+
+  thead { background: var(--surface2); }
+
+  th {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
+    padding: 12px 14px;
+    text-align: left;
+    border-bottom: 2px solid var(--border);
+  }
+
+  td {
+    padding: 11px 14px;
+    border-bottom: 1px solid rgba(48,54,61,0.5);
+    vertical-align: middle;
+  }
+
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: rgba(240,165,0,0.04); }
+
+  .part-num {
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.78rem;
+    color: var(--teal);
+  }
+
+  .cost-val {
+    font-family: 'Share Tech Mono', monospace;
+    font-weight: 700;
+    color: var(--green);
+  }
+
+  .weight-pill {
+    background: rgba(59,130,246,0.15);
+    color: var(--blue);
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .lead-pill {
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.8rem;
+  }
+
+  .lead-fast { background: rgba(34,197,94,0.15); color: var(--green); }
+  .lead-mid  { background: rgba(240,165,0,0.15); color: var(--accent); }
+  .lead-slow { background: rgba(239,68,68,0.15); color: var(--red); }
+
+  .mat-chip {
+    background: rgba(139,92,246,0.15);
+    color: #c4b5fd;
+    border-radius: 4px;
+    padding: 2px 8px;
+    font-size: 0.78rem;
+  }
+
+  /* ===== VAVE EXERCISE PANEL ===== */
+  .exercise-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 24px;
+  }
+
+  @media(max-width: 800px) {
+    .exercise-grid { grid-template-columns: 1fr; }
+    .header-title { font-size: 1.3rem; }
+  }
+
+  .exercise-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .ex-title {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--teal);
+    letter-spacing: 1px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  label {
+    display: block;
+    font-size: 0.82rem;
+    color: var(--muted);
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 5px;
+    margin-top: 12px;
+  }
+
+  select, input[type=text], input[type=number], textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.9rem;
+    padding: 9px 12px;
+    outline: none;
+    transition: border 0.2s;
+  }
+
+  select:focus, input:focus, textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(240,165,0,0.1);
+  }
+
+  textarea { min-height: 80px; resize: vertical; }
+
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--accent2), var(--accent));
+    color: #000;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 10px 22px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    margin-top: 14px;
+    transition: transform 0.15s, box-shadow 0.15s;
+    text-transform: uppercase;
+  }
+
+  .btn:hover { transform: scale(1.03); box-shadow: 0 6px 20px rgba(240,165,0,0.3); }
+
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--teal);
+    color: var(--teal);
+  }
+
+  .btn-outline:hover { background: var(--teal); color: #000; box-shadow: 0 6px 20px rgba(0,201,167,0.3); }
+
+  /* ===== OUTPUT RESULT ===== */
+  .result-box {
+    background: var(--bg);
+    border: 1px dashed var(--teal);
+    border-radius: 10px;
+    padding: 16px;
+    margin-top: 16px;
+    font-family: 'Share Tech Mono', monospace;
+    font-size: 0.88rem;
+    color: var(--teal);
+    min-height: 80px;
+    white-space: pre-wrap;
+    line-height: 1.7;
+  }
+
+  /* ===== VAVE BRAINSTORM TABLE ===== */
+  .brainstorm-table td input, .brainstorm-table td select {
+    padding: 6px 10px;
+    font-size: 0.82rem;
+  }
+
+  /* ===== DONUT CHART ===== */
+  .chart-section {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 20px;
+    margin-bottom: 28px;
+    align-items: center;
+  }
+
+  @media(max-width:700px) { .chart-section { grid-template-columns: 1fr; } }
+
+  .donut-wrap { position: relative; width: 240px; margin: 0 auto; }
+  .donut-wrap svg { transform: rotate(-90deg); }
+  .donut-center {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+  }
+  .donut-total { font-family: 'Share Tech Mono', monospace; font-size: 1.1rem; color: var(--accent); }
+  .donut-label { font-size: 0.7rem; color: var(--muted); }
+
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 10px;
+  }
+
+  .legend-dot { width: 12px; height: 12px; border-radius: 50%; flex-shrink: 0; }
+  .legend-text { font-size: 0.88rem; color: var(--text); }
+  .legend-pct { font-family: 'Share Tech Mono', monospace; font-size: 0.82rem; color: var(--muted); margin-left: auto; }
+
+  /* ===== PRINT REPORT ===== */
+  .report-area {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+  }
+
+  /* ===== INSTRUCTIONS BOX ===== */
+  .info-box {
+    background: rgba(0,201,167,0.08);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 10px 10px 0;
+    padding: 14px 18px;
+    margin-bottom: 20px;
+    font-size: 0.88rem;
+    line-height: 1.7;
+    color: var(--text);
+  }
+
+  .info-box b { color: var(--accent); }
+
+  /* ===== FOOTER ===== */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  .trainer-sig {
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.72rem;
+    color: rgba(139,148,158,0.6);
+    font-style: italic;
+  }
+
+  /* ===== PRINT STYLES ===== */
+  @media print {
+    body { background: #fff; color: #000; }
+    .header { background: #fff; border-bottom: 2px solid #f0a500; position: relative; }
+    .header-title { color: #d48700; text-shadow: none; }
+    .tabs, .btn, footer .btn { display: none; }
+    .tab-panel { display: block !important; }
+    .sum-card { background: #f9fafb; border: 1px solid #ddd; }
+    .data-table-wrap { border: 1px solid #ccc; }
+    thead { background: #f3f4f6; }
+    th { color: #92400e; }
+    td { border-bottom: 1px solid #e5e7eb; }
+    .result-box { border: 1px solid #aaa; background: #f9fafb; color: #1a1a1a; }
+    .exercise-card { background: #fafafa; border: 1px solid #ddd; }
+    .report-area { background: #fff; border: 1px solid #ccc; }
+    .trainer-sig { color: #555; }
+    select, input, textarea { border: 1px solid #ccc; background: #fff; color: #000; }
+    .info-box { background: #f0fdf4; border-left: 4px solid #059669; }
+  }
+
+  /* SCROLL ANIMATION */
+  .fade-in { opacity: 0; transform: translateY(20px); animation: fadeIn 0.6s forwards; }
+  @keyframes fadeIn { to { opacity: 1; transform: none; } }
+  .fade-in:nth-child(1) { animation-delay: 0.1s; }
+  .fade-in:nth-child(2) { animation-delay: 0.2s; }
+  .fade-in:nth-child(3) { animation-delay: 0.3s; }
+  .fade-in:nth-child(4) { animation-delay: 0.4s; }
+  .fade-in:nth-child(5) { animation-delay: 0.5s; }
+  .fade-in:nth-child(6) { animation-delay: 0.6s; }
+
+  .highlight { color: var(--accent); font-weight: 700; }
+  .vave-tag { background: rgba(240,165,0,0.2); color: var(--accent); border-radius: 4px; padding: 1px 7px; font-size: 0.78rem; font-family: 'Share Tech Mono', monospace; }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media(max-width:600px){ .two-col { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header class="header">
+  <div class="header-left">
+    <div class="moto-icon">🏍️</div>
+    <div>
+      <div class="header-title">VAVE – COST DATABASE – M1</div>
+      <div class="header-sub">▸ MODULE 1 · SESSION 2 · TWO-WHEELER MANUFACTURING · VALUE ANALYSIS &amp; VALUE ENGINEERING</div>
+    </div>
+  </div>
+  <div class="header-right">
+    <span class="badge">VAVE TRAINING</span>
+    <button class="btn btn-outline" onclick="window.print()" style="margin-top:0; padding:8px 16px; font-size:0.85rem;">🖨️ PRINT REPORT</button>
+  </div>
+</header>
+
+<!-- ===== MAIN ===== -->
+<div class="main">
+
+  <!-- INFO BOX -->
+  <div class="info-box fade-in">
+    ⚙️ <b>Training Objective:</b> Use this interactive dashboard to explore component costs, identify VAVE opportunities, and complete the function-cost analysis worksheet. 
+    All costs are representative of Indian automotive tier-1 suppliers (Q1 2026). 
+    <b>Target:</b> Identify <span class="highlight">10–15%</span> cost reduction potential across systems. 
+    Focus on components <b>&gt;1.0 kg</b> for weight reduction exercises. Select <b>5–8 components</b> for function-cost analysis.
+  </div>
+
+  <!-- ===== COST SUMMARY CARDS ===== -->
+  <div class="section-title">📊 System-Level Cost Overview</div>
+  <div class="summary-grid">
+    <div class="sum-card engine fade-in" onclick="activateTab('engine')">
+      <div class="card-icon">🔧</div>
+      <div class="card-sys">Engine Components</div>
+      <div class="card-cost">₹7,585</div>
+      <div class="card-meta">8 components · 12.35 kg · <span class="vave-tag">19.5%</span></div>
+      <div class="pct-bar"><div class="pct-fill" style="width:19.5%"></div></div>
+    </div>
+    <div class="sum-card trans fade-in" onclick="activateTab('trans')">
+      <div class="card-icon">⚙️</div>
+      <div class="card-sys">Transmission System</div>
+      <div class="card-cost">₹7,230</div>
+      <div class="card-meta">8 components · 11.97 kg · <span class="vave-tag">18.6%</span></div>
+      <div class="pct-bar"><div class="pct-fill" style="width:18.6%"></div></div>
+    </div>
+    <div class="sum-card chassis fade-in" onclick="activateTab('chassis')">
+      <div class="card-icon">🏗️</div>
+      <div class="card-sys">Chassis &amp; Frame</div>
+      <div class="card-cost">₹9,240</div>
+      <div class="card-meta">8 components · 20.60 kg · <span class="vave-tag">23.8%</span></div>
+      <div class="pct-bar"><div class="pct-fill" style="width:23.8%"></div></div>
+    </div>
+    <div class="sum-card elec fade-in" onclick="activateTab('elec')">
+      <div class="card-icon">⚡</div>
+      <div class="card-sys">Electrical System</div>
+      <div class="card-cost">₹13,900</div>
+      <div class="card-meta">10 components · 9.91 kg · <span class="vave-tag">35.7%</span></div>
+      <div class="pct-bar"><div class="pct-fill" style="width:35.7%"></div></div>
+    </div>
+    <div class="sum-card wheels fade-in" onclick="activateTab('wheels')">
+      <div class="card-icon">🛞</div>
+      <div class="card-sys">Wheels &amp; Braking</div>
+      <div class="card-cost">₹10,470</div>
+      <div class="card-meta">10 components · 18.97 kg · <span class="vave-tag">26.9%</span></div>
+      <div class="pct-bar"><div class="pct-fill" style="width:26.9%"></div></div>
+    </div>
+    <div class="sum-card body fade-in" onclick="activateTab('body')">
+      <div class="card-icon">🎨</div>
+      <div class="card-sys">Body &amp; Cosmetics</div>
+      <div class="card-cost">₹6,260</div>
+      <div class="card-meta">8 components · 10.53 kg · <span class="vave-tag">16.1%</span></div>
+      <div class="pct-bar"><div class="pct-fill" style="width:16.1%"></div></div>
+    </div>
+  </div>
+
+  <!-- CHART + LEGEND -->
+  <div class="chart-section">
+    <div>
+      <div class="donut-wrap">
+        <svg width="240" height="240" viewBox="0 0 240 240">
+          <!-- Donut segments (circumference of r=80 circle = 502.65) -->
+          <!-- Engine 19.5% = 98 -->
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#f97316" stroke-width="28"
+            stroke-dasharray="98 404" stroke-dashoffset="0"/>
+          <!-- Trans 18.6% = 93.5 -->
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#8b5cf6" stroke-width="28"
+            stroke-dasharray="93.5 408" stroke-dashoffset="-98"/>
+          <!-- Chassis 23.8% = 119.6 -->
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#22c55e" stroke-width="28"
+            stroke-dasharray="119.6 383" stroke-dashoffset="-191.5"/>
+          <!-- Elec 35.7% = 179.4 -->
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#f0a500" stroke-width="28"
+            stroke-dasharray="179.4 323" stroke-dashoffset="-311.1"/>
+          <!-- Wheels 26.9% = 135.2 -->
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#06b6d4" stroke-width="28"
+            stroke-dasharray="135.2 367" stroke-dashoffset="-490.5"/>
+          <!-- Body 16.1% = 80.9 -->
+          <circle cx="120" cy="120" r="80" fill="none" stroke="#ec4899" stroke-width="28"
+            stroke-dasharray="80.9 421" stroke-dashoffset="-625.7"/>
+        </svg>
+        <div class="donut-center">
+          <div class="donut-total">₹54,685</div>
+          <div class="donut-label">TOTAL COST</div>
+          <div class="donut-label">52 PARTS · 84.33 kg</div>
+        </div>
+      </div>
+    </div>
+    <div>
+      <div class="section-title" style="margin-bottom:12px">🍩 Cost Distribution</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f97316"></div><div class="legend-text">🔧 Engine Components</div><div class="legend-pct">₹7,585 · 19.5%</div></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div><div class="legend-text">⚙️ Transmission System</div><div class="legend-pct">₹7,230 · 18.6%</div></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#22c55e"></div><div class="legend-text">🏗️ Chassis &amp; Frame</div><div class="legend-pct">₹9,240 · 23.8%</div></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#f0a500"></div><div class="legend-text">⚡ Electrical System</div><div class="legend-pct">₹13,900 · 35.7% ⬅ Highest</div></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#06b6d4"></div><div class="legend-text">🛞 Wheels &amp; Braking</div><div class="legend-pct">₹10,470 · 26.9%</div></div>
+      <div class="legend-item"><div class="legend-dot" style="background:#ec4899"></div><div class="legend-text">🎨 Body &amp; Cosmetics</div><div class="legend-pct">₹6,260 · 16.1%</div></div>
+    </div>
+  </div>
+
+  <!-- ===== COMPONENT DATA TABS ===== -->
+  <div class="section-title">🗂️ Component Cost Database</div>
+  <div class="tabs">
+    <button class="tab-btn active" onclick="activateTab('engine')">🔧 Engine</button>
+    <button class="tab-btn" onclick="activateTab('trans')">⚙️ Transmission</button>
+    <button class="tab-btn" onclick="activateTab('chassis')">🏗️ Chassis</button>
+    <button class="tab-btn" onclick="activateTab('elec')">⚡ Electrical</button>
+    <button class="tab-btn" onclick="activateTab('wheels')">🛞 Wheels &amp; Brakes</button>
+    <button class="tab-btn" onclick="activateTab('body')">🎨 Body</button>
+  </div>
+
+  <!-- ENGINE TAB -->
+  <div class="tab-panel active" id="tab-engine">
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Part No.</th><th>Material</th><th>Weight</th><th>Cost (₹)</th><th>Supplier</th><th>Lead Time</th><th>VAVE Flag</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🔩 Cylinder Head</td><td><span class="part-num">ENGCH-001</span></td><td><span class="mat-chip">Aluminum Alloy</span></td><td><span class="weight-pill">2.5 kg</span></td><td><span class="cost-val">₹1,850</span></td><td>Sundaram Auto</td><td><span class="lead-mid">30 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>🔩 Cylinder Block</td><td><span class="part-num">ENGCB-002</span></td><td><span class="mat-chip">Cast Iron</span></td><td><span class="weight-pill">4.8 kg</span></td><td><span class="cost-val">₹2,200</span></td><td>Rane Engine</td><td><span class="lead-mid">35 days</span></td><td><span class="vave-tag">⚖️ Heavy</span></td></tr>
+          <tr><td>🔧 Piston Assembly</td><td><span class="part-num">ENGPA-003</span></td><td><span class="mat-chip">Aluminum</span></td><td><span class="weight-pill">0.35 kg</span></td><td><span class="cost-val">₹450</span></td><td>TVS Group</td><td><span class="lead-fast">20 days</span></td><td>–</td></tr>
+          <tr><td>🔩 Crankshaft</td><td><span class="part-num">ENGCS-004</span></td><td><span class="mat-chip">Forged Steel</span></td><td><span class="weight-pill">3.2 kg</span></td><td><span class="cost-val">₹1,650</span></td><td>Bharat Forge</td><td><span class="lead-slow">45 days</span></td><td><span class="vave-tag">⚖️ Heavy</span></td></tr>
+          <tr><td>🔗 Connecting Rod</td><td><span class="part-num">ENGCR-005</span></td><td><span class="mat-chip">Forged Steel</span></td><td><span class="weight-pill">0.45 kg</span></td><td><span class="cost-val">₹380</span></td><td>Sona BLW</td><td><span class="lead-fast">25 days</span></td><td>–</td></tr>
+          <tr><td>⚙️ Camshaft</td><td><span class="part-num">ENGCM-006</span></td><td><span class="mat-chip">Chilled Cast Iron</span></td><td><span class="weight-pill">0.85 kg</span></td><td><span class="cost-val">₹650</span></td><td>Federal Mogul</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>📦 Cyl. Head Gasket</td><td><span class="part-num">ENGGK-007</span></td><td><span class="mat-chip">Composite</span></td><td><span class="weight-pill">0.08 kg</span></td><td><span class="cost-val">₹85</span></td><td>Elring India</td><td><span class="lead-fast">15 days</span></td><td>–</td></tr>
+          <tr><td>🔩 Valve Set (4 pcs)</td><td><span class="part-num">ENGVL-008</span></td><td><span class="mat-chip">Steel</span></td><td><span class="weight-pill">0.12 kg</span></td><td><span class="cost-val">₹320</span></td><td>Rane Engine</td><td><span class="lead-fast">20 days</span></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- TRANSMISSION TAB -->
+  <div class="tab-panel" id="tab-trans">
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Part No.</th><th>Material</th><th>Weight</th><th>Cost (₹)</th><th>Supplier</th><th>Lead Time</th><th>VAVE Flag</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🏠 Gearbox Housing</td><td><span class="part-num">TRNGH-101</span></td><td><span class="mat-chip">Aluminum Die Cast</span></td><td><span class="weight-pill">3.5 kg</span></td><td><span class="cost-val">₹1,450</span></td><td>Endurance Tech</td><td><span class="lead-slow">40 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>🔩 Main Shaft</td><td><span class="part-num">TRNMS-102</span></td><td><span class="mat-chip">Alloy Steel</span></td><td><span class="weight-pill">1.2 kg</span></td><td><span class="cost-val">₹850</span></td><td>Sona BLW</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🔩 Counter Shaft</td><td><span class="part-num">TRNCS-103</span></td><td><span class="mat-chip">Alloy Steel</span></td><td><span class="weight-pill">0.95 kg</span></td><td><span class="cost-val">₹720</span></td><td>Sona BLW</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>⚙️ Gear Set (5-speed)</td><td><span class="part-num">TRNGS-104</span></td><td><span class="mat-chip">Case Hardened Steel</span></td><td><span class="weight-pill">2.1 kg</span></td><td><span class="cost-val">₹1,850</span></td><td>Schaeffler India</td><td><span class="lead-mid">35 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>🔗 Clutch Assembly</td><td><span class="part-num">TRNCL-105</span></td><td><span class="mat-chip">Multi-material</span></td><td><span class="weight-pill">1.8 kg</span></td><td><span class="cost-val">₹950</span></td><td>Varroc Engineering</td><td><span class="lead-fast">25 days</span></td><td>–</td></tr>
+          <tr><td>🟠 Clutch Plate</td><td><span class="part-num">TRNCP-106</span></td><td><span class="mat-chip">Friction Material</span></td><td><span class="weight-pill">0.45 kg</span></td><td><span class="cost-val">₹280</span></td><td>Rane Brake</td><td><span class="lead-fast">20 days</span></td><td>–</td></tr>
+          <tr><td>⚙️ Primary Drive Gear</td><td><span class="part-num">TRNPD-107</span></td><td><span class="mat-chip">Alloy Steel</span></td><td><span class="weight-pill">0.65 kg</span></td><td><span class="cost-val">₹480</span></td><td>TVS Group</td><td><span class="lead-fast">25 days</span></td><td>–</td></tr>
+          <tr><td>⛓️ Final Drive Chain</td><td><span class="part-num">TRNFC-108</span></td><td><span class="mat-chip">High Tensile Steel</span></td><td><span class="weight-pill">1.2 kg</span></td><td><span class="cost-val">₹650</span></td><td>RK Japan</td><td><span class="lead-slow">45 days</span></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- CHASSIS TAB -->
+  <div class="tab-panel" id="tab-chassis">
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Part No.</th><th>Material</th><th>Weight</th><th>Cost (₹)</th><th>Supplier</th><th>Lead Time</th><th>VAVE Flag</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🏗️ Main Frame</td><td><span class="part-num">CHSMF-201</span></td><td><span class="mat-chip">High Tensile Steel Tube</span></td><td><span class="weight-pill">8.5 kg</span></td><td><span class="cost-val">₹1,850</span></td><td>Tubular India</td><td><span class="lead-slow">40 days</span></td><td><span class="vave-tag">⚖️ Heaviest</span></td></tr>
+          <tr><td>🔩 Swingarm</td><td><span class="part-num">CHSSA-202</span></td><td><span class="mat-chip">Aluminum Alloy</span></td><td><span class="weight-pill">2.8 kg</span></td><td><span class="cost-val">₹1,250</span></td><td>Endurance Tech</td><td><span class="lead-mid">35 days</span></td><td>–</td></tr>
+          <tr><td>🔭 Front Fork Assembly</td><td><span class="part-num">CHSFF-203</span></td><td><span class="mat-chip">Steel + Aluminum</span></td><td><span class="weight-pill">3.5 kg</span></td><td><span class="cost-val">₹2,450</span></td><td>Showa India</td><td><span class="lead-slow">50 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>🔩 Steering Head</td><td><span class="part-num">CHSSH-204</span></td><td><span class="mat-chip">Forged Steel</span></td><td><span class="weight-pill">1.2 kg</span></td><td><span class="cost-val">₹650</span></td><td>Rane Group</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🌀 Rear Suspension</td><td><span class="part-num">CHSRS-205</span></td><td><span class="mat-chip">Steel + Gas Shock</span></td><td><span class="weight-pill">2.2 kg</span></td><td><span class="cost-val">₹1,850</span></td><td>Gabriel India</td><td><span class="lead-slow">40 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>🛡️ Front Mudguard</td><td><span class="part-num">CHSFM-206</span></td><td><span class="mat-chip">ABS Plastic</span></td><td><span class="weight-pill">0.85 kg</span></td><td><span class="cost-val">₹420</span></td><td>Motherson Sumi</td><td><span class="lead-fast">25 days</span></td><td>–</td></tr>
+          <tr><td>🛡️ Rear Mudguard</td><td><span class="part-num">CHSRM-207</span></td><td><span class="mat-chip">ABS Plastic</span></td><td><span class="weight-pill">0.95 kg</span></td><td><span class="cost-val">₹450</span></td><td>Motherson Sumi</td><td><span class="lead-fast">25 days</span></td><td>–</td></tr>
+          <tr><td>🦶 Footrest Assembly</td><td><span class="part-num">CHSFR-208</span></td><td><span class="mat-chip">Aluminum Die Cast</span></td><td><span class="weight-pill">0.65 kg</span></td><td><span class="cost-val">₹320</span></td><td>Local Vendor</td><td><span class="lead-fast">20 days</span></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ELECTRICAL TAB -->
+  <div class="tab-panel" id="tab-elec">
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Part No.</th><th>Material</th><th>Weight</th><th>Cost (₹)</th><th>Supplier</th><th>Lead Time</th><th>VAVE Flag</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>🔌 Wiring Harness</td><td><span class="part-num">ELCWH-301</span></td><td><span class="mat-chip">Copper + PVC</span></td><td><span class="weight-pill">1.8 kg</span></td><td><span class="cost-val">₹850</span></td><td>Minda Industries</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🔋 Battery (12V 5Ah)</td><td><span class="part-num">ELCBT-302</span></td><td><span class="mat-chip">Lead Acid</span></td><td><span class="weight-pill">2.5 kg</span></td><td><span class="cost-val">₹1,250</span></td><td>Exide Industries</td><td><span class="lead-fast">15 days</span></td><td><span class="vave-tag">💡 Alt: Li-Ion?</span></td></tr>
+          <tr><td>🖥️ ECU (Engine Control)</td><td><span class="part-num">ELCEC-303</span></td><td><span class="mat-chip">Electronics</span></td><td><span class="weight-pill">0.35 kg</span></td><td><span class="cost-val">₹3,850</span></td><td>Bosch India</td><td><span class="lead-slow">60 days</span></td><td><span class="vave-tag">🎯 Highest Single</span></td></tr>
+          <tr><td>⚡ Starter Motor</td><td><span class="part-num">ELCSM-304</span></td><td><span class="mat-chip">Electric Motor</span></td><td><span class="weight-pill">1.5 kg</span></td><td><span class="cost-val">₹1,450</span></td><td>Mitsuba India</td><td><span class="lead-mid">35 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>🔆 Alternator/Generator</td><td><span class="part-num">ELCAG-305</span></td><td><span class="mat-chip">Electric Generator</span></td><td><span class="weight-pill">1.8 kg</span></td><td><span class="cost-val">₹1,850</span></td><td>Denso India</td><td><span class="lead-slow">40 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>⚡ Ignition Coil</td><td><span class="part-num">ELC-IC306</span></td><td><span class="mat-chip">Copper + Epoxy</span></td><td><span class="weight-pill">0.25 kg</span></td><td><span class="cost-val">₹450</span></td><td>NGK India</td><td><span class="lead-fast">25 days</span></td><td>–</td></tr>
+          <tr><td>💡 Headlight Assembly</td><td><span class="part-num">ELCHL-307</span></td><td><span class="mat-chip">LED + Plastic</span></td><td><span class="weight-pill">0.65 kg</span></td><td><span class="cost-val">₹950</span></td><td>Lumax Auto</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🔴 Tail Light Assembly</td><td><span class="part-num">ELCTL-308</span></td><td><span class="mat-chip">LED + Plastic</span></td><td><span class="weight-pill">0.35 kg</span></td><td><span class="cost-val">₹420</span></td><td>Lumax Auto</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>📊 Speedometer Console</td><td><span class="part-num">ELCSC-309</span></td><td><span class="mat-chip">Digital Display</span></td><td><span class="weight-pill">0.45 kg</span></td><td><span class="cost-val">₹1,650</span></td><td>Minda Industries</td><td><span class="lead-mid">35 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>📯 Horn</td><td><span class="part-num">ELCHN-310</span></td><td><span class="mat-chip">Electric</span></td><td><span class="weight-pill">0.18 kg</span></td><td><span class="cost-val">₹180</span></td><td>Minda Industries</td><td><span class="lead-fast">15 days</span></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- WHEELS TAB -->
+  <div class="tab-panel" id="tab-wheels">
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Part No.</th><th>Material</th><th>Weight</th><th>Cost (₹)</th><th>Supplier</th><th>Lead Time</th><th>VAVE Flag</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>⭕ Front Wheel Rim (17")</td><td><span class="part-num">WHLFR-401</span></td><td><span class="mat-chip">Aluminum Alloy</span></td><td><span class="weight-pill">2.2 kg</span></td><td><span class="cost-val">₹950</span></td><td>Enkei India</td><td><span class="lead-mid">35 days</span></td><td>–</td></tr>
+          <tr><td>⭕ Rear Wheel Rim (17")</td><td><span class="part-num">WHLRR-402</span></td><td><span class="mat-chip">Aluminum Alloy</span></td><td><span class="weight-pill">2.5 kg</span></td><td><span class="cost-val">₹1,050</span></td><td>Enkei India</td><td><span class="lead-mid">35 days</span></td><td>–</td></tr>
+          <tr><td>🟤 Front Tire 100/80-17</td><td><span class="part-num">WHLFT-403</span></td><td><span class="mat-chip">Rubber Compound</span></td><td><span class="weight-pill">3.5 kg</span></td><td><span class="cost-val">₹1,850</span></td><td>MRF Tyres</td><td><span class="lead-fast">20 days</span></td><td>–</td></tr>
+          <tr><td>🟤 Rear Tire 130/70-17</td><td><span class="part-num">WHLRT-404</span></td><td><span class="mat-chip">Rubber Compound</span></td><td><span class="weight-pill">4.2 kg</span></td><td><span class="cost-val">₹2,250</span></td><td>MRF Tyres</td><td><span class="lead-fast">20 days</span></td><td><span class="vave-tag">⚖️ Heavy</span></td></tr>
+          <tr><td>🔵 Front Disc Brake</td><td><span class="part-num">BRKFD-405</span></td><td><span class="mat-chip">Stainless Steel</span></td><td><span class="weight-pill">1.5 kg</span></td><td><span class="cost-val">₹850</span></td><td>Rane Brake</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🔵 Rear Disc Brake</td><td><span class="part-num">BRKRD-406</span></td><td><span class="mat-chip">Stainless Steel</span></td><td><span class="weight-pill">1.2 kg</span></td><td><span class="cost-val">₹720</span></td><td>Rane Brake</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🔧 Front Brake Caliper</td><td><span class="part-num">BRKFC-407</span></td><td><span class="mat-chip">Aluminum Die Cast</span></td><td><span class="weight-pill">0.85 kg</span></td><td><span class="cost-val">₹1,250</span></td><td>Rane Brake</td><td><span class="lead-mid">35 days</span></td><td><span class="vave-tag">🎯 High Cost</span></td></tr>
+          <tr><td>🔧 Rear Brake Caliper</td><td><span class="part-num">BRKRC-408</span></td><td><span class="mat-chip">Aluminum Die Cast</span></td><td><span class="weight-pill">0.65 kg</span></td><td><span class="cost-val">₹950</span></td><td>Rane Brake</td><td><span class="lead-mid">35 days</span></td><td>–</td></tr>
+          <tr><td>🟡 Brake Pads (Front)</td><td><span class="part-num">BRKPF-409</span></td><td><span class="mat-chip">Friction Material</span></td><td><span class="weight-pill">0.15 kg</span></td><td><span class="cost-val">₹320</span></td><td>Rane Brake</td><td><span class="lead-fast">15 days</span></td><td>–</td></tr>
+          <tr><td>🟡 Brake Pads (Rear)</td><td><span class="part-num">BRKPR-410</span></td><td><span class="mat-chip">Friction Material</span></td><td><span class="weight-pill">0.12 kg</span></td><td><span class="cost-val">₹280</span></td><td>Rane Brake</td><td><span class="lead-fast">15 days</span></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- BODY TAB -->
+  <div class="tab-panel" id="tab-body">
+    <div class="data-table-wrap">
+      <table>
+        <thead>
+          <tr><th>Component</th><th>Part No.</th><th>Material</th><th>Weight</th><th>Cost (₹)</th><th>Supplier</th><th>Lead Time</th><th>VAVE Flag</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>⛽ Fuel Tank</td><td><span class="part-num">BDYFT-501</span></td><td><span class="mat-chip">Steel Sheet Metal</span></td><td><span class="weight-pill">2.5 kg</span></td><td><span class="cost-val">₹1,450</span></td><td>Pricol Limited</td><td><span class="lead-slow">40 days</span></td><td><span class="vave-tag">💡 Alt: Plastic?</span></td></tr>
+          <tr><td>🛡️ Side Panels (Pair)</td><td><span class="part-num">BDYSP-502</span></td><td><span class="mat-chip">ABS Plastic</span></td><td><span class="weight-pill">1.8 kg</span></td><td><span class="cost-val">₹850</span></td><td>Motherson Sumi</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🔲 Front Cowl</td><td><span class="part-num">BDYFC-503</span></td><td><span class="mat-chip">ABS Plastic</span></td><td><span class="weight-pill">1.5 kg</span></td><td><span class="cost-val">₹950</span></td><td>Motherson Sumi</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🔲 Tail Cowl</td><td><span class="part-num">BDYTC-504</span></td><td><span class="mat-chip">ABS Plastic</span></td><td><span class="weight-pill">1.2 kg</span></td><td><span class="cost-val">₹720</span></td><td>Motherson Sumi</td><td><span class="lead-mid">30 days</span></td><td>–</td></tr>
+          <tr><td>🛋️ Seat Assembly</td><td><span class="part-num">BDYSA-505</span></td><td><span class="mat-chip">Foam + Vinyl</span></td><td><span class="weight-pill">2.8 kg</span></td><td><span class="cost-val">₹1,250</span></td><td>Harita Seating</td><td><span class="lead-mid">35 days</span></td><td>–</td></tr>
+          <tr><td>🤜 Handle Grip Set</td><td><span class="part-num">BDYHG-506</span></td><td><span class="mat-chip">Rubber</span></td><td><span class="weight-pill">0.15 kg</span></td><td><span class="cost-val">₹120</span></td><td>Local Vendor</td><td><span class="lead-fast">15 days</span></td><td>–</td></tr>
+          <tr><td>🪞 Mirrors (Pair)</td><td><span class="part-num">BDYMR-507</span></td><td><span class="mat-chip">Plastic + Glass</span></td><td><span class="weight-pill">0.35 kg</span></td><td><span class="cost-val">₹280</span></td><td>Minda Industries</td><td><span class="lead-fast">20 days</span></td><td>–</td></tr>
+          <tr><td>🎨 Graphics/Decals</td><td><span class="part-num">BDYGR-508</span></td><td><span class="mat-chip">Vinyl Stickers</span></td><td><span class="weight-pill">0.08 kg</span></td><td><span class="cost-val">₹420</span></td><td>Local Vendor</td><td><span class="lead-fast">10 days</span></td><td>–</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ===== VAVE EXERCISE SECTION ===== -->
+  <div class="section-title">🧪 VAVE Hands-On Exercise Worksheet</div>
+  <div class="info-box">
+    <b>Instructions:</b> Complete the exercises below. Select components, identify primary functions, estimate cost savings, and propose alternatives. Target: <b>10–15% cost reduction</b> across your selected components.
+    When done, click <b>Generate Report</b> to preview your findings, then print using the Print button.
+  </div>
+
+  <!-- EXERCISE 1: COMPONENT SELECTION -->
+  <div class="exercise-grid">
+    <div class="exercise-card">
+      <div class="ex-title">📋 Exercise 1 – Component Selection</div>
+      <label>Participant Name</label>
+      <input type="text" id="partName" placeholder="Enter your full name">
+      <label>Batch / Roll No.</label>
+      <input type="text" id="partBatch" placeholder="e.g., VAVE-2026-B1">
+      <label>Date</label>
+      <input type="text" id="partDate" placeholder="e.g., 22 Feb 2026">
+      <label>Select System to Analyze</label>
+      <select id="sysSelect" onchange="populateComponents()">
+        <option value="">-- Choose a system --</option>
+        <option value="engine">Engine Components</option>
+        <option value="trans">Transmission System</option>
+        <option value="chassis">Chassis &amp; Frame</option>
+        <option value="elec">Electrical System</option>
+        <option value="wheels">Wheels &amp; Braking</option>
+        <option value="body">Body &amp; Cosmetics</option>
+      </select>
+      <label>Select Component for Analysis</label>
+      <select id="compSelect" onchange="fillComponentData()">
+        <option value="">-- Select system first --</option>
+      </select>
+      <div id="comp-info" style="display:none; margin-top:12px; background:var(--bg); border:1px solid var(--border); border-radius:8px; padding:12px; font-family:'Share Tech Mono',monospace; font-size:0.82rem; line-height:1.9;">
+        <span id="comp-details"></span>
+      </div>
+    </div>
+
+    <div class="exercise-card">
+      <div class="ex-title">🎯 Exercise 2 – Function Analysis</div>
+      <label>Primary Function (use verb + noun)</label>
+      <input type="text" id="primFunc" placeholder="e.g., Transmit torque / Support load / Control ignition">
+      <label>Secondary Function</label>
+      <input type="text" id="secFunc" placeholder="e.g., Reduce noise / Improve aesthetics">
+      <label>Is this function BASIC or SECONDARY?</label>
+      <select id="funcType">
+        <option value="">-- Select --</option>
+        <option value="Basic">Basic (Essential — must perform)</option>
+        <option value="Secondary">Secondary (Support function)</option>
+        <option value="Unwanted">Unwanted (Causes problems)</option>
+      </select>
+      <label>Current Cost (₹)</label>
+      <input type="number" id="currCost" placeholder="Auto-fills on component select">
+      <label>Worth / Lowest Cost to Perform Function (₹)</label>
+      <input type="number" id="worthCost" placeholder="Your estimate">
+      <label>Value Index (VI = Worth / Cost) — enter manually or click Calculate</label>
+      <input type="text" id="vi" placeholder="e.g., 0.65 = poor value; 1.0 = ideal">
+      <button class="btn" onclick="calcVI()" style="margin-top:10px; padding:8px 16px; font-size:0.85rem;">⚡ Calculate VI</button>
+    </div>
+  </div>
+
+  <!-- EXERCISE 3: VAVE IDEAS TABLE -->
+  <div class="exercise-card" style="margin-bottom:20px;">
+    <div class="ex-title">💡 Exercise 3 – VAVE Idea Generation (Brainstorm)</div>
+    <p style="font-size:0.85rem; color:var(--muted); margin-bottom:14px;">Fill in at least 3 improvement ideas for your selected component. Consider material substitution, design change, process change, or supplier change.</p>
+    <div class="data-table-wrap">
+      <table class="brainstorm-table">
+        <thead>
+          <tr><th>#</th><th>VAVE Type</th><th>Idea / Proposal</th><th>Est. Cost Saving (₹)</th><th>Risk (H/M/L)</th><th>Feasibility</th></tr>
+        </thead>
+        <tbody>
+          <tr id="brow1">
+            <td>1</td>
+            <td><select><option>-- Select --</option><option>Value Analysis</option><option>Value Engineering</option><option>Material Sub.</option><option>Process Change</option><option>Design Change</option><option>Supplier Change</option></select></td>
+            <td><input type="text" placeholder="Describe idea..."></td>
+            <td><input type="number" placeholder="₹"></td>
+            <td><select><option>-- --</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+            <td><select><option>-- --</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></td>
+          </tr>
+          <tr id="brow2">
+            <td>2</td>
+            <td><select><option>-- Select --</option><option>Value Analysis</option><option>Value Engineering</option><option>Material Sub.</option><option>Process Change</option><option>Design Change</option><option>Supplier Change</option></select></td>
+            <td><input type="text" placeholder="Describe idea..."></td>
+            <td><input type="number" placeholder="₹"></td>
+            <td><select><option>-- --</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+            <td><select><option>-- --</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></td>
+          </tr>
+          <tr id="brow3">
+            <td>3</td>
+            <td><select><option>-- Select --</option><option>Value Analysis</option><option>Value Engineering</option><option>Material Sub.</option><option>Process Change</option><option>Design Change</option><option>Supplier Change</option></select></td>
+            <td><input type="text" placeholder="Describe idea..."></td>
+            <td><input type="number" placeholder="₹"></td>
+            <td><select><option>-- --</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+            <td><select><option>-- --</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></td>
+          </tr>
+          <tr id="brow4">
+            <td>4</td>
+            <td><select><option>-- Select --</option><option>Value Analysis</option><option>Value Engineering</option><option>Material Sub.</option><option>Process Change</option><option>Design Change</option><option>Supplier Change</option></select></td>
+            <td><input type="text" placeholder="Describe idea..."></td>
+            <td><input type="number" placeholder="₹"></td>
+            <td><select><option>-- --</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+            <td><select><option>-- --</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></td>
+          </tr>
+          <tr id="brow5">
+            <td>5</td>
+            <td><select><option>-- Select --</option><option>Value Analysis</option><option>Value Engineering</option><option>Material Sub.</option><option>Process Change</option><option>Design Change</option><option>Supplier Change</option></select></td>
+            <td><input type="text" placeholder="Describe idea..."></td>
+            <td><input type="number" placeholder="₹"></td>
+            <td><select><option>-- --</option><option>High</option><option>Medium</option><option>Low</option></select></td>
+            <td><select><option>-- --</option><option>Easy</option><option>Moderate</option><option>Difficult</option></select></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- EXERCISE 4: SAVINGS CALCULATOR -->
+  <div class="exercise-grid">
+    <div class="exercise-card">
+      <div class="ex-title">💰 Exercise 4 – Cost Savings Calculator</div>
+      <label>Current Component Cost (₹)</label>
+      <input type="number" id="calcCurrCost" placeholder="e.g., 3850">
+      <label>Proposed / Revised Cost (₹)</label>
+      <input type="number" id="calcNewCost" placeholder="e.g., 3200">
+      <label>Annual Production Volume (units)</label>
+      <input type="number" id="calcVolume" placeholder="e.g., 50000">
+      <button class="btn" onclick="calcSavings()">🧮 Calculate Annual Savings</button>
+      <div class="result-box" id="savingsResult">Savings will appear here after calculation...</div>
+    </div>
+
+    <div class="exercise-card">
+      <div class="ex-title">📝 Exercise 5 – Reflection &amp; Observations</div>
+      <label>What VAVE approach gave the best result in your analysis?</label>
+      <textarea id="reflQ1" placeholder="e.g., Material substitution on Cylinder Block from Cast Iron to ADC-12 Aluminum could reduce weight by 40% and cost by ₹400..."></textarea>
+      <label>What challenges might limit your VAVE proposals?</label>
+      <textarea id="reflQ2" placeholder="e.g., Supplier qualification time, tooling costs, performance validation..."></textarea>
+      <label>Rate your confidence in VAVE (1=low, 5=high)</label>
+      <select id="confRating">
+        <option value="">-- Select --</option>
+        <option>1 – Just starting out</option>
+        <option>2 – Getting familiar</option>
+        <option>3 – Comfortable</option>
+        <option>4 – Confident</option>
+        <option>5 – Expert level</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- GENERATE REPORT -->
+  <div style="text-align:center; margin-bottom:20px;">
+    <button class="btn" onclick="generateReport()" style="font-size:1.1rem; padding:14px 36px;">📄 Generate My Training Report</button>
+    &nbsp;&nbsp;
+    <button class="btn btn-outline" onclick="window.print()" style="font-size:1rem; padding:12px 28px; margin-top:0;">🖨️ Print Report</button>
+  </div>
+
+  <!-- REPORT AREA -->
+  <div class="report-area" id="reportArea" style="display:none;">
+    <div class="section-title">📄 VAVE Training Report – Module 1</div>
+    <div id="reportContent" style="font-family:'Share Tech Mono',monospace; font-size:0.88rem; line-height:1.9; color:var(--text);"></div>
+  </div>
+
+  <!-- REFERENCE NOTES -->
+  <div class="section-title" style="margin-top:8px;">📌 Training Notes &amp; Reference</div>
+  <div class="exercise-card">
+    <div class="two-col">
+      <div>
+        <div class="ex-title">🔑 Key VAVE Principles</div>
+        <p style="font-size:0.87rem; color:var(--muted); line-height:1.8;">
+          <span class="vave-tag">VA</span> Value Analysis: Systematic review of existing product/process<br>
+          <span class="vave-tag">VE</span> Value Engineering: Applied during design stage<br>
+          <b style="color:var(--accent)">Value = Function ÷ Cost</b><br>
+          Function must be defined as: <em>Verb + Noun</em><br>
+          Target: Reduce cost WITHOUT reducing function/quality<br>
+          Identify: Basic Functions vs Secondary Functions<br>
+          Tools: Function Analysis, Brainstorming, Cost Benchmarking
+        </p>
+      </div>
+      <div>
+        <div class="ex-title">⚠️ High-Priority Items for This Session</div>
+        <p style="font-size:0.87rem; color:var(--muted); line-height:1.8;">
+          🔴 <b style="color:var(--red)">ECU (ELCEC-303)</b> — ₹3,850 · Highest single part<br>
+          🔴 <b style="color:var(--red)">Electrical System</b> — 35.7% of total cost<br>
+          🟠 <b style="color:var(--accent)">Front Fork (CHSFF-203)</b> — ₹2,450 · 50-day lead<br>
+          🟠 <b style="color:var(--accent)">Cylinder Block (ENGCB-002)</b> — 4.8 kg · Cast Iron → Aluminum?<br>
+          🟠 <b style="color:var(--accent)">Main Frame (CHSMF-201)</b> — 8.5 kg · Heaviest part<br>
+          🟡 <b style="color:var(--green)">Final Drive Chain</b> — 45-day lead · Supply risk<br>
+          💡 Battery — Lead-acid → Lithium-ion opportunity
+        </p>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /main -->
+
+<!-- FOOTER -->
+<footer>
+  <div>🏍️ VAVE Training Program · Two-Wheeler Manufacturing · Module 1 Session 2 · Q1 2026</div>
+  <div class="trainer-sig">Trainer: Prabhakar Neelakanth</div>
+</footer>
+
+<script>
+  // ===== COMPONENT DATABASE =====
+  const componentDB = {
+    engine: [
+      {name:"Cylinder Head",partNo:"ENGCH-001",material:"Aluminum Alloy",weight:"2.5",cost:1850,supplier:"Sundaram Auto",lead:"30"},
+      {name:"Cylinder Block",partNo:"ENGCB-002",material:"Cast Iron",weight:"4.8",cost:2200,supplier:"Rane Engine",lead:"35"},
+      {name:"Piston Assembly",partNo:"ENGPA-003",material:"Aluminum",weight:"0.35",cost:450,supplier:"TVS Group",lead:"20"},
+      {name:"Crankshaft",partNo:"ENGCS-004",material:"Forged Steel",weight:"3.2",cost:1650,supplier:"Bharat Forge",lead:"45"},
+      {name:"Connecting Rod",partNo:"ENGCR-005",material:"Forged Steel",weight:"0.45",cost:380,supplier:"Sona BLW",lead:"25"},
+      {name:"Camshaft",partNo:"ENGCM-006",material:"Chilled Cast Iron",weight:"0.85",cost:650,supplier:"Federal Mogul",lead:"30"},
+      {name:"Cylinder Head Gasket",partNo:"ENGGK-007",material:"Composite",weight:"0.08",cost:85,supplier:"Elring India",lead:"15"},
+      {name:"Valve Set (4 pcs)",partNo:"ENGVL-008",material:"Steel",weight:"0.12",cost:320,supplier:"Rane Engine",lead:"20"}
+    ],
+    trans: [
+      {name:"Gearbox Housing",partNo:"TRNGH-101",material:"Aluminum Die Cast",weight:"3.5",cost:1450,supplier:"Endurance Tech",lead:"40"},
+      {name:"Main Shaft",partNo:"TRNMS-102",material:"Alloy Steel",weight:"1.2",cost:850,supplier:"Sona BLW",lead:"30"},
+      {name:"Counter Shaft",partNo:"TRNCS-103",material:"Alloy Steel",weight:"0.95",cost:720,supplier:"Sona BLW",lead:"30"},
+      {name:"Gear Set (5-speed)",partNo:"TRNGS-104",material:"Case Hardened Steel",weight:"2.1",cost:1850,supplier:"Schaeffler India",lead:"35"},
+      {name:"Clutch Assembly",partNo:"TRNCL-105",material:"Multi-material",weight:"1.8",cost:950,supplier:"Varroc Engineering",lead:"25"},
+      {name:"Clutch Plate",partNo:"TRNCP-106",material:"Friction Material",weight:"0.45",cost:280,supplier:"Rane Brake",lead:"20"},
+      {name:"Primary Drive Gear",partNo:"TRNPD-107",material:"Alloy Steel",weight:"0.65",cost:480,supplier:"TVS Group",lead:"25"},
+      {name:"Final Drive Chain",partNo:"TRNFC-108",material:"High Tensile Steel",weight:"1.2",cost:650,supplier:"RK Japan",lead:"45"}
+    ],
+    chassis: [
+      {name:"Main Frame",partNo:"CHSMF-201",material:"High Tensile Steel Tube",weight:"8.5",cost:1850,supplier:"Tubular India",lead:"40"},
+      {name:"Swingarm",partNo:"CHSSA-202",material:"Aluminum Alloy",weight:"2.8",cost:1250,supplier:"Endurance Tech",lead:"35"},
+      {name:"Front Fork Assembly",partNo:"CHSFF-203",material:"Steel + Aluminum",weight:"3.5",cost:2450,supplier:"Showa India",lead:"50"},
+      {name:"Steering Head",partNo:"CHSSH-204",material:"Forged Steel",weight:"1.2",cost:650,supplier:"Rane Group",lead:"30"},
+      {name:"Rear Suspension",partNo:"CHSRS-205",material:"Steel + Gas Shock",weight:"2.2",cost:1850,supplier:"Gabriel India",lead:"40"},
+      {name:"Front Mudguard",partNo:"CHSFM-206",material:"ABS Plastic",weight:"0.85",cost:420,supplier:"Motherson Sumi",lead:"25"},
+      {name:"Rear Mudguard",partNo:"CHSRM-207",material:"ABS Plastic",weight:"0.95",cost:450,supplier:"Motherson Sumi",lead:"25"},
+      {name:"Footrest Assembly",partNo:"CHSFR-208",material:"Aluminum Die Cast",weight:"0.65",cost:320,supplier:"Local Vendor",lead:"20"}
+    ],
+    elec: [
+      {name:"Wiring Harness",partNo:"ELCWH-301",material:"Copper + PVC",weight:"1.8",cost:850,supplier:"Minda Industries",lead:"30"},
+      {name:"Battery (12V 5Ah)",partNo:"ELCBT-302",material:"Lead Acid",weight:"2.5",cost:1250,supplier:"Exide Industries",lead:"15"},
+      {name:"ECU (Engine Control)",partNo:"ELCEC-303",material:"Electronics",weight:"0.35",cost:3850,supplier:"Bosch India",lead:"60"},
+      {name:"Starter Motor",partNo:"ELCSM-304",material:"Electric Motor",weight:"1.5",cost:1450,supplier:"Mitsuba India",lead:"35"},
+      {name:"Alternator/Generator",partNo:"ELCAG-305",material:"Electric Generator",weight:"1.8",cost:1850,supplier:"Denso India",lead:"40"},
+      {name:"Ignition Coil",partNo:"ELC-IC306",material:"Copper + Epoxy",weight:"0.25",cost:450,supplier:"NGK India",lead:"25"},
+      {name:"Headlight Assembly",partNo:"ELCHL-307",material:"LED + Plastic",weight:"0.65",cost:950,supplier:"Lumax Auto",lead:"30"},
+      {name:"Tail Light Assembly",partNo:"ELCTL-308",material:"LED + Plastic",weight:"0.35",cost:420,supplier:"Lumax Auto",lead:"30"},
+      {name:"Speedometer Console",partNo:"ELCSC-309",material:"Digital Display",weight:"0.45",cost:1650,supplier:"Minda Industries",lead:"35"},
+      {name:"Horn",partNo:"ELCHN-310",material:"Electric",weight:"0.18",cost:180,supplier:"Minda Industries",lead:"15"}
+    ],
+    wheels: [
+      {name:"Front Wheel Rim (17\")",partNo:"WHLFR-401",material:"Aluminum Alloy",weight:"2.2",cost:950,supplier:"Enkei India",lead:"35"},
+      {name:"Rear Wheel Rim (17\")",partNo:"WHLRR-402",material:"Aluminum Alloy",weight:"2.5",cost:1050,supplier:"Enkei India",lead:"35"},
+      {name:"Front Tire (100/80-17)",partNo:"WHLFT-403",material:"Rubber Compound",weight:"3.5",cost:1850,supplier:"MRF Tyres",lead:"20"},
+      {name:"Rear Tire (130/70-17)",partNo:"WHLRT-404",material:"Rubber Compound",weight:"4.2",cost:2250,supplier:"MRF Tyres",lead:"20"},
+      {name:"Front Disc Brake",partNo:"BRKFD-405",material:"Stainless Steel",weight:"1.5",cost:850,supplier:"Rane Brake",lead:"30"},
+      {name:"Rear Disc Brake",partNo:"BRKRD-406",material:"Stainless Steel",weight:"1.2",cost:720,supplier:"Rane Brake",lead:"30"},
+      {name:"Front Brake Caliper",partNo:"BRKFC-407",material:"Aluminum Die Cast",weight:"0.85",cost:1250,supplier:"Rane Brake",lead:"35"},
+      {name:"Rear Brake Caliper",partNo:"BRKRC-408",material:"Aluminum Die Cast",weight:"0.65",cost:950,supplier:"Rane Brake",lead:"35"},
+      {name:"Brake Pads (Front)",partNo:"BRKPF-409",material:"Friction Material",weight:"0.15",cost:320,supplier:"Rane Brake",lead:"15"},
+      {name:"Brake Pads (Rear)",partNo:"BRKPR-410",material:"Friction Material",weight:"0.12",cost:280,supplier:"Rane Brake",lead:"15"}
+    ],
+    body: [
+      {name:"Fuel Tank",partNo:"BDYFT-501",material:"Steel Sheet Metal",weight:"2.5",cost:1450,supplier:"Pricol Limited",lead:"40"},
+      {name:"Side Panels (Pair)",partNo:"BDYSP-502",material:"ABS Plastic",weight:"1.8",cost:850,supplier:"Motherson Sumi",lead:"30"},
+      {name:"Front Cowl",partNo:"BDYFC-503",material:"ABS Plastic",weight:"1.5",cost:950,supplier:"Motherson Sumi",lead:"30"},
+      {name:"Tail Cowl",partNo:"BDYTC-504",material:"ABS Plastic",weight:"1.2",cost:720,supplier:"Motherson Sumi",lead:"30"},
+      {name:"Seat Assembly",partNo:"BDYSA-505",material:"Foam + Vinyl",weight:"2.8",cost:1250,supplier:"Harita Seating",lead:"35"},
+      {name:"Handle Grip Set",partNo:"BDYHG-506",material:"Rubber",weight:"0.15",cost:120,supplier:"Local Vendor",lead:"15"},
+      {name:"Mirrors (Pair)",partNo:"BDYMR-507",material:"Plastic + Glass",weight:"0.35",cost:280,supplier:"Minda Industries",lead:"20"},
+      {name:"Graphics/Decals",partNo:"BDYGR-508",material:"Vinyl Stickers",weight:"0.08",cost:420,supplier:"Local Vendor",lead:"10"}
+    ]
+  };
+
+  function activateTab(id) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+    document.getElementById('tab-' + id).classList.add('active');
+    const tabBtns = document.querySelectorAll('.tab-btn');
+    const map = {engine:0, trans:1, chassis:2, elec:3, wheels:4, body:5};
+    if(map[id] !== undefined) tabBtns[map[id]].classList.add('active');
+    // Scroll to table
+    document.getElementById('tab-' + id).scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  function populateComponents() {
+    const sys = document.getElementById('sysSelect').value;
+    const sel = document.getElementById('compSelect');
+    sel.innerHTML = '<option value="">-- Select a component --</option>';
+    if (!sys) return;
+    componentDB[sys].forEach((c, i) => {
+      const opt = document.createElement('option');
+      opt.value = sys + '-' + i;
+      opt.textContent = c.name + ' (' + c.partNo + ')';
+      sel.appendChild(opt);
+    });
+    document.getElementById('comp-info').style.display = 'none';
+  }
+
+  function fillComponentData() {
+    const val = document.getElementById('compSelect').value;
+    if (!val) { document.getElementById('comp-info').style.display='none'; return; }
+    const [sys, idx] = val.split('-');
+    const c = componentDB[sys][parseInt(idx)];
+    document.getElementById('currCost').value = c.cost;
+    document.getElementById('calcCurrCost').value = c.cost;
+    const info = document.getElementById('comp-info');
+    info.style.display = 'block';
+    document.getElementById('comp-details').innerHTML =
+      `Part No   : ${c.partNo}\n` +
+      `Component : ${c.name}\n` +
+      `Material  : ${c.material}\n` +
+      `Weight    : ${c.weight} kg\n` +
+      `Cost      : ₹${c.cost}\n` +
+      `Supplier  : ${c.supplier}\n` +
+      `Lead Time : ${c.lead} days`;
+  }
+
+  function calcVI() {
+    const curr = parseFloat(document.getElementById('currCost').value) || 0;
+    const worth = parseFloat(document.getElementById('worthCost').value) || 0;
+    if (!curr || !worth) { alert('Enter both Current Cost and Worth values'); return; }
+    const vi = (worth / curr).toFixed(3);
+    document.getElementById('vi').value = vi;
+    let msg = vi < 0.7 ? '⚠️ Poor Value — Strong VAVE opportunity!' : vi < 1.0 ? '🟡 Moderate Value — Improvement possible' : '✅ Good Value';
+    document.getElementById('vi').title = msg;
+  }
+
+  function calcSavings() {
+    const curr = parseFloat(document.getElementById('calcCurrCost').value) || 0;
+    const newC = parseFloat(document.getElementById('calcNewCost').value) || 0;
+    const vol  = parseFloat(document.getElementById('calcVolume').value) || 0;
+    if (!curr || !newC || !vol) { document.getElementById('savingsResult').textContent = '⚠️ Please fill all three fields.'; return; }
+    const saving = curr - newC;
+    const pct = ((saving / curr) * 100).toFixed(1);
+    const annual = saving * vol;
+    const target10 = (curr * 0.10 * vol).toFixed(0);
+    const target15 = (curr * 0.15 * vol).toFixed(0);
+    document.getElementById('savingsResult').textContent =
+      `Unit Savings      : ₹${saving.toFixed(2)} per unit\n` +
+      `Saving %          : ${pct}%\n` +
+      `Annual Volume     : ${vol.toLocaleString()} units\n` +
+      `Annual Savings    : ₹${annual.toLocaleString()}\n` +
+      `────────────────────────────────\n` +
+      `10% Target Saving : ₹${parseInt(target10).toLocaleString()} / year\n` +
+      `15% Target Saving : ₹${parseInt(target15).toLocaleString()} / year\n` +
+      (pct >= 10 ? `✅ MEETS VAVE 10% Target!` : `⚠️ Below 10% Target — explore more ideas`);
+  }
+
+  function generateReport() {
+    const name    = document.getElementById('partName').value || '(not entered)';
+    const batch   = document.getElementById('partBatch').value || '(not entered)';
+    const date    = document.getElementById('partDate').value || new Date().toLocaleDateString();
+    const sysN    = document.getElementById('sysSelect').options[document.getElementById('sysSelect').selectedIndex]?.text || '(not selected)';
+    const compN   = document.getElementById('compSelect').options[document.getElementById('compSelect').selectedIndex]?.text || '(not selected)';
+    const pf      = document.getElementById('primFunc').value || '(not entered)';
+    const sf      = document.getElementById('secFunc').value || '(not entered)';
+    const ft      = document.getElementById('funcType').value || '(not selected)';
+    const cc      = document.getElementById('currCost').value || '–';
+    const wc      = document.getElementById('worthCost').value || '–';
+    const vi      = document.getElementById('vi').value || '–';
+    const r1      = document.getElementById('reflQ1').value || '(not entered)';
+    const r2      = document.getElementById('reflQ2').value || '(not entered)';
+    const cr      = document.getElementById('confRating').value || '(not rated)';
+
+    // Brainstorm rows
+    let brRows = '';
+    for(let i=1; i<=5; i++){
+      const row = document.getElementById('brow'+i);
+      if(row){
+        const cells = row.querySelectorAll('td');
+        const type  = cells[1].querySelector('select')?.value || '–';
+        const idea  = cells[2].querySelector('input')?.value || '–';
+        const sav   = cells[3].querySelector('input')?.value || '–';
+        const risk  = cells[4].querySelector('select')?.value || '–';
+        const feas  = cells[5].querySelector('select')?.value || '–';
+        if(idea && idea !== '–' && idea !== '') {
+          brRows += `  ${i}. [${type}] ${idea} | Saving: ₹${sav} | Risk: ${risk} | Feasibility: ${feas}\n`;
+        }
+      }
+    }
+    if(!brRows) brRows = '  (No ideas entered)\n';
+
+    const report =
+`╔══════════════════════════════════════════════════════════════════╗
+  VAVE TRAINING REPORT — MODULE 1 · TWO-WHEELER MANUFACTURING
+  Training Program: Value Analysis & Value Engineering
+╚══════════════════════════════════════════════════════════════════╝
+
+PARTICIPANT DETAILS
+─────────────────────────────────────
+  Name         : ${name}
+  Batch/Roll   : ${batch}
+  Date         : ${date}
+
+COMPONENT SELECTED
+─────────────────────────────────────
+  System       : ${sysN}
+  Component    : ${compN}
+  Current Cost : ₹${cc}
+
+FUNCTION ANALYSIS
+─────────────────────────────────────
+  Primary Function   : ${pf}
+  Secondary Function : ${sf}
+  Function Type      : ${ft}
+  Worth (₹)          : ₹${wc}
+  Value Index (VI)   : ${vi}  ${parseFloat(vi) < 0.7 ? '⚠️ Poor Value' : parseFloat(vi) < 1 ? '🟡 Average' : '✅ Good'}
+
+VAVE IDEAS GENERATED
+─────────────────────────────────────
+${brRows}
+SAVINGS ANALYSIS
+─────────────────────────────────────
+  Current Cost  : ₹${document.getElementById('calcCurrCost').value || cc}
+  Revised Cost  : ₹${document.getElementById('calcNewCost').value || '(not entered)'}
+  Annual Volume : ${document.getElementById('calcVolume').value || '(not entered)'} units
+${document.getElementById('savingsResult').textContent}
+
+REFLECTION
+─────────────────────────────────────
+  Q1 – Best VAVE Approach:
+  ${r1}
+
+  Q2 – Limitations/Challenges:
+  ${r2}
+
+  Confidence Rating : ${cr}
+
+REFERENCE: TOTAL MOTORCYCLE COST = ₹54,685 | 52 PARTS | 84.33 kg
+VAVE Target: 10–15% Reduction on Selected Components
+
+─────────────────────────────────────
+Prepared for: VAVE Training Program — Automotive Manufacturing
+Trainer: Prabhakar Neelakanth
+Document Ref: M1-S2 | Version 1.0 | Feb 2026
+─────────────────────────────────────`;
+
+    document.getElementById('reportContent').textContent = report;
+    const rArea = document.getElementById('reportArea');
+    rArea.style.display = 'block';
+    rArea.scrollIntoView({behavior:'smooth'});
+  }
+
+  // Animate pct bars on load
+  window.addEventListener('load', () => {
+    setTimeout(() => {
+      document.querySelectorAll('.pct-fill').forEach(el => {
+        const w = el.style.width;
+        el.style.width = '0%';
+        setTimeout(() => { el.style.width = w; }, 100);
+      });
+    }, 300);
+  });
+</script>
+</body>
+</html>

@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VAVE Exercises - M1</title>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Nunito:wght@400;600;700;800&family=Space+Mono:wght@400;700&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --teal: #0D9488;
+    --teal-light: #CCFBF1;
+    --teal-dark: #065F46;
+    --amber: #F59E0B;
+    --amber-light: #FEF3C7;
+    --rose: #F43F5E;
+    --rose-light: #FFE4E6;
+    --indigo: #4F46E5;
+    --indigo-light: #EEF2FF;
+    --purple: #7C3AED;
+    --sky: #0EA5E9;
+    --sky-light: #E0F2FE;
+    --bg: #F0FDF9;
+    --card: #FFFFFF;
+    --text: #1E293B;
+    --muted: #64748B;
+    --border: #CBD5E1;
+    --radius: 16px;
+    --shadow: 0 4px 24px rgba(13,148,136,0.10);
+    --shadow-lg: 0 8px 40px rgba(13,148,136,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Nunito', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    background-image:
+      radial-gradient(circle at 10% 20%, rgba(13,148,136,0.07) 0%, transparent 50%),
+      radial-gradient(circle at 90% 80%, rgba(79,70,229,0.06) 0%, transparent 50%);
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, var(--teal-dark) 0%, var(--teal) 50%, #06B6D4 100%);
+    padding: 28px 40px 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.07);
+  }
+  header::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: 200px;
+    width: 140px; height: 140px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.05);
+  }
+  .header-content { position: relative; z-index: 1; }
+  header h1 {
+    font-family: 'Fredoka One', cursive;
+    font-size: 2.6rem;
+    color: #fff;
+    letter-spacing: 2px;
+    text-shadow: 0 2px 12px rgba(0,0,0,0.2);
+  }
+  header .subtitle {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.85rem;
+    color: #A7F3D0;
+    margin-top: 4px;
+    letter-spacing: 1px;
+  }
+  .badge-row {
+    display: flex; gap: 10px; margin-top: 12px; flex-wrap: wrap;
+  }
+  .badge {
+    background: rgba(255,255,255,0.18);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── TABS ── */
+  .tab-nav {
+    display: flex;
+    gap: 0;
+    background: #fff;
+    border-bottom: 3px solid var(--teal-light);
+    padding: 0 20px;
+    overflow-x: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+    position: sticky; top: 0; z-index: 100;
+  }
+  .tab-btn {
+    background: none;
+    border: none;
+    padding: 14px 20px 10px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    font-weight: 800;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -3px;
+    white-space: nowrap;
+    display: flex; align-items: center; gap: 6px;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .tab-btn:hover { color: var(--teal); }
+  .tab-btn.active {
+    color: var(--teal-dark);
+    border-bottom-color: var(--teal);
+    background: linear-gradient(to bottom, var(--teal-light), transparent);
+  }
+  .tab-btn .tab-icon { font-size: 1.1rem; }
+
+  /* ── MAIN ── */
+  main { max-width: 1100px; margin: 0 auto; padding: 28px 20px 60px; }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; animation: fadeIn 0.35s ease; }
+
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+
+  /* ── CARDS ── */
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 28px 32px;
+    margin-bottom: 24px;
+    border: 1.5px solid var(--border);
+    position: relative;
+  }
+  .card-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.25rem;
+    color: var(--teal-dark);
+    margin-bottom: 18px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .card-title .dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: var(--teal);
+    display: inline-block;
+  }
+
+  /* ── FORM ELEMENTS ── */
+  .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .form-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+  @media(max-width:700px) {
+    .form-grid, .form-grid-3 { grid-template-columns: 1fr; }
+  }
+
+  .field { display: flex; flex-direction: column; gap: 5px; }
+  .field label {
+    font-weight: 800;
+    font-size: 0.82rem;
+    color: var(--teal-dark);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  .field input, .field textarea, .field select {
+    border: 2px solid var(--border);
+    border-radius: 10px;
+    padding: 9px 14px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text);
+    background: #FAFFFE;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    outline: none;
+  }
+  .field input:focus, .field textarea:focus, .field select:focus {
+    border-color: var(--teal);
+    box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
+    background: #fff;
+  }
+  .field textarea { min-height: 80px; resize: vertical; }
+
+  .field-full { grid-column: 1 / -1; }
+
+  /* ── TABLE ── */
+  .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin-top: 8px;
+  }
+  .styled-table thead tr {
+    background: linear-gradient(90deg, var(--teal-dark), var(--teal));
+    color: white;
+  }
+  .styled-table thead th {
+    padding: 11px 14px;
+    text-align: left;
+    font-family: 'Fredoka One', cursive;
+    font-size: 0.95rem;
+    letter-spacing: 0.5px;
+  }
+  .styled-table tbody tr:nth-child(even) { background: var(--teal-light); }
+  .styled-table tbody tr:hover { background: #A7F3D0; }
+  .styled-table td {
+    padding: 8px 10px;
+    border-bottom: 1px solid var(--border);
+  }
+  .styled-table td input, .styled-table td select {
+    width: 100%;
+    border: 1.5px solid var(--border);
+    border-radius: 7px;
+    padding: 6px 9px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.88rem;
+    background: #fff;
+    outline: none;
+  }
+  .styled-table td input:focus, .styled-table td select:focus {
+    border-color: var(--teal);
+    background: #F0FDF9;
+  }
+
+  /* ── BUTTONS ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 22px;
+    border-radius: 12px;
+    border: none;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 800;
+    font-size: 0.92rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+  .btn-teal { background: var(--teal); color: #fff; }
+  .btn-teal:hover { background: var(--teal-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(13,148,136,0.3); }
+  .btn-amber { background: var(--amber); color: #fff; }
+  .btn-amber:hover { background: #D97706; transform: translateY(-1px); }
+  .btn-indigo { background: var(--indigo); color: #fff; }
+  .btn-indigo:hover { background: #3730A3; transform: translateY(-1px); }
+  .btn-rose { background: var(--rose); color: #fff; }
+  .btn-rose:hover { background: #BE123C; transform: translateY(-1px); }
+  .btn-outline {
+    background: transparent;
+    border: 2px solid var(--teal);
+    color: var(--teal);
+  }
+  .btn-outline:hover { background: var(--teal-light); }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 20px; }
+
+  /* ── AI HINT BOX ── */
+  .ai-hint-box {
+    background: linear-gradient(135deg, #EEF2FF, #F5F3FF);
+    border: 2px solid #A5B4FC;
+    border-radius: 14px;
+    padding: 18px 20px;
+    margin-bottom: 24px;
+    position: relative;
+  }
+  .ai-hint-header {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1rem;
+    color: var(--indigo);
+    margin-bottom: 8px;
+  }
+  .ai-hint-header .pulse {
+    width: 10px; height: 10px; border-radius: 50%;
+    background: var(--indigo);
+    animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0%,100% { transform: scale(1); opacity:1; }
+    50% { transform: scale(1.3); opacity:0.6; }
+  }
+  .ai-hint-content {
+    font-size: 0.9rem;
+    color: #3730A3;
+    line-height: 1.6;
+    min-height: 40px;
+  }
+  .ai-hint-btn {
+    margin-top: 10px;
+    background: var(--indigo);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 7px 16px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    display: inline-flex; align-items: center; gap: 5px;
+  }
+  .ai-hint-btn:hover { background: #3730A3; }
+  .ai-hint-btn:disabled { background: #A5B4FC; cursor: not-allowed; }
+  .spinner {
+    width:14px; height:14px; border:2px solid rgba(255,255,255,0.4);
+    border-top-color:#fff; border-radius:50%;
+    animation: spin 0.7s linear infinite; display:none;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── SECTION LABELS ── */
+  .section-label {
+    font-family: 'Space Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  /* ── PHASE BLOCKS ── */
+  .phase-block {
+    border-left: 4px solid;
+    padding-left: 16px;
+    margin-bottom: 20px;
+  }
+  .phase-block.p1 { border-color: var(--teal); }
+  .phase-block.p2 { border-color: var(--amber); }
+  .phase-block.p3 { border-color: var(--indigo); }
+  .phase-block.p4 { border-color: var(--rose); }
+  .phase-title {
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.05rem;
+    margin-bottom: 10px;
+  }
+  .p1 .phase-title { color: var(--teal-dark); }
+  .p2 .phase-title { color: #92400E; }
+  .p3 .phase-title { color: var(--indigo); }
+  .p4 .phase-title { color: #9F1239; }
+
+  /* ── KPI CARDS ── */
+  .kpi-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; margin-bottom: 20px; }
+  @media(max-width:700px){ .kpi-grid { grid-template-columns:1fr; } }
+  .kpi-card {
+    border-radius: 12px;
+    padding: 16px 18px;
+    display: flex; flex-direction: column; gap: 4px;
+  }
+  .kpi-card.c1 { background: var(--teal-light); border: 2px solid var(--teal); }
+  .kpi-card.c2 { background: var(--amber-light); border: 2px solid var(--amber); }
+  .kpi-card.c3 { background: var(--rose-light); border: 2px solid var(--rose); }
+  .kpi-card.c4 { background: var(--indigo-light); border: 2px solid var(--indigo); }
+  .kpi-card.c5 { background: var(--sky-light); border: 2px solid var(--sky); }
+  .kpi-card.c6 { background: #F5F3FF; border: 2px solid var(--purple); }
+  .kpi-label { font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); }
+  .kpi-input {
+    font-family: 'Space Mono', monospace;
+    font-size: 1.2rem;
+    font-weight: 700;
+    border: none;
+    background: transparent;
+    color: var(--text);
+    width: 100%;
+    outline: none;
+  }
+
+  /* ── CHECKLIST ── */
+  .checklist { display: flex; flex-direction: column; gap: 8px; }
+  .check-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 10px 14px;
+    border-radius: 10px;
+    background: #F8FAFC;
+    border: 1.5px solid var(--border);
+    cursor: pointer;
+    transition: background 0.15s;
+    font-size: 0.92rem;
+  }
+  .check-item:hover { background: var(--teal-light); border-color: var(--teal); }
+  .check-item input[type="checkbox"] { width:17px; height:17px; accent-color: var(--teal); cursor: pointer; }
+  .check-item.checked { background: var(--teal-light); border-color: var(--teal); color: var(--teal-dark); font-weight: 700; }
+
+  /* ── RISK TABLE ── */
+  .risk-badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 800;
+  }
+  .risk-L { background: #DCFCE7; color: #166534; }
+  .risk-M { background: #FEF3C7; color: #92400E; }
+  .risk-H { background: #FFE4E6; color: #9F1239; }
+
+  /* ── PRINT ── */
+  .print-bar {
+    background: linear-gradient(90deg, var(--amber-light), #FFF7ED);
+    border: 2px solid var(--amber);
+    border-radius: 12px;
+    padding: 14px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 24px; flex-wrap: wrap; gap: 10px;
+  }
+  .print-bar span { font-weight: 700; color: #92400E; font-size: 0.9rem; }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: right;
+    padding: 12px 24px 8px;
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: 'Space Mono', monospace;
+    border-top: 1px solid var(--border);
+    margin-top: 20px;
+  }
+
+  /* ── LOADING OVERLAY ── */
+  .loading-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.45);
+    z-index: 9999;
+    justify-content: center; align-items: center;
+  }
+  .loading-overlay.show { display: flex; }
+  .loading-card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 30px 40px;
+    text-align: center;
+    font-family: 'Fredoka One', cursive;
+    font-size: 1.2rem;
+    color: var(--indigo);
+  }
+  .loading-card .big-spinner {
+    width: 42px; height: 42px;
+    border: 4px solid var(--indigo-light);
+    border-top-color: var(--indigo);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 12px;
+  }
+
+  /* ── MISC ── */
+  .divider {
+    height: 2px;
+    background: linear-gradient(90deg, var(--teal-light), transparent);
+    border: none;
+    margin: 20px 0;
+  }
+  .info-box {
+    background: var(--sky-light);
+    border-left: 4px solid var(--sky);
+    border-radius: 0 10px 10px 0;
+    padding: 12px 16px;
+    font-size: 0.88rem;
+    color: #0369A1;
+    margin-bottom: 16px;
+    line-height: 1.5;
+  }
+  .tag {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 800;
+    background: var(--teal-light);
+    color: var(--teal-dark);
+    margin-right: 5px;
+  }
+
+  @media print {
+    .tab-nav, .ai-hint-box, .print-bar, .btn-row, footer, .tab-btn, header .badge-row { display: none !important; }
+    .tab-panel { display: block !important; }
+    body { background: white; }
+    .card { box-shadow: none; border: 1px solid #ccc; }
+    footer { display: block !important; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LOADING OVERLAY -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="loading-card">
+    <div class="big-spinner"></div>
+    🤖 Claude AI is thinking...
+  </div>
+</div>
+
+<!-- HEADER -->
+<header>
+  <div class="header-content">
+    <h1>⚙️ VAVE — Exercises — M1</h1>
+    <div class="subtitle">MODULE 1 · SESSION 2 · VAVE IMPLEMENTATION PLANNING</div>
+    <div class="badge-row">
+      <span class="badge">📋 Action Plan</span>
+      <span class="badge">🔍 Value Analysis</span>
+      <span class="badge">💡 Value Engineering</span>
+      <span class="badge">🤖 AI-Assisted</span>
+    </div>
+  </div>
+</header>
+
+<!-- TAB NAV -->
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('project')" id="tab-project">
+    <span class="tab-icon">📁</span> Project Info
+  </button>
+  <button class="tab-btn" onclick="switchTab('current')" id="tab-current">
+    <span class="tab-icon">📊</span> Current State
+  </button>
+  <button class="tab-btn" onclick="switchTab('opportunity')" id="tab-opportunity">
+    <span class="tab-icon">💡</span> Opportunity
+  </button>
+  <button class="tab-btn" onclick="switchTab('solutions')" id="tab-solutions">
+    <span class="tab-icon">🔧</span> Solutions
+  </button>
+  <button class="tab-btn" onclick="switchTab('financial')" id="tab-financial">
+    <span class="tab-icon">💰</span> Financial
+  </button>
+  <button class="tab-btn" onclick="switchTab('plan')" id="tab-plan">
+    <span class="tab-icon">🗓️</span> Impl. Plan
+  </button>
+  <button class="tab-btn" onclick="switchTab('risk')" id="tab-risk">
+    <span class="tab-icon">⚠️</span> Risk & QA
+  </button>
+  <button class="tab-btn" onclick="switchTab('metrics')" id="tab-metrics">
+    <span class="tab-icon">🎯</span> KPIs
+  </button>
+  <button class="tab-btn" onclick="switchTab('lessons')" id="tab-lessons">
+    <span class="tab-icon">📚</span> Lessons
+  </button>
+</nav>
+
+<main>
+
+<!-- PRINT BAR -->
+<div class="print-bar">
+  <span>📄 Ready to print your completed VAVE Action Plan?</span>
+  <button class="btn btn-amber" onclick="window.print()">🖨️ Print / Save as PDF</button>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 1: PROJECT INFO -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel active" id="panel-project">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Project Information</div>
+    <div class="ai-hint-content" id="hint-project">Click "Get AI Hint" to receive guidance on filling in your project information section.</div>
+    <button class="ai-hint-btn" onclick="getHint('project')" id="hintbtn-project">
+      <div class="spinner" id="spin-project"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="info-box">
+    🎓 <strong>Instructions:</strong> Fill in all project details accurately. This information will be used throughout the VAVE action plan. Use your actual component/system from the case study.
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Project Identification</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Project Title</label>
+        <input type="text" id="proj_title" placeholder="e.g. Bracket Weight Reduction Initiative">
+      </div>
+      <div class="field">
+        <label>Component / System</label>
+        <input type="text" id="proj_component" placeholder="e.g. Mounting Bracket Assembly">
+      </div>
+      <div class="field">
+        <label>Team Leader</label>
+        <input type="text" id="proj_leader" placeholder="Full Name">
+      </div>
+      <div class="field">
+        <label>Team Members</label>
+        <input type="text" id="proj_members" placeholder="Names, separated by commas">
+      </div>
+      <div class="field">
+        <label>Date Initiated</label>
+        <input type="date" id="proj_start">
+      </div>
+      <div class="field">
+        <label>Target Completion</label>
+        <input type="date" id="proj_end">
+      </div>
+      <div class="field field-full">
+        <label>Business Unit / Department</label>
+        <input type="text" id="proj_dept" placeholder="e.g. Engineering — Product Development">
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 2: CURRENT STATE -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-current">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Current State Analysis</div>
+    <div class="ai-hint-content" id="hint-current">Click "Get AI Hint" to learn how to perform a thorough current state analysis for VAVE.</div>
+    <button class="ai-hint-btn" onclick="getHint('current')" id="hintbtn-current">
+      <div class="spinner" id="spin-current"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Component Parameter Analysis</div>
+    <div class="info-box">📌 Enter the current state values, then set your VAVE targets. The gap will help identify the magnitude of your improvement opportunity.</div>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Parameter</th>
+          <th>Current State</th>
+          <th>Target State</th>
+          <th>Gap / Delta</th>
+          <th>Unit</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Component Cost</strong></td>
+          <td><input type="number" id="cs_comp_curr" placeholder="0.00" oninput="calcGap('cs_comp')"></td>
+          <td><input type="number" id="cs_comp_tgt" placeholder="0.00" oninput="calcGap('cs_comp')"></td>
+          <td><input type="text" id="cs_comp_gap" placeholder="Auto" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td>₹ / $</td>
+        </tr>
+        <tr>
+          <td><strong>Component Weight</strong></td>
+          <td><input type="number" id="cs_wt_curr" placeholder="0.00" oninput="calcGap('cs_wt')"></td>
+          <td><input type="number" id="cs_wt_tgt" placeholder="0.00" oninput="calcGap('cs_wt')"></td>
+          <td><input type="text" id="cs_wt_gap" placeholder="Auto" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td>kg</td>
+        </tr>
+        <tr>
+          <td><strong>Material Cost</strong></td>
+          <td><input type="number" id="cs_mat_curr" placeholder="0.00" oninput="calcGap('cs_mat')"></td>
+          <td><input type="number" id="cs_mat_tgt" placeholder="0.00" oninput="calcGap('cs_mat')"></td>
+          <td><input type="text" id="cs_mat_gap" placeholder="Auto" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td>₹ / $</td>
+        </tr>
+        <tr>
+          <td><strong>Manufacturing Cost</strong></td>
+          <td><input type="number" id="cs_mfg_curr" placeholder="0.00" oninput="calcGap('cs_mfg')"></td>
+          <td><input type="number" id="cs_mfg_tgt" placeholder="0.00" oninput="calcGap('cs_mfg')"></td>
+          <td><input type="text" id="cs_mfg_gap" placeholder="Auto" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td>₹ / $</td>
+        </tr>
+        <tr>
+          <td><strong>Annual Volume</strong></td>
+          <td><input type="number" id="cs_vol_curr" placeholder="0" oninput="calcGap('cs_vol')"></td>
+          <td><input type="number" id="cs_vol_tgt" placeholder="0" oninput="calcGap('cs_vol')"></td>
+          <td><input type="text" id="cs_vol_gap" placeholder="Auto" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td>units</td>
+        </tr>
+        <tr>
+          <td><strong>Annual Cost Impact</strong></td>
+          <td><input type="number" id="cs_aci_curr" placeholder="0.00" oninput="calcGap('cs_aci')"></td>
+          <td><input type="number" id="cs_aci_tgt" placeholder="0.00" oninput="calcGap('cs_aci')"></td>
+          <td><input type="text" id="cs_aci_gap" placeholder="Auto" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td>₹ / $</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 3: OPPORTUNITY -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-opportunity">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — VAVE Opportunity Identification</div>
+    <div class="ai-hint-content" id="hint-opportunity">Click "Get AI Hint" to learn how to identify and articulate VAVE opportunities using function analysis.</div>
+    <button class="ai-hint-btn" onclick="getHint('opportunity')" id="hintbtn-opportunity">
+      <div class="spinner" id="spin-opportunity"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Primary Function Analysis</div>
+    <div class="info-box">🔍 Define functions using the verb-noun format (e.g., "Transmit torque", "Support load"). Each function should be measurable.</div>
+    <div class="form-grid" style="margin-bottom:18px;">
+      <div class="field">
+        <label>Primary Function 1 (Verb + Noun)</label>
+        <input type="text" id="fn1_name" placeholder="e.g. Transmit load">
+      </div>
+      <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="field">
+          <label>Current Cost</label>
+          <input type="number" id="fn1_curr" placeholder="0.00">
+        </div>
+        <div class="field">
+          <label>Target Cost</label>
+          <input type="number" id="fn1_tgt" placeholder="0.00">
+        </div>
+      </div>
+      <div class="field">
+        <label>Primary Function 2 (Verb + Noun)</label>
+        <input type="text" id="fn2_name" placeholder="e.g. Reduce vibration">
+      </div>
+      <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+        <div class="field">
+          <label>Current Cost</label>
+          <input type="number" id="fn2_curr" placeholder="0.00">
+        </div>
+        <div class="field">
+          <label>Target Cost</label>
+          <input type="number" id="fn2_tgt" placeholder="0.00">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Problem Statement</div>
+    <div class="form-grid">
+      <div class="field field-full">
+        <label>Current Challenge</label>
+        <textarea id="opp_challenge" placeholder="Describe the current challenge clearly — what is the problem you are trying to solve?"></textarea>
+      </div>
+      <div class="field field-full">
+        <label>Root Cause (use 5-Why or Fishbone if needed)</label>
+        <textarea id="opp_rootcause" placeholder="What is the fundamental cause of the challenge identified above?"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 4: SOLUTIONS -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-solutions">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Alternative Solutions</div>
+    <div class="ai-hint-content" id="hint-solutions">Click "Get AI Hint" for guidance on generating and scoring alternative VAVE solutions effectively.</div>
+    <button class="ai-hint-btn" onclick="getHint('solutions')" id="hintbtn-solutions">
+      <div class="spinner" id="spin-solutions"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Alternative Solutions Matrix</div>
+    <div class="info-box">📐 <strong>Feasibility Score Formula:</strong> <em>(10 − Complexity Score − Risk Score) × Cost Reduction ÷ 100</em> — where L=1, M=2, H=3 for scoring.</div>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Description</th>
+          <th>Est. Cost Reduction</th>
+          <th>Complexity (L/M/H)</th>
+          <th>Risk (L/M/H)</th>
+          <th>Feasibility Score</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:800;color:var(--teal-dark);">ALT01</td>
+          <td><input type="text" id="alt1_desc" placeholder="Describe alternative"></td>
+          <td><input type="number" id="alt1_cost" placeholder="0.00" oninput="calcFeasibility(1)"></td>
+          <td>
+            <select id="alt1_comp" onchange="calcFeasibility(1)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td>
+            <select id="alt1_risk" onchange="calcFeasibility(1)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td><input type="text" id="alt1_score" readonly style="background:#f0fdf9;color:#0f766e;font-weight:800;"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--teal-dark);">ALT02</td>
+          <td><input type="text" id="alt2_desc" placeholder="Describe alternative"></td>
+          <td><input type="number" id="alt2_cost" placeholder="0.00" oninput="calcFeasibility(2)"></td>
+          <td>
+            <select id="alt2_comp" onchange="calcFeasibility(2)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td>
+            <select id="alt2_risk" onchange="calcFeasibility(2)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td><input type="text" id="alt2_score" readonly style="background:#f0fdf9;color:#0f766e;font-weight:800;"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--teal-dark);">ALT03</td>
+          <td><input type="text" id="alt3_desc" placeholder="Describe alternative"></td>
+          <td><input type="number" id="alt3_cost" placeholder="0.00" oninput="calcFeasibility(3)"></td>
+          <td>
+            <select id="alt3_comp" onchange="calcFeasibility(3)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td>
+            <select id="alt3_risk" onchange="calcFeasibility(3)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td><input type="text" id="alt3_score" readonly style="background:#f0fdf9;color:#0f766e;font-weight:800;"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--teal-dark);">ALT04</td>
+          <td><input type="text" id="alt4_desc" placeholder="Describe alternative"></td>
+          <td><input type="number" id="alt4_cost" placeholder="0.00" oninput="calcFeasibility(4)"></td>
+          <td>
+            <select id="alt4_comp" onchange="calcFeasibility(4)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td>
+            <select id="alt4_risk" onchange="calcFeasibility(4)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td><input type="text" id="alt4_score" readonly style="background:#f0fdf9;color:#0f766e;font-weight:800;"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--teal-dark);">ALT05</td>
+          <td><input type="text" id="alt5_desc" placeholder="Describe alternative"></td>
+          <td><input type="number" id="alt5_cost" placeholder="0.00" oninput="calcFeasibility(5)"></td>
+          <td>
+            <select id="alt5_comp" onchange="calcFeasibility(5)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td>
+            <select id="alt5_risk" onchange="calcFeasibility(5)">
+              <option value="">Select</option>
+              <option value="1">L - Low</option>
+              <option value="2">M - Medium</option>
+              <option value="3">H - High</option>
+            </select>
+          </td>
+          <td><input type="text" id="alt5_score" readonly style="background:#f0fdf9;color:#0f766e;font-weight:800;"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Selected Solution</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Solution ID</label>
+        <input type="text" id="sel_id" placeholder="e.g. ALT02">
+      </div>
+      <div class="field">
+        <label>Solution Name</label>
+        <input type="text" id="sel_name" placeholder="Brief descriptive name">
+      </div>
+      <div class="field field-full">
+        <label>Detailed Description</label>
+        <textarea id="sel_desc" placeholder="Describe the selected solution in detail — what changes are proposed, why it was selected over alternatives..."></textarea>
+      </div>
+    </div>
+    <hr class="divider">
+    <div class="card-title" style="font-size:1rem;"><span class="dot"></span> Implementation Approach</div>
+    <div class="form-grid">
+      <div class="field field-full">
+        <label>Technical Changes Required</label>
+        <textarea id="impl_tech" placeholder="1. Change material from steel to aluminium alloy&#10;2. Redesign cross-section geometry&#10;3. Update tolerances in design drawings"></textarea>
+      </div>
+      <div class="field field-full">
+        <label>Process Changes Required</label>
+        <textarea id="impl_proc" placeholder="1. Revise machining parameters&#10;2. Update assembly sequence&#10;3. Train operators on new process"></textarea>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 5: FINANCIAL -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-financial">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Financial Impact Analysis</div>
+    <div class="ai-hint-content" id="hint-financial">Click "Get AI Hint" for guidance on conducting a comprehensive cost-benefit analysis for your VAVE project.</div>
+    <button class="ai-hint-btn" onclick="getHint('financial')" id="hintbtn-financial">
+      <div class="spinner" id="spin-financial"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Cost-Benefit Analysis</div>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Cost Element</th>
+          <th>Current (₹/$)</th>
+          <th>Proposed (₹/$)</th>
+          <th>Savings (₹/$)</th>
+          <th>% Reduction</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Material Cost</strong></td>
+          <td><input type="number" id="fin_mat_c" placeholder="0.00" oninput="calcSavings('mat')"></td>
+          <td><input type="number" id="fin_mat_p" placeholder="0.00" oninput="calcSavings('mat')"></td>
+          <td><input type="text" id="fin_mat_s" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td><input type="text" id="fin_mat_pct" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+        </tr>
+        <tr>
+          <td><strong>Processing Cost</strong></td>
+          <td><input type="number" id="fin_proc_c" placeholder="0.00" oninput="calcSavings('proc')"></td>
+          <td><input type="number" id="fin_proc_p" placeholder="0.00" oninput="calcSavings('proc')"></td>
+          <td><input type="text" id="fin_proc_s" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td><input type="text" id="fin_proc_pct" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+        </tr>
+        <tr>
+          <td><strong>Tooling Cost</strong></td>
+          <td><input type="number" id="fin_tool_c" placeholder="0.00" oninput="calcSavings('tool')"></td>
+          <td><input type="number" id="fin_tool_p" placeholder="0.00" oninput="calcSavings('tool')"></td>
+          <td><input type="text" id="fin_tool_s" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td><input type="text" id="fin_tool_pct" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+        </tr>
+        <tr>
+          <td><strong>Labour Cost</strong></td>
+          <td><input type="number" id="fin_lab_c" placeholder="0.00" oninput="calcSavings('lab')"></td>
+          <td><input type="number" id="fin_lab_p" placeholder="0.00" oninput="calcSavings('lab')"></td>
+          <td><input type="text" id="fin_lab_s" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td><input type="text" id="fin_lab_pct" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+        </tr>
+        <tr>
+          <td><strong>Overhead</strong></td>
+          <td><input type="number" id="fin_oh_c" placeholder="0.00" oninput="calcSavings('oh')"></td>
+          <td><input type="number" id="fin_oh_p" placeholder="0.00" oninput="calcSavings('oh')"></td>
+          <td><input type="text" id="fin_oh_s" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+          <td><input type="text" id="fin_oh_pct" readonly style="background:#f0fdf9;color:#0f766e;font-weight:700;"></td>
+        </tr>
+        <tr style="background:#065F46;color:#fff;">
+          <td><strong style="color:#fff;">TOTAL PER UNIT</strong></td>
+          <td><input type="text" id="fin_tot_c" readonly style="background:#065F46;color:#A7F3D0;font-weight:800;border:none;"></td>
+          <td><input type="text" id="fin_tot_p" readonly style="background:#065F46;color:#A7F3D0;font-weight:800;border:none;"></td>
+          <td><input type="text" id="fin_tot_s" readonly style="background:#065F46;color:#FDE68A;font-weight:800;border:none;"></td>
+          <td><input type="text" id="fin_tot_pct" readonly style="background:#065F46;color:#FDE68A;font-weight:800;border:none;"></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="form-grid" style="margin-top:18px;">
+      <div class="field">
+        <label>Annual Production Volume (units)</label>
+        <input type="number" id="fin_volume" placeholder="e.g. 50000" oninput="calcAnnualSavings()">
+      </div>
+      <div class="field">
+        <label>Annual Savings (Auto-calculated)</label>
+        <input type="text" id="fin_annual" readonly style="background:#f0fdf9;color:#065F46;font-weight:800;font-size:1.1rem;">
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Investment Required</div>
+    <table class="styled-table">
+      <thead>
+        <tr>
+          <th>Investment Category</th>
+          <th>Amount (₹/$)</th>
+          <th>Justification</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Tooling & Fixtures</td>
+          <td><input type="number" id="inv_tool" placeholder="0.00" oninput="calcROI()"></td>
+          <td><input type="text" placeholder="Brief justification"></td></tr>
+        <tr><td>Process Development</td>
+          <td><input type="number" id="inv_proc" placeholder="0.00" oninput="calcROI()"></td>
+          <td><input type="text" placeholder="Brief justification"></td></tr>
+        <tr><td>Testing & Validation</td>
+          <td><input type="number" id="inv_test" placeholder="0.00" oninput="calcROI()"></td>
+          <td><input type="text" placeholder="Brief justification"></td></tr>
+        <tr><td>Training</td>
+          <td><input type="number" id="inv_train" placeholder="0.00" oninput="calcROI()"></td>
+          <td><input type="text" placeholder="Brief justification"></td></tr>
+        <tr><td>Supplier Development</td>
+          <td><input type="number" id="inv_supp" placeholder="0.00" oninput="calcROI()"></td>
+          <td><input type="text" placeholder="Brief justification"></td></tr>
+        <tr style="background:#FEF3C7;">
+          <td><strong>TOTAL INVESTMENT</strong></td>
+          <td><input type="text" id="inv_total" readonly style="background:#FEF3C7;color:#92400E;font-weight:800;border:none;"></td>
+          <td></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="form-grid" style="margin-top:16px;">
+      <div class="kpi-card c2">
+        <div class="kpi-label">Payback Period</div>
+        <input class="kpi-input" id="fin_payback" readonly placeholder="—" style="color:#92400E;">
+        <div style="font-size:0.75rem;color:#92400E;font-weight:600;">months</div>
+      </div>
+      <div class="kpi-card c1">
+        <div class="kpi-label">ROI</div>
+        <input class="kpi-input" id="fin_roi" readonly placeholder="—" style="color:#065F46;">
+        <div style="font-size:0.75rem;color:#065F46;font-weight:600;">%</div>
+      </div>
+      <div class="kpi-card c4">
+        <div class="kpi-label">Value Index</div>
+        <input class="kpi-input" id="fin_vi" readonly placeholder="—" style="color:var(--indigo);">
+        <div style="font-size:0.75rem;color:var(--indigo);font-weight:600;">Annual Savings / Investment</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 6: IMPLEMENTATION PLAN -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-plan">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Implementation Plan</div>
+    <div class="ai-hint-content" id="hint-plan">Click "Get AI Hint" to learn best practices for creating a realistic VAVE implementation plan with proper phasing.</div>
+    <button class="ai-hint-btn" onclick="getHint('plan')" id="hintbtn-plan">
+      <div class="spinner" id="spin-plan"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="phase-block p1">
+      <div class="phase-title">🔵 Phase 1 — Design & Development (Weeks 1–4)</div>
+      <table class="styled-table">
+        <thead><tr><th>Activity</th><th>Responsibility</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+        <tbody id="phase1-rows">
+          <tr><td>Design alternative</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>CAD modelling</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Stress analysis</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Material selection</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Cost estimation</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="phase-block p2">
+      <div class="phase-title">🟡 Phase 2 — Prototyping & Testing (Weeks 5–8)</div>
+      <table class="styled-table">
+        <thead><tr><th>Activity</th><th>Responsibility</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Prototype fabrication</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Functional testing</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Durability testing</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Quality validation</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Cost verification</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="phase-block p3">
+      <div class="phase-title">🔷 Phase 3 — Supplier Development (Weeks 9–12)</div>
+      <table class="styled-table">
+        <thead><tr><th>Activity</th><th>Responsibility</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Supplier selection</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Tooling development</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>First article inspection</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Process capability study</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Production trial</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="phase-block p4">
+      <div class="phase-title">🔴 Phase 4 — Production Ramp-up (Weeks 13–16)</div>
+      <table class="styled-table">
+        <thead><tr><th>Activity</th><th>Responsibility</th><th>Start</th><th>End</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>Training operators</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Low volume production</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Quality monitoring</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Full production launch</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+          <tr><td>Cost tracking</td><td><input type="text" placeholder="Name/Role"></td><td><input type="date"></td><td><input type="date"></td><td><select><option value="">—</option><option>Not Started</option><option>In Progress</option><option>Complete</option></select></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 7: RISK & QA -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-risk">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Risk Assessment & Quality Assurance</div>
+    <div class="ai-hint-content" id="hint-risk">Click "Get AI Hint" for guidance on identifying and mitigating VAVE implementation risks, and setting up quality checkpoints.</div>
+    <button class="ai-hint-btn" onclick="getHint('risk')" id="hintbtn-risk">
+      <div class="spinner" id="spin-risk"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Risk Assessment & Mitigation</div>
+    <table class="styled-table">
+      <thead>
+        <tr><th>Risk ID</th><th>Description</th><th>Probability</th><th>Impact</th><th>Mitigation Plan</th><th>Owner</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td style="font-weight:800;color:var(--rose);">R-01</td>
+          <td><input type="text" placeholder="Risk description"></td>
+          <td><select id="r1_prob"><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><select id="r1_imp"><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><input type="text" placeholder="Mitigation plan"></td>
+          <td><input type="text" placeholder="Owner"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--rose);">R-02</td>
+          <td><input type="text" placeholder="Risk description"></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><input type="text" placeholder="Mitigation plan"></td>
+          <td><input type="text" placeholder="Owner"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--rose);">R-03</td>
+          <td><input type="text" placeholder="Risk description"></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><input type="text" placeholder="Mitigation plan"></td>
+          <td><input type="text" placeholder="Owner"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--rose);">R-04</td>
+          <td><input type="text" placeholder="Risk description"></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><input type="text" placeholder="Mitigation plan"></td>
+          <td><input type="text" placeholder="Owner"></td>
+        </tr>
+        <tr>
+          <td style="font-weight:800;color:var(--rose);">R-05</td>
+          <td><input type="text" placeholder="Risk description"></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><select><option value="">—</option><option>L</option><option>M</option><option>H</option></select></td>
+          <td><input type="text" placeholder="Mitigation plan"></td>
+          <td><input type="text" placeholder="Owner"></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Quality Assurance Plan</div>
+    <div class="info-box">🔬 Define your critical quality characteristics and tick the validation tests required for this VAVE implementation.</div>
+    <table class="styled-table" style="margin-bottom:20px;">
+      <thead>
+        <tr><th>Characteristic</th><th>Specification</th><th>Measurement Method</th><th>Frequency</th><th>Acceptance Criteria</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><input type="text" placeholder="e.g. Tensile Strength"></td><td><input type="text" placeholder="e.g. ≥ 400 MPa"></td><td><input type="text" placeholder="e.g. UTM testing"></td><td><input type="text" placeholder="e.g. Per batch"></td><td><input type="text" placeholder="e.g. ≥ 400 MPa"></td></tr>
+        <tr><td><input type="text" placeholder="e.g. Surface Finish"></td><td><input type="text" placeholder="e.g. Ra ≤ 1.6 µm"></td><td><input type="text" placeholder="e.g. Profilometer"></td><td><input type="text" placeholder="e.g. 5%"></td><td><input type="text" placeholder="e.g. Ra ≤ 1.6 µm"></td></tr>
+        <tr><td><input type="text" placeholder="e.g. Dimensional Tolerance"></td><td><input type="text" placeholder="e.g. ±0.05 mm"></td><td><input type="text" placeholder="e.g. CMM"></td><td><input type="text" placeholder="e.g. 100%"></td><td><input type="text" placeholder="e.g. Within ±0.05 mm"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="section-label">Validation Tests Required</div>
+    <div class="checklist">
+      <label class="check-item"><input type="checkbox"> ✅ Dimensional verification</label>
+      <label class="check-item"><input type="checkbox"> ✅ Material composition analysis</label>
+      <label class="check-item"><input type="checkbox"> ✅ Functional performance test</label>
+      <label class="check-item"><input type="checkbox"> ✅ Durability / life test</label>
+      <label class="check-item"><input type="checkbox"> ✅ Environmental test (temperature, humidity)</label>
+      <label class="check-item"><input type="checkbox"> ✅ Assembly compatibility check</label>
+      <label class="check-item"><input type="checkbox"> ✅ Field trial validation</label>
+    </div>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 8: KPIs -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-metrics">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Success Metrics & KPIs</div>
+    <div class="ai-hint-content" id="hint-metrics">Click "Get AI Hint" to understand how to set meaningful KPIs that demonstrate the business value of your VAVE project.</div>
+    <button class="ai-hint-btn" onclick="getHint('metrics')" id="hintbtn-metrics">
+      <div class="spinner" id="spin-metrics"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Key Performance Indicators</div>
+    <table class="styled-table">
+      <thead>
+        <tr><th>KPI</th><th>Baseline</th><th>Target</th><th>Actual</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Unit Cost (₹/$)</strong></td><td><input type="number" placeholder="0.00"></td><td><input type="number" placeholder="0.00"></td><td><input type="number" placeholder="0.00"></td><td><select><option>—</option><option>On Track</option><option>At Risk</option><option>Achieved</option><option>Behind</option></select></td></tr>
+        <tr><td><strong>Cost Reduction (%)</strong></td><td>0%</td><td><input type="text" placeholder="e.g. 15%"></td><td><input type="text" placeholder="0%"></td><td><select><option>—</option><option>On Track</option><option>At Risk</option><option>Achieved</option><option>Behind</option></select></td></tr>
+        <tr><td><strong>Weight Reduction (kg)</strong></td><td><input type="number" placeholder="0.00"></td><td><input type="number" placeholder="0.00"></td><td><input type="number" placeholder="0.00"></td><td><select><option>—</option><option>On Track</option><option>At Risk</option><option>Achieved</option><option>Behind</option></select></td></tr>
+        <tr><td><strong>Quality (PPM)</strong></td><td><input type="number" placeholder="0"></td><td><input type="number" placeholder="0"></td><td><input type="number" placeholder="0"></td><td><select><option>—</option><option>On Track</option><option>At Risk</option><option>Achieved</option><option>Behind</option></select></td></tr>
+        <tr><td><strong>Delivery Performance (%)</strong></td><td><input type="number" placeholder="0"></td><td><input type="number" placeholder="0"></td><td><input type="number" placeholder="0"></td><td><select><option>—</option><option>On Track</option><option>At Risk</option><option>Achieved</option><option>Behind</option></select></td></tr>
+        <tr><td><strong>Customer Satisfaction</strong></td><td><input type="text" placeholder="Rating/Score"></td><td><input type="text" placeholder="Target Rating"></td><td><input type="text" placeholder="Actual Rating"></td><td><select><option>—</option><option>On Track</option><option>At Risk</option><option>Achieved</option><option>Behind</option></select></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Stakeholder Communication Plan</div>
+    <table class="styled-table">
+      <thead>
+        <tr><th>Stakeholder</th><th>Information Need</th><th>Method</th><th>Frequency</th><th>Owner</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Engineering</td><td>Technical changes</td><td>Design review meeting</td><td>Weekly</td><td><input type="text" placeholder="Name"></td></tr>
+        <tr><td>Manufacturing</td><td>Process changes</td><td>Production meeting</td><td>Bi-weekly</td><td><input type="text" placeholder="Name"></td></tr>
+        <tr><td>Quality</td><td>Inspection plan</td><td>Quality review</td><td>Weekly</td><td><input type="text" placeholder="Name"></td></tr>
+        <tr><td>Purchasing</td><td>Supplier changes</td><td>Vendor meeting</td><td>Monthly</td><td><input type="text" placeholder="Name"></td></tr>
+        <tr><td>Finance</td><td>Cost tracking</td><td>Cost report</td><td>Monthly</td><td><input type="text" placeholder="Name"></td></tr>
+        <tr><td>Management</td><td>Project status</td><td>Steering committee</td><td>Monthly</td><td><input type="text" placeholder="Name"></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ══════════════════════════════════════ -->
+<!-- TAB 9: LESSONS LEARNED -->
+<!-- ══════════════════════════════════════ -->
+<div class="tab-panel" id="panel-lessons">
+
+  <div class="ai-hint-box">
+    <div class="ai-hint-header"><span class="pulse"></span>🤖 Claude AI Assistant — Lessons Learned & Sign-off</div>
+    <div class="ai-hint-content" id="hint-lessons">Click "Get AI Hint" to learn how to write impactful lessons learned that benefit future VAVE projects in your organisation.</div>
+    <button class="ai-hint-btn" onclick="getHint('lessons')" id="hintbtn-lessons">
+      <div class="spinner" id="spin-lessons"></div>
+      ✨ Get AI Hint
+    </button>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Lessons Learned & Best Practices</div>
+    <div class="form-grid">
+      <div class="field field-full">
+        <label>What Worked Well</label>
+        <textarea id="ll_good" placeholder="1. &#10;2. &#10;3. " style="min-height:100px;"></textarea>
+      </div>
+      <div class="field field-full">
+        <label>Challenges Faced</label>
+        <textarea id="ll_challenges" placeholder="1. &#10;2. &#10;3. " style="min-height:100px;"></textarea>
+      </div>
+      <div class="field field-full">
+        <label>Recommendations for Future Projects</label>
+        <textarea id="ll_reco" placeholder="1. &#10;2. &#10;3. " style="min-height:100px;"></textarea>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-title"><span class="dot"></span> Approval & Sign-off</div>
+    <table class="styled-table">
+      <thead>
+        <tr><th>Role</th><th>Name</th><th>Signature</th><th>Date</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Project Leader</td><td><input type="text" placeholder="Full Name"></td><td><input type="text" placeholder="(Sign here)"></td><td><input type="date"></td></tr>
+        <tr><td>Engineering Manager</td><td><input type="text" placeholder="Full Name"></td><td><input type="text" placeholder="(Sign here)"></td><td><input type="date"></td></tr>
+        <tr><td>Manufacturing Manager</td><td><input type="text" placeholder="Full Name"></td><td><input type="text" placeholder="(Sign here)"></td><td><input type="date"></td></tr>
+        <tr><td>Quality Manager</td><td><input type="text" placeholder="Full Name"></td><td><input type="text" placeholder="(Sign here)"></td><td><input type="date"></td></tr>
+        <tr><td>Finance Controller</td><td><input type="text" placeholder="Full Name"></td><td><input type="text" placeholder="(Sign here)"></td><td><input type="date"></td></tr>
+        <tr><td>Programme Director</td><td><input type="text" placeholder="Full Name"></td><td><input type="text" placeholder="(Sign here)"></td><td><input type="date"></td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="card" style="background:linear-gradient(135deg,#F0FDF9,#EEF2FF);">
+    <div class="card-title"><span class="dot"></span> Document Control</div>
+    <div class="form-grid">
+      <div class="field">
+        <label>Document Version</label>
+        <input type="text" value="1.0" placeholder="1.0">
+      </div>
+      <div class="field">
+        <label>Created Date</label>
+        <input type="date">
+      </div>
+      <div class="field">
+        <label>Last Modified</label>
+        <input type="date">
+      </div>
+      <div class="field">
+        <label>Next Review Date</label>
+        <input type="date">
+      </div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-teal" onclick="window.print()">🖨️ Print Completed Action Plan</button>
+    <button class="btn btn-indigo" onclick="clearAll()">🔄 Reset All Fields</button>
+  </div>
+</div>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  VAVE Training Programme — Module 1, Session 2 &nbsp;|&nbsp; For Training Use Only &nbsp;|&nbsp;
+  <span style="color:var(--teal-dark);font-weight:700;">Prabhakar Neelakanth</span>
+</footer>
+
+<script>
+// ─── TAB SWITCHING ───
+function switchTab(tab) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('panel-' + tab).classList.add('active');
+  document.getElementById('tab-' + tab).classList.add('active');
+}
+
+// ─── GAP CALC ───
+function calcGap(id) {
+  const curr = parseFloat(document.getElementById(id + '_curr')?.value) || 0;
+  const tgt  = parseFloat(document.getElementById(id + '_tgt')?.value)  || 0;
+  const gap  = curr - tgt;
+  const el = document.getElementById(id + '_gap');
+  if (el) el.value = gap !== 0 ? (gap > 0 ? '▼ ' : '▲ ') + Math.abs(gap).toFixed(2) : '—';
+}
+
+// ─── FEASIBILITY ───
+function calcFeasibility(n) {
+  const cost = parseFloat(document.getElementById('alt' + n + '_cost')?.value) || 0;
+  const comp = parseInt(document.getElementById('alt' + n + '_comp')?.value)   || 0;
+  const risk = parseInt(document.getElementById('alt' + n + '_risk')?.value)   || 0;
+  if (!comp || !risk) { document.getElementById('alt' + n + '_score').value = '—'; return; }
+  const score = ((10 - comp - risk) * cost / 100).toFixed(2);
+  document.getElementById('alt' + n + '_score').value = score;
+}
+
+// ─── COST SAVINGS ───
+const finRows = [
+  { id: 'mat', label: 'Material' },
+  { id: 'proc', label: 'Processing' },
+  { id: 'tool', label: 'Tooling' },
+  { id: 'lab', label: 'Labour' },
+  { id: 'oh', label: 'Overhead' }
+];
+function calcSavings(rowId) {
+  const c = parseFloat(document.getElementById('fin_' + rowId + '_c')?.value) || 0;
+  const p = parseFloat(document.getElementById('fin_' + rowId + '_p')?.value) || 0;
+  const s = c - p;
+  const pct = c > 0 ? ((s / c) * 100).toFixed(1) + '%' : '—';
+  document.getElementById('fin_' + rowId + '_s').value = s.toFixed(2);
+  document.getElementById('fin_' + rowId + '_pct').value = pct;
+  calcTotals();
+}
+function calcTotals() {
+  let totC = 0, totP = 0;
+  finRows.forEach(r => {
+    totC += parseFloat(document.getElementById('fin_' + r.id + '_c')?.value) || 0;
+    totP += parseFloat(document.getElementById('fin_' + r.id + '_p')?.value) || 0;
+  });
+  const totS = totC - totP;
+  const totPct = totC > 0 ? ((totS / totC) * 100).toFixed(1) + '%' : '—';
+  document.getElementById('fin_tot_c').value  = totC.toFixed(2);
+  document.getElementById('fin_tot_p').value  = totP.toFixed(2);
+  document.getElementById('fin_tot_s').value  = totS.toFixed(2);
+  document.getElementById('fin_tot_pct').value = totPct;
+  calcAnnualSavings();
+}
+function calcAnnualSavings() {
+  const savPerUnit = parseFloat(document.getElementById('fin_tot_s')?.value) || 0;
+  const vol        = parseFloat(document.getElementById('fin_volume')?.value) || 0;
+  const annual     = savPerUnit * vol;
+  document.getElementById('fin_annual').value = annual.toFixed(2);
+  calcROI();
+}
+function calcROI() {
+  const annual   = parseFloat(document.getElementById('fin_annual')?.value)    || 0;
+  const invIds   = ['inv_tool', 'inv_proc', 'inv_test', 'inv_train', 'inv_supp'];
+  let totalInv   = 0;
+  invIds.forEach(id => { totalInv += parseFloat(document.getElementById(id)?.value) || 0; });
+  document.getElementById('inv_total').value = totalInv.toFixed(2);
+  if (annual > 0 && totalInv > 0) {
+    const payback = (totalInv / annual * 12).toFixed(1);
+    const roi     = ((annual / totalInv) * 100).toFixed(1);
+    const vi      = (annual / totalInv).toFixed(2);
+    document.getElementById('fin_payback').value = payback;
+    document.getElementById('fin_roi').value     = roi;
+    document.getElementById('fin_vi').value      = vi;
+  } else {
+    document.getElementById('fin_payback').value = '—';
+    document.getElementById('fin_roi').value     = '—';
+    document.getElementById('fin_vi').value      = '—';
+  }
+}
+
+// ─── AI HINTS ───
+const HINTS = {
+  project: `You are a senior VAVE (Value Analysis Value Engineering) trainer. Provide a helpful, encouraging hint for engineering students filling in the "Project Information" section of a VAVE Action Plan. Cover: (1) how to write a concise, meaningful project title, (2) why team composition matters in VAVE, and (3) how to set a realistic target completion date. Keep it practical, warm, and under 120 words.`,
+  current: `You are a senior VAVE trainer. Give an insightful hint for the "Current State Analysis" section of a VAVE Action Plan. Explain: (1) why accurate current-state data is the foundation of VAVE, (2) common mistakes learners make when estimating costs, and (3) how the gap between current and target state drives the business case. Keep it practical and encouraging, under 120 words.`,
+  opportunity: `You are a VAVE expert trainer. Give a helpful hint for the "VAVE Opportunity Identification" section. Cover: (1) the verb-noun rule for defining functions (e.g. "transmit torque", not "the bracket"), (2) how to distinguish primary from secondary functions, and (3) tips for writing a tight, specific problem statement using root-cause thinking. Keep it under 120 words.`,
+  solutions: `You are a VAVE expert. Give an energising hint for the "Alternative Solutions Matrix". Explain: (1) the importance of generating at least 4-5 diverse alternatives before scoring, (2) how to use the feasibility score formula correctly (L=1, M=2, H=3), and (3) common pitfalls when selecting solutions prematurely. Keep it practical and under 120 words.`,
+  financial: `You are a VAVE financial analysis expert. Give a targeted hint for the "Financial Impact Analysis" tab. Cover: (1) how to separate material, processing, and overhead costs accurately, (2) how to calculate ROI and payback period, and (3) why the value index (annual savings ÷ investment) is a powerful communicator to management. Keep it practical and under 120 words.`,
+  plan: `You are a VAVE project manager. Give a practical hint for the "Implementation Plan" section. Explain: (1) why phasing is critical for VAVE projects and how the 4-phase model ensures systematic delivery, (2) how to assign responsibility clearly (not just a department), and (3) common scheduling errors in engineering projects. Keep it motivating and under 120 words.`,
+  risk: `You are a VAVE risk management expert. Give a focused hint for the "Risk Assessment & Quality Assurance" tab. Cover: (1) the top 3 risks typically seen in VAVE implementation (supplier quality, dimensional fit, functional performance), (2) how to write a mitigation plan that is actionable not vague, and (3) why the validation checklist must be completed before production. Keep it under 120 words.`,
+  metrics: `You are a VAVE KPI expert. Give a helpful hint for the "KPIs & Success Metrics" section. Explain: (1) why KPIs must be set before implementation begins (baseline data), (2) how unit cost, PPM, and delivery metrics connect to overall business value, and (3) the importance of the stakeholder communication plan for gaining ongoing support. Keep it under 120 words.`,
+  lessons: `You are a VAVE master trainer. Give an inspiring hint for "Lessons Learned & Sign-off". Explain: (1) how to write a lessons learned entry that is specific enough to be actionable in future projects, (2) why the sign-off process adds accountability and discipline to VAVE culture, and (3) one golden piece of advice for engineering graduates completing their first VAVE project. Keep it warm, wise, and under 120 words.`
+};
+
+async function getHint(tab) {
+  const btn    = document.getElementById('hintbtn-' + tab);
+  const box    = document.getElementById('hint-' + tab);
+  const spin   = document.getElementById('spin-' + tab);
+  const loader = document.getElementById('loadingOverlay');
+
+  btn.disabled = true;
+  spin.style.display = 'inline-block';
+  box.textContent = '🤖 Claude is thinking…';
+  loader.classList.add('show');
+
+  try {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: 'claude-sonnet-4-20250514',
+        max_tokens: 1000,
+        messages: [{ role: 'user', content: HINTS[tab] }]
+      })
+    });
+    const data = await res.json();
+    const text = data.content?.map(b => b.text || '').join('') || 'No response received.';
+    box.innerHTML = '💬 ' + text.replace(/\n/g, '<br>');
+  } catch (err) {
+    box.innerHTML = '⚠️ Unable to reach Claude AI. Please check your connection. <em>(' + err.message + ')</em>';
+  } finally {
+    btn.disabled = false;
+    spin.style.display = 'none';
+    loader.classList.remove('show');
+  }
+}
+
+// ─── CLEAR ALL ───
+function clearAll() {
+  if (!confirm('Reset all fields? This cannot be undone.')) return;
+  document.querySelectorAll('input[type=text], input[type=number], input[type=date], textarea').forEach(el => {
+    if (!el.readOnly || el.id === '') el.value = '';
+  });
+  document.querySelectorAll('select').forEach(el => el.selectedIndex = 0);
+  document.querySelectorAll('input[type=checkbox]').forEach(el => el.checked = false);
+}
+
+// ─── CHECKBOX STYLE ───
+document.querySelectorAll('.check-item input[type=checkbox]').forEach(cb => {
+  cb.addEventListener('change', function() {
+    this.closest('.check-item').classList.toggle('checked', this.checked);
+  });
+});
+</script>
+</body>
+</html>
